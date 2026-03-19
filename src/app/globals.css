@@ -1,26 +1,29 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-brutal-black: #050505;
+  --color-neon-green: #00FF00;
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-brutal-black text-white font-sans antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .brutal-border {
+    @apply border border-white/10;
+  }
+  
+  .brutal-shadow {
+    @apply shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)];
+  }
+
+  .brutal-btn {
+    @apply px-8 py-4 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-x-0 active:translate-y-0 active:shadow-none;
+  }
 }

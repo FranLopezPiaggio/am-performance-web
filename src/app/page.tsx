@@ -1,65 +1,164 @@
-import Image from "next/image";
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import CategoryGrid from '@/components/CategoryGrid';
+import ProductCard from '@/components/ProductCard';
+import Link from 'next/link';
+import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
+import Crossfit from '@/assets/crossfit-equip.jpg';
+
+
+const bestSellers = [
+  {
+    id: 'bs1',
+    name: 'Mancuerna Hexagonal 20kg',
+    price: 45000,
+    image: Crossfit,
+    category: 'Pesas Libres',
+    rating: 5,
+    reviews: 124,
+    isNew: true
+  },
+  {
+    id: 'bs2',
+    name: 'Rack de Potencia Elite',
+    price: 850000,
+    image: Crossfit,
+    category: 'Máquinas',
+    rating: 5,
+    reviews: 45
+  },
+  {
+    id: 'bs3',
+    name: 'Cinta de Correr T800',
+    price: 1200000,
+    image: Crossfit,
+    category: 'Cardio',
+    rating: 4,
+    reviews: 89,
+    discount: 15
+  },
+  {
+    id: 'bs4',
+    name: 'Banco Multiajustable',
+    price: 180000,
+    image: Crossfit,
+    category: 'Máquinas',
+    rating: 5,
+    reviews: 67
+  }
+];
+
+const trustItems = [
+  { icon: Truck, title: 'Envíos a todo el país', desc: 'Llegamos a cada rincón de Argentina.' },
+  { icon: ShieldCheck, title: 'Garantía Oficial', desc: 'Todos nuestros productos tienen respaldo.' },
+  { icon: CreditCard, title: 'Pagos Seguros', desc: 'Mercado Pago y cuotas sin interés.' },
+  { icon: Headphones, title: 'Soporte 24/7', desc: 'Asesoramiento técnico especializado.' }
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen pb-24">
+      <Navbar />
+      <Hero />
+
+      {/* Trust Bar */}
+      <section className="bg-white text-brutal-black py-12">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          {trustItems.map((item, i) => (
+            <div key={i} className="flex items-center space-x-4">
+              <item.icon size={32} strokeWidth={2.5} />
+              <div>
+                <h4 className="font-bold uppercase tracking-widest text-xs">{item.title}</h4>
+                <p className="text-[10px] opacity-70 uppercase font-bold">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <CategoryGrid />
+
+      {/* Best Sellers */}
+      <section className="py-24 bg-white/5">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Lo más buscado</p>
+              <h2 className="text-5xl font-display uppercase tracking-tighter">Best Sellers</h2>
+            </div>
+            <Link href="/catalogo" className="text-sm font-bold uppercase tracking-widest border-b-2 border-neon-green pb-1 hover:text-neon-green transition-colors">
+              Ver Catálogo
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter / CTA */}
+      <section className="py-24 max-w-7xl mx-auto px-4">
+        <div className="bg-neon-green p-12 md:p-24 flex flex-col md:flex-row items-center justify-between brutal-shadow">
+          <div className="mb-8 md:mb-0">
+            <h2 className="text-6xl md:text-8xl font-display uppercase tracking-tighter text-brutal-black leading-[0.8]">
+              Unite al <br /> Equipo
+            </h2>
+            <p className="text-brutal-black/70 font-bold uppercase tracking-widest text-sm mt-6">
+              Recibí ofertas exclusivas y novedades técnicas.
+            </p>
+          </div>
+          <div className="w-full md:w-auto flex flex-col space-y-4">
+            <input
+              type="email"
+              placeholder="TU EMAIL"
+              className="bg-white border-2 border-brutal-black p-4 text-brutal-black font-bold placeholder:text-brutal-black/30 focus:outline-none w-full md:w-80"
+            />
+            <button className="bg-brutal-black text-neon-green p-4 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-brutal-black transition-colors">
+              Suscribirme
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="pt-24 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
+          <div className="md:col-span-2">
+            <span className="text-4xl font-display uppercase tracking-tighter text-white mb-6 block">
+              AM <span className="text-neon-green">Performance</span>
+            </span>
+            <p className="text-white/50 max-w-md uppercase text-xs font-bold leading-loose tracking-widest">
+              Somos líderes en equipamiento de gimnasios y centros de alto rendimiento en Argentina.
+              Diseñamos y fabricamos soluciones técnicas para atletas exigentes.
+            </p>
+          </div>
+          <div>
+            <h5 className="font-bold uppercase tracking-widest text-xs mb-6 text-neon-green">Navegación</h5>
+            <ul className="space-y-4 text-sm uppercase tracking-widest font-medium">
+              <li><Link href="/catalogo" className="hover:text-neon-green transition-colors">Catálogo</Link></li>
+              <li><Link href="/catalogo?ofertas=true" className="hover:text-neon-green transition-colors">Ofertas</Link></li>
+              <li><Link href="/nosotros" className="hover:text-neon-green transition-colors">Nosotros</Link></li>
+              <li><Link href="/contacto" className="hover:text-neon-green transition-colors">Contacto</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="font-bold uppercase tracking-widest text-xs mb-6 text-neon-green">Contacto</h5>
+            <ul className="space-y-4 text-sm uppercase tracking-widest font-medium text-white/70">
+              <li>Av. Libertador 1234, CABA</li>
+              <li>info@amperformance.com</li>
+              <li>+54 11 4444-5555</li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-white/5 py-8 text-center">
+          <p className="text-[10px] uppercase tracking-[0.5em] text-white/20">
+            © 2024 AM PERFORMANCE. BRUTALIST TECHNICAL EQUIPMENT.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </footer>
+    </main>
   );
 }
