@@ -103,12 +103,10 @@ export default function Home() {
       <section className="py-24 max-w-7xl mx-auto px-4">
         <div className="bg-neon-green p-12 md:p-24 flex flex-col md:flex-row items-center justify-between brutal-shadow">
           <div className="mb-8 md:mb-0">
-            <h2 className="text-6xl md:text-8xl font-display uppercase tracking-tighter text-brutal-black leading-[0.8]">
-              Unite al <br /> Equipo
+            <h2 className="text-4xl md:text-6xl font-display uppercase tracking-tighter text-brutal-black leading-[1]">
+              Veni a conocer nuestro <b>SHOWROOM</b>
             </h2>
-            <p className="text-brutal-black/70 font-bold uppercase tracking-widest text-sm mt-6">
-              Recibí ofertas exclusivas y novedades técnicas.
-            </p>
+            <Link href="/contacto" className="text-brutal-black font-bold uppercase tracking-widest text-sm mt-6">Agenda una visita</Link>
           </div>
           <div className="w-full md:w-auto flex flex-col space-y-4">
             <input
