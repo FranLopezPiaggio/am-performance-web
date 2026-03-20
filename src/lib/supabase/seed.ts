@@ -1,7 +1,7 @@
 // AMPerformance - Database Seeder
 // Run with: npx tsx src/lib/seed.ts
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 
 import { createClient } from '@supabase/supabase-js';

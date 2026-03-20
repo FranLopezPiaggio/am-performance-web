@@ -1,0 +1,21 @@
+services:
+  web:
+    container_name: am-performance-web-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      # Monta el código fuente para hot-reload
+      - .:/app
+      # Mantiene los node_modules del contenedor (no los del host)
+      - /app/node_modules
+      # Mantiene el cache de .next del contenedor
+      - /app/.next
+    restart: unless-stopped
