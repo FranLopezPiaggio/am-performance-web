@@ -26,4 +26,8 @@
   .brutal-btn {
     @apply px-8 py-4 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-x-0 active:translate-y-0 active:shadow-none;
   }
+
+  .brutal-btn-outline {
+    @apply px-8 py-4 bg-transparent border-2 border-white text-white font-bold uppercase tracking-widest text-sm transition-all hover:bg-white hover:text-brutal-black;
+  }
 }
