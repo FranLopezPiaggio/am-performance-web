@@ -41,6 +41,14 @@ COPY . .
 # Deshabilitar telemetría durante el build (opcional)
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Supabase environment variables (required during build for prerendering)
+# Note: These should be provided as build-args for production builds.
+# We provide default placeholder values to prevent the build from failing if they are not provided.
+ARG NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-key
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 # Construye la aplicación. Requiere que en next.config.ts exista: `output: 'standalone'`
 RUN npm run build
 
