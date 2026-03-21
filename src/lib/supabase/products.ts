@@ -27,127 +27,6 @@ export async function getProducts(): Promise<Product[]> {
   return data || [];
 }
 
-/**
- * Fetch products by category slug
- */
-// export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
-//   const supabase = createClient();
-
-//   // First get the category ID
-//   const { data: category, error: categoryError } = await supabase
-//     .from('categories')
-//     .select('id')
-//     .eq('slug', categorySlug)
-//     .single();
-
-//   if (categoryError || !category) {
-//     console.error('Error fetching category:', categoryError);
-//     console.log('Category Slug requested:', categorySlug);
-//     return [];
-//   }
-
-//   // Then get products in that category
-//   const { data: productCategories, error: pcError } = await supabase
-//     .from('product_categories')
-//     .select('product_id')
-//     .eq('category_id', category.id);
-
-//   if (pcError) {
-//     console.error('Error fetching product categories:', pcError);
-//     return [];
-//   }
-
-//   if (!productCategories || productCategories.length === 0) {
-//     return [];
-//   }
-
-//   const productIds = productCategories.map(pc => pc.product_id);
-
-//   const { data, error } = await supabase
-//     .from('products')
-//     .select('*')
-//     .in('id', productIds)
-//     .order('created_at', { ascending: false });
-
-//   if (error) {
-//     console.error('Error fetching products by category:', error);
-//     throw new Error(error.message);
-//   }
-
-//   return data || [];
-// }
-
-// export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
-//   const supabase = createClient();
-
-//   // STEP 1: Get Category ID
-//   const { data: category, error: categoryError } = await supabase
-//     .from('categories')
-//     .select('id')
-//     .eq('slug', categorySlug)
-//     .single();
-
-//   if (categoryError || !category) {
-//     console.error(`❌ CRÍTICO: Categoría "${categorySlug}" no encontrada en BD.`);
-//     return []; // Retorna vacío si no hay categoría
-//   }
-//   console.log(`✅ Category ID encontrado: ${category.id}`);
-
-//   // // STEP 2: Get Relations
-//   // const { data: productCategories, error: pcError } = await supabase
-//   //   .from('product_categories')
-//   //   .select('product_id')
-//   //   .eq('category_id', category.id);
-
-//   // if (pcError) {
-//   //   console.error(`❌ ERROR en tabla product_categories:`, pcError);
-//   //   return [];
-//   // }
-
-//   // console.log(`🔗 Encontradas ${productCategories.length} relaciones.`);
-//   // if (!productCategories || productCategories.length === 0) {
-//   //   console.warn(`⚠️ ADVERTENCIA: La categoría ${categorySlug} existe, pero NO tiene productos vinculados en la tabla 'product_categories'.`);
-//   //   return [];
-//   // }
-
-//   // STEP 2: Get Relations (DEBUG MODE)
-//   const { data: allRelations, error: allError } = await supabase
-//     .from('product_categories')
-//     .select('*'); // QUITAMOS el filtro .eq() temporalmente
-
-//   console.log('🔍 DEBUG: TODAS las relaciones en la tabla:', allRelations);
-//   console.log('🔍 DEBUG: Error si existe:', allError);
-
-//   // ... resto del código igual ...
-
-//   // STEP 3: Get Products
-//   const productIds = productCategories.map(pc => pc.product_id);
-
-//   // ... después de const { data: productCategories, error: pcError } = ...
-
-//   // 🔍 AGREGA ESTO PARA DEPURACIÓN:
-//   console.log('📥 QUERY RESULT (Raw):', productCategories);
-//   console.log('📥 ERROR:', pcError);
-
-//   if (pcError) {
-//     console.error('❌ Error buscando relaciones:', pcError);
-//     return [];
-//   }
-//   const { data, error } = await supabase
-//     .from('products')
-//     .select('*')
-//     .in('id', productIds) // .in() es correcto para arrays
-//     .order('created_at', { ascending: false });
-
-//   if (error) {
-//     console.error(`❌ ERROR al buscar productos:`, error);
-//     return [];
-//   }
-
-//   console.log(`✅ ÉXITO: ${data?.length} productos recuperados.`);
-//   return data || [];
-// }
-
 export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
   const supabase = createClient();
 
@@ -266,6 +145,13 @@ export async function getProductById(id: string): Promise<Product | null> {
  * Map Supabase product to UI format
  * Converts DB schema to what ProductCard expects
  */
+// src/lib/supabase/products.ts
+// ... (el resto del archivo se mantiene igual)
+
+/**
+ * Map Supabase product to UI format
+ * Converts DB schema to what ProductCard expects
+ */
 export function mapProductToCard(product: Product) {
   const price = product.offer_price || product.base_price;
   const discount = product.offer_price
@@ -277,10 +163,17 @@ export function mapProductToCard(product: Product) {
     name: product.name,
     price: price,
     image: getProductImage(product.name, product.images?.[0]),
-    category: product.name, // Will be enhanced with category lookup
+    // NOTA: Esto también parece un error. Deberías buscar el nombre de la categoría.
+    // category: product.name, 
+    // Por ahora, lo dejamos así para no romper otra cosa, pero tenlo en cuenta.
+    category: product.name,
     rating: 5, // Default rating - could be added to schema
     reviews: 0, // Default reviews - could be added to schema
     isNew: product.is_featured,
     discount: discount,
+    in_stock: product.in_stock,
+    // --- LÍNEA CORREGIDA ---
+    // Ahora lee 'is_immediately_available' de la BD y lo pasa como 'inmediate_delivery' al componente.
+    inmediate_delivery: product.inmediate_delivery
   };
 }

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
-import { Send, Ruler, Users, Package, ArrowRight, Check } from 'lucide-react';
+import { Send, Ruler, Users, Package, ArrowRight, Check, Settings } from 'lucide-react';
 
 import Strength from '@/assets/samuel-girven-fqMu99l8sqo-unsplash.jpg';
 const Machine = '/img/justin-fisher-cf_JUo9Ezdw-unsplash.jpg';
@@ -15,6 +15,7 @@ interface ProjectFormData {
   name: string;
   email: string;
   phone: string;
+  city: string;
   squareMeters: string;
   gymStyle: string;
   budget: string;
@@ -26,6 +27,7 @@ export default function ProyectosPage() {
     name: '',
     email: '',
     phone: '',
+    city: '',
     squareMeters: '',
     gymStyle: '',
     budget: '',
@@ -91,6 +93,10 @@ export default function ProyectosPage() {
                 <div className="flex items-center space-x-2 text-white/60">
                   <Check className="text-neon-green" size={20} />
                   <span>Equipamiento Premium</span>
+                </div>
+                <div className="flex items-center space-x-2 text-white/60">
+                  <Check className="text-neon-green" size={20} />
+                  <span>Servicio Post-Venta</span>
                 </div>
               </div>
             </motion.div>
@@ -165,6 +171,21 @@ export default function ProyectosPage() {
                       required
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
                       placeholder="tu@email.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
+                      Ciudad/Provincia
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                      placeholder="Tu ciudad/provincia"
                     />
                   </div>
 
@@ -273,7 +294,7 @@ export default function ProyectosPage() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             {[
               {
                 icon: Ruler,
@@ -289,6 +310,11 @@ export default function ProyectosPage() {
                 icon: Package,
                 title: 'Equipamiento Premium',
                 description: 'Acceso directo a marcas profesionales con garantía oficial y servicio técnico especializado.'
+              },
+              {
+                icon: Settings,
+                title: 'Atencion Post-Venta',
+                description: 'Asesoramiento y soporte técnico para que tu gimnasio funcione a la perfección.'
               }
             ].map((item, index) => (
               <motion.div
@@ -332,12 +358,13 @@ export default function ProyectosPage() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-5 gap-8">
             {[
               { step: '01', title: 'Consulta', desc: 'Evaluamos tus necesidades y presupuesto' },
               { step: '02', title: 'Diseño', desc: 'Creamos planos 3D personalizados' },
               { step: '03', title: 'Cotización', desc: 'Te presentamos el presupuesto detallado' },
-              { step: '04', title: 'Ejecución', desc: 'Instalación y puesta en marcha' }
+              { step: '04', title: 'Ejecución', desc: 'Instalación y puesta en marcha' },
+              { step: '05', title: 'Mantenimiento', desc: 'Atencion Post-Venta' }
             ].map((item, index) => (
               <motion.div
                 key={index}

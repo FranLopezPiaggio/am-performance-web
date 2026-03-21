@@ -43,12 +43,13 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 w-full z-50 bg-brutal-black border-b border-white/10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2 ml-[-30px]">
               {/* <span className="text-2xl font-display uppercase tracking-tighter text-white">
                 AM <span className="text-neon-green">Performance</span>
               </span> */}
               <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} />
             </Link>
+
 
             <div className="hidden md:flex items-center space-x-8">
               <div
@@ -56,10 +57,10 @@ export default function Navbar() {
                 onMouseEnter={() => setIsCategoriesOpen(true)}
                 onMouseLeave={() => setIsCategoriesOpen(false)}
               >
-                <button className="flex items-center space-x-1 text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                  <span>Categorías</span>
+                <div className="flex items-center space-x-1 text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
+                  <Link href="/catalogo">Catalogo</Link>
                   <ChevronDown size={16} />
-                </button>
+                </div>
 
                 <AnimatePresence>
                   {isCategoriesOpen && (
@@ -89,15 +90,12 @@ export default function Navbar() {
               <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors text-neon-green">
                 Proyectos
               </Link>
-              <Link href="/nosotros" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                Nosotros
-              </Link>
             </div>
 
             <div className="flex items-center space-x-5">
-              <button className="p-2 hover:text-neon-green transition-colors">
+              {/* <button className="p-2 hover:text-neon-green transition-colors">
                 <Search size={20} />
-              </button>
+              </button> */}
 
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -149,7 +147,7 @@ export default function Navbar() {
             >
               <div className="px-4 pt-2 pb-6 space-y-4">
                 <div className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Categorías</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Catalogo</p>
                   {categories.map((cat) => (
                     <Link
                       key={cat.slug}
@@ -164,7 +162,6 @@ export default function Navbar() {
                 <div className="pt-4 border-t border-white/10 space-y-4">
                   <Link href="/catalogo?ofertas=true" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Ofertas</Link>
                   <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
-                  <Link href="/nosotros" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Nosotros</Link>
                 </div>
               </div>
             </motion.div>

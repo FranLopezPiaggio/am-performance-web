@@ -3,31 +3,31 @@
 // Generated from .agents/docs/SCHEMA.md
 
 // Json type definition (compatible with Supabase)
-export type Json = 
-  | string 
-  | number 
-  | boolean 
-  | null 
-  | { [key: string]: Json | undefined } 
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
   | Json[];
 
 // ==========================================
 // ENUMS
 // ==========================================
 
-export type OrderStatus = 
-  | 'cart' 
-  | 'pending_whatsapp' 
-  | 'confirmed_by_admin' 
-  | 'shipped' 
-  | 'delivered' 
+export type OrderStatus =
+  | 'cart'
+  | 'pending_whatsapp'
+  | 'confirmed_by_admin'
+  | 'shipped'
+  | 'delivered'
   | 'cancelled';
 
-export type ProjectStatus = 
-  | 'new' 
-  | 'contacted' 
-  | 'quote_sent' 
-  | 'closed' 
+export type ProjectStatus =
+  | 'new'
+  | 'contacted'
+  | 'quote_sent'
+  | 'closed'
   | 'lost';
 
 // ==========================================
@@ -57,6 +57,7 @@ export interface Product {
   images: string[];
   created_at: string;
   updated_at: string;
+  inmediate_delivery: boolean;
 }
 
 export interface ProductCategory {

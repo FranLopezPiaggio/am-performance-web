@@ -8,6 +8,8 @@ import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import CartDisclaimer from '@/components/CartDisclaimer';
+
 // --- SOLUCIÓN 1: MOVER EL COMPONENTE FUERA ---
 // Se mueve el componente InputField fuera de CartPage para evitar el bug de tipeo.
 interface InputFieldProps {
@@ -80,9 +82,6 @@ export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
-  // --- SOLUCIÓN 2: ELIMINAR ESTADO Y LÓGICA ADICIONAL ---
-  // El formulario ahora siempre es visible, no necesitamos 'showForm'.
   const [form, setForm] = useState<CustomerForm>({
     nombre: '',
     email: '',
@@ -120,7 +119,6 @@ export default function CartPage() {
 
   const handleInputChange = (field: keyof CustomerForm, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
-    // Limpiar error del campo si el usuario empieza a escribir
     if (errors[field as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
@@ -128,8 +126,6 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     if (!validateForm()) {
-      // Si el formulario no es válido, no hacemos nada
-      // Los errores se mostrarán junto a los campos
       return;
     }
 
@@ -148,7 +144,6 @@ export default function CartPage() {
       const data = await response.json();
 
       if (data.whatsappUrl) {
-        // Guardamos la confirmación en localStorage para la página de gracias
         localStorage.setItem('orderConfirmation', JSON.stringify({
           orderId: data.orderId,
           customer: form,
@@ -249,6 +244,8 @@ export default function CartPage() {
               Vaciar Carrito
             </button>
           </div>
+
+
 
           {/* Columna Derecha: Formulario y Resumen */}
           <div className="lg:col-span-2 space-y-8">
