@@ -57,7 +57,7 @@ export interface Product {
   images: string[];
   created_at: string;
   updated_at: string;
-  inmediate_delivery: boolean;
+  inmediately_available: boolean;
 }
 
 export interface ProductCategory {

@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image, { StaticImageData } from 'next/image';
 import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
 import { getProducts, getProductsByCategory, getCategories, mapProductToCard } from '@/lib/supabase/products';
-import type { Product, Category } from '@/lib/supabase/products';
+import type { Category } from '@/lib/supabase/products';
 
 import Logo from '@/assets/download.jpg'
 
@@ -15,11 +16,26 @@ interface CategoryUI {
   slug: string;
 }
 
+// Mapped product type for UI (returned by mapProductToCard)
+interface MappedProduct {
+  id: string;
+  name: string;
+  price: number;
+  image: string | StaticImageData;
+  category: string;
+  rating: number;
+  reviews: number;
+  isNew?: boolean;
+  discount?: number;
+  in_stock: boolean;
+  inmediately_available: boolean;
+}
+
 function CatalogContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('categoria') || 'todos';
   const [activeCategory, setActiveCategory] = useState(categoryParam);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<MappedProduct[]>([]);
   const [categories, setCategories] = useState<CategoryUI[]>([
     { name: 'Todos', slug: 'todos' },
     { name: 'Cardio', slug: 'cardio' },
@@ -58,7 +74,7 @@ function CatalogContent() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let productsList: Product[];
+        let productsList;
 
         if (activeCategory === 'todos') {
           productsList = await getProducts();
@@ -66,7 +82,12 @@ function CatalogContent() {
           productsList = await getProductsByCategory(activeCategory);
         }
 
-        setProducts(productsList);
+        // Map products to UI format (async to fetch category via join table)
+        const mapped = await Promise.all(
+          productsList.map((product: any) => mapProductToCard(product))
+        );
+        
+        setProducts(mapped);
       } catch (error) {
         console.error('Error fetching products:', error);
         setProducts([]);
@@ -78,8 +99,7 @@ function CatalogContent() {
     fetchProducts();
   }, [activeCategory]);
 
-  // Map products to UI format
-  const mappedProducts = products.map(product => mapProductToCard(product));
+  // mappedProducts is now stored directly in products state
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-32 pb-24">
@@ -114,7 +134,7 @@ function CatalogContent() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {mappedProducts.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

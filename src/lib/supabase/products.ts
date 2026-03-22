@@ -5,6 +5,7 @@
 import { createClient } from './client';
 import type { Product, Category } from '@/types/database';
 import { getProductImage } from '../utils/images';
+import type { StaticImageData } from 'next/image';
 
 export type { Product, Category };
 
@@ -142,38 +143,75 @@ export async function getProductById(id: string): Promise<Product | null> {
 }
 
 /**
- * Map Supabase product to UI format
- * Converts DB schema to what ProductCard expects
+ * Fetch category name for a specific product using the join table
+ * Uses product_categories (product_id, category_id) -> categories(id, name)
  */
-// src/lib/supabase/products.ts
-// ... (el resto del archivo se mantiene igual)
+export async function getCategoryByProductId(productId: string): Promise<string | null> {
+  const supabase = createClient();
+
+  // Step 1: Get category_id from product_categories
+  const { data: productCategory, error: pcError } = await supabase
+    .from('product_categories')
+    .select('category_id')
+    .eq('product_id', productId)
+    .single();
+
+  if (pcError || !productCategory) {
+    console.warn(`⚠️ No category found for product ${productId}`);
+    return null;
+  }
+
+  // Step 2: Get category name from categories table
+  const { data: category, error: catError } = await supabase
+    .from('categories')
+    .select('name')
+    .eq('id', productCategory.category_id)
+    .single();
+
+  if (catError || !category) {
+    console.warn(`⚠️ Category not found for id ${productCategory.category_id}`);
+    return null;
+  }
+
+  return category.name;
+}
 
 /**
- * Map Supabase product to UI format
- * Converts DB schema to what ProductCard expects
+ * Map Supabase product to UI format with category
+ * Fetches category name via join table
  */
-export function mapProductToCard(product: Product) {
+export async function mapProductToCard(product: Product): Promise<{
+  id: string;
+  name: string;
+  price: number;
+  image: string | StaticImageData;
+  category: string;
+  rating: number;
+  reviews: number;
+  isNew?: boolean;
+  discount?: number;
+  in_stock: boolean;
+  inmediately_available: boolean;
+}> {
   const price = product.offer_price || product.base_price;
   const discount = product.offer_price
     ? Math.round(((product.base_price - product.offer_price) / product.base_price) * 100)
     : undefined;
+
+  // Fetch category via join table
+  const category = await getCategoryByProductId(product.id);
 
   return {
     id: product.id,
     name: product.name,
     price: price,
     image: getProductImage(product.name, product.images?.[0]),
-    // NOTA: Esto también parece un error. Deberías buscar el nombre de la categoría.
-    // category: product.name, 
-    // Por ahora, lo dejamos así para no romper otra cosa, pero tenlo en cuenta.
-    category: product.name,
+    category: category || 'General', // Fallback if no category
     rating: 5, // Default rating - could be added to schema
     reviews: 0, // Default reviews - could be added to schema
     isNew: product.is_featured,
     discount: discount,
     in_stock: product.in_stock,
-    // --- LÍNEA CORREGIDA ---
-    // Ahora lee 'is_immediately_available' de la BD y lo pasa como 'inmediate_delivery' al componente.
-    inmediate_delivery: product.inmediate_delivery
+    inmediately_available: product.inmediately_available
   };
 }

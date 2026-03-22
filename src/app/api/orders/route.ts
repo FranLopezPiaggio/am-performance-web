@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const WHATSAPP_NUMBER = process.env.WHATSAPP_BUSINESS_NUMBER || '';
-const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL || '';
-
 interface OrderItem {
   id: string;
   name: string;
@@ -24,33 +21,6 @@ interface OrderBody {
   items: OrderItem[];
   customer: CustomerData;
   total: number;
-}
-
-function generateWhatsAppMessage(customer: CustomerData, items: OrderItem[], total: number): string {
-  const itemsList = items
-    .map((item) => `• ${item.name} x${item.quantity} - $${item.price.toLocaleString()}`)
-    .join('\n');
-
-  const message = `*¡Nuevo Pedido!*
-━━━━━━━━━━━━━━━
-👤 Cliente: ${customer.nombre}
-📧 Email: ${customer.email}
-📱 Tel: ${customer.telefono}
-📍 Dirección: ${customer.direccion}
-${customer.notas ? `📝 Notas: ${customer.notas}` : ''}
-━━━━━━━━━━━━━━━
-*Productos:*
-${itemsList}
-━━━━━━━━━━━━━━━
-*Total: $${total.toLocaleString()}*`;
-
-  return message;
-}
-
-function getWhatsAppUrl(phoneNumber: string, message: string): string {
-  const cleanPhone = phoneNumber.replace(/\D/g, '');
-  const encodedMessage = encodeURIComponent(message);
-  return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
 }
 
 export async function POST(req: Request) {
@@ -127,12 +97,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const whatsappMessage = generateWhatsAppMessage(customer, items, total);
-    const whatsappUrl = getWhatsAppUrl(WHATSAPP_NUMBER, whatsappMessage);
-
     return NextResponse.json({
       orderId: order.id,
-      whatsappUrl,
       message: 'Pedido creado exitosamente',
     });
 

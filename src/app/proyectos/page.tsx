@@ -374,7 +374,7 @@ export default function ProyectosPage() {
                 transition={{ delay: index * 0.15 }}
                 className="relative"
               >
-                <div className="text-8xl font-display text-white/5 absolute -top-4 -left-2">
+                <div className="text-8xl font-display text-white/5 absolute -top-7 -left-2">
                   {item.step}
                 </div>
                 <div className="relative pt-12">
@@ -385,7 +385,7 @@ export default function ProyectosPage() {
                     {item.desc}
                   </p>
                 </div>
-                {index < 3 && (
+                {index < 4 && (
                   <ArrowRight className="hidden md:block absolute top-1/2 -right-4 text-white/20" size={24} />
                 )}
               </motion.div>

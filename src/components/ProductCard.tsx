@@ -18,7 +18,7 @@ interface ProductCardProps {
     reviews: number;
     isNew?: boolean;
     discount?: number;
-    inmediate_delivery?: boolean;
+    inmediately_available?: boolean;
   };
 }
 
@@ -38,8 +38,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             Nuevo
           </span>
         )}
-        {product.inmediate_delivery && (
-          <span className="bg-yellow text-brutal-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
+        {product.inmediately_available && (
+          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
             Entrega Inmediata
           </span>
         )}

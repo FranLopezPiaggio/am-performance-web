@@ -3,10 +3,13 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, X, ChevronDown, Search } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, ChevronDown, Search, MessageCircle } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { getWhatsAppUrl } from '@/lib/whatsapp/service';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const WhatsAppSVG = '/img/svg/whatsapp.svg';
 
 const categories = [
   { name: 'Cardio', slug: 'cardio' },
@@ -47,7 +50,8 @@ export default function Navbar() {
               {/* <span className="text-2xl font-display uppercase tracking-tighter text-white">
                 AM <span className="text-neon-green">Performance</span>
               </span> */}
-              <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} />
+              <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300}
+                loading="eager" />
             </Link>
 
 
@@ -127,6 +131,15 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
+              <a
+                href={getWhatsAppUrl('help')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 hover:text-neon-green transition-colors"
+                aria-label="Contacto por WhatsApp"
+              >
+                <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} />
+              </a>
               <button
                 className="md:hidden p-2 hover:text-neon-green transition-colors"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}

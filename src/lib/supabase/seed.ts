@@ -74,6 +74,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 5,
     variants: { motor: '4.0 HP', velocidad: '20 km/h', pantalla: '10.1"', peso_maximo: '180 kg' },
     images: ['https://placehold.co/800x800/black/white?text=Caminadora+T350'],
+    inmediately_available: true,
   },
   {
     sku: 'CARD-002',
@@ -86,6 +87,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 12,
     variants: { volante: '22 kg', transmission: 'Correa', peso_maximo: '150 kg' },
     images: ['https://placehold.co/800x800/black/white?text=Bici+Spinning'],
+    inmediately_available: true,
   },
   {
     sku: 'CARD-003',
@@ -98,6 +100,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 8,
     variants: { stride: '51 cm', niveles: '32', volante: '14 kg' },
     images: ['https://placehold.co/800x800/black/white?text=Elíptica+Elite'],
+    inmediately_available: false,
   },
 
   // MÁQUINAS DE FUERZA
@@ -112,6 +115,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 6,
     variants: { capacidad: '400 kg', estructura: 'Acero 3mm', dimensiones: '180x150x140 cm' },
     images: ['https://placehold.co/800x800/black/white?text=Press+Banca'],
+    inmediately_available: false,
   },
   {
     sku: 'MAQ-002',
@@ -124,6 +128,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 4,
     variants: { capacidad: '300 kg', peso_total: '180 kg' },
     images: ['https://placehold.co/800x800/black/white?text=Pec+Fly'],
+    inmediately_available: true,
   },
   {
     sku: 'MAQ-003',
@@ -136,6 +141,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 7,
     variants: { poleas: '2', cable: 'Acero recubierto', capacidad: '250 kg' },
     images: ['https://placehold.co/800x800/black/white?text=Lat+Pulldown'],
+    inmediately_available: true,
   },
 
   // MANCUERNAS Y KETTLEBELLS
@@ -150,6 +156,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 50,
     variants: { peso: '10 kg', material: 'Goma/Hierro', mango: 'Cromado' },
     images: ['https://placehold.co/800x800/black/white?text=Mancuerna+10kg'],
+    inmediately_available: true,
   },
   {
     sku: 'MAN-002',
@@ -162,6 +169,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 30,
     variants: { peso: '16 kg', tipo: 'Competition', material: 'Acero' },
     images: ['https://placehold.co/800x800/black/white?text=Kettlebell+16kg'],
+    inmediately_available: true,
   },
   {
     sku: 'MAN-003',
@@ -174,6 +182,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 15,
     variants: { peso_max: '20 kg', piezas: '6 pares', material: 'Acero/Cromo' },
     images: ['https://placehold.co/800x800/black/white?text=Mancuernas+Ajustables'],
+    inmediately_available: false,
   },
 
   // BARRAS Y DISCOS
@@ -188,6 +197,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 25,
     variants: { peso: '20 kg', longitud: '220 cm', capacidad: '680 kg' },
     images: ['https://placehold.co/800x800/black/white?text=Barra+Olímpica'],
+    inmediately_available: true,
   },
   {
     sku: 'BAR-002',
@@ -200,6 +210,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 40,
     variants: { peso: '20 kg', tipo: 'Competition', color: 'Azul', tolerance: '±10g' },
     images: ['https://placehold.co/800x800/black/white?text=Disco+20kg'],
+    inmediately_available: true,
   },
 
   // RACKS Y BANCOS
@@ -214,6 +225,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 3,
     variants: { capacidad: '450 kg', altura: '193 cm', profundidad: '122 cm', spotter: 'Sí' },
     images: ['https://placehold.co/800x800/black/white?text=Rack+SR650'],
+    inmediately_available: false,
   },
   {
     sku: 'RAC-002',
@@ -226,6 +238,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 18,
     variants: { capacidad: '400 kg', angulos: '7 posiciones', estructura: 'Acero 2.5mm' },
     images: ['https://placehold.co/800x800/black/white?text=Banco+Multi'],
+    inmediately_available: true,
   },
 
   // ACCESORIOS
@@ -240,6 +253,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 60,
     variants: { niveles: '5', resistencias: '3-30 kg', material: 'Látex premium' },
     images: ['https://placehold.co/800x800/black/white?text=Bandas'],
+    inmediately_available: true,
   },
   {
     sku: 'ACC-002',
@@ -252,6 +266,7 @@ const products: Omit<ProductInsert, 'created_at' | 'updated_at'>[] = [
     stock_quantity: 100,
     variants: { longitud: '3 m', rodamientos: '360°', material: 'Acero/Plástico' },
     images: ['https://placehold.co/800x800/black/white?text=Soga+Batida'],
+    inmediately_available: true,
   },
 ];
 

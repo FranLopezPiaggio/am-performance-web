@@ -4,6 +4,8 @@
 @theme {
   --color-brutal-black: #050505;
   --color-neon-green: #00FF00;
+  --color-neon-green-hover: #00CC00;
+  --color-yellow: #F5DE11;
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
 }
@@ -18,7 +20,7 @@
   .brutal-border {
     @apply border border-white/10;
   }
-  
+
   .brutal-shadow {
     @apply shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)];
   }

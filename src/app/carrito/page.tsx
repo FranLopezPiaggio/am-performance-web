@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 import CartDisclaimer from '@/components/CartDisclaimer';
 
@@ -143,7 +144,7 @@ export default function CartPage() {
 
       const data = await response.json();
 
-      if (data.whatsappUrl) {
+      if (data.orderId) {
         localStorage.setItem('orderConfirmation', JSON.stringify({
           orderId: data.orderId,
           customer: form,
@@ -151,8 +152,12 @@ export default function CartPage() {
           total: totalPrice,
         }));
         clearCart();
-        // Redirigimos a WhatsApp
-        window.location.href = data.whatsappUrl;
+        
+        // Redirigimos a WhatsApp usando la lógica consolidada de @/lib/whatsapp
+        window.location.href = getWhatsAppUrl('order', {
+          nombre: form.nombre,
+          orderId: data.orderId,
+        });
       } else if (data.error) {
         console.error('Order error:', data.error);
         alert('Error al procesar el pedido. Intenta de nuevo.');
