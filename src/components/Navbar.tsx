@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, User, Menu, X, ChevronDown, Search, MessageCircle } from 'lucide-react';
@@ -23,11 +23,12 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const { totalItems } = useCart();
-  // const { user, signInWithGoogle, signOut } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { user, signInWithEmail, signOut } = useAuth();
+  const [isClient, setIsClient] = useState(false);
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +39,10 @@ export default function Navbar() {
       alert("Error al iniciar sesión: " + error.message);
     }
   };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const btnClass = "flex items-center space-x-2 px-4 py-2 text-sm font-medium uppercase tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-all duration-200";
 
@@ -124,7 +129,7 @@ export default function Navbar() {
               )}
               <Link href="/carrito" className="p-2 hover:text-neon-green transition-colors relative">
                 <ShoppingCart size={20} />
-                {totalItems > 0 && (
+                {isClient && totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 bg-neon-green text-brutal-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
                     suppressHydrationWarning={true}>
                     {totalItems}

@@ -12,6 +12,7 @@
   "dependencies": {
     "@google/genai": "latest",
     "@hookform/resolvers": "latest",
+    "@sentry/nextjs": "^10.45.0",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.99.3",
     "@upstash/ratelimit": "^2.0.8",
@@ -28,6 +29,7 @@
     "postcss": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "sentry": "^0.1.2",
     "supabase": "^2.79.0",
     "tailwind-merge": "latest",
     "zod": "^4.3.6"

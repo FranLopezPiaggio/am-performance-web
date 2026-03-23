@@ -8,6 +8,8 @@ import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
+import { z } from 'zod';
+import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
 
 import CartDisclaimer from '@/components/CartDisclaimer';
 
@@ -64,63 +66,41 @@ const InputField: React.FC<InputFieldProps> = ({
 
 // --- COMPONENTE PRINCIPAL ---
 
-interface CustomerForm {
-  nombre: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  notas: string;
-}
-
-interface FormErrors {
-  nombre?: string;
-  email?: string;
-  telefono?: string;
-  direccion?: string;
-}
-
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<CustomerForm>({
+  const [form, setForm] = useState<CustomerFormValues>({
     nombre: '',
     email: '',
     telefono: '',
     direccion: '',
     notas: '',
   });
-  const [errors, setErrors] = useState<FormErrors>({});
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  const [errors, setErrors] = useState<Partial<Record<keyof CustomerFormValues, string>>>({});
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!form.nombre.trim()) {
-      newErrors.nombre = 'El nombre es requerido';
+    try {
+      customerFormSchema.parse(form);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Partial<Record<keyof CustomerFormValues, string>> = {};
+        error.issues.forEach((err: z.ZodIssue) => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as keyof CustomerFormValues] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
     }
-    if (!form.email.trim()) {
-      newErrors.email = 'El email es requerido';
-    } else if (!validateEmail(form.email)) {
-      newErrors.email = 'Ingresa un email válido';
-    }
-    if (!form.telefono.trim()) {
-      newErrors.telefono = 'El teléfono es requerido';
-    }
-    if (!form.direccion.trim()) {
-      newErrors.direccion = 'La dirección es requerida';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field: keyof CustomerForm, value: string) => {
+  const handleInputChange = (field: keyof CustomerFormValues, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
-    if (errors[field as keyof FormErrors]) {
+    if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
@@ -132,12 +112,17 @@ export default function CartPage() {
 
     setLoading(true);
     try {
+      console.log('Sending order data:', {
+        cartItems: cart,
+        customerInfo: form,
+        total: totalPrice,
+      });
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: cart,
-          customer: form,
+          cartItems: cart,
+          customerInfo: form,
           total: totalPrice,
         }),
       });
@@ -147,12 +132,12 @@ export default function CartPage() {
       if (data.orderId) {
         localStorage.setItem('orderConfirmation', JSON.stringify({
           orderId: data.orderId,
-          customer: form,
-          items: cart,
+          customerInfo: form,
+          cartItems: cart,
           total: totalPrice,
         }));
         clearCart();
-        
+
         // Redirigimos a WhatsApp usando la lógica consolidada de @/lib/whatsapp
         window.location.href = getWhatsAppUrl('order', {
           nombre: form.nombre,
@@ -295,7 +280,7 @@ export default function CartPage() {
                 <InputField
                   label="Notas Adicionales (opcional)"
                   name="notas"
-                  value={form.notas}
+                  value={form.notas || ''}
                   onChange={(v) => handleInputChange('notas', v)}
                   placeholder="Indicaciones para el delivery, horario preferido, etc."
                   multiline

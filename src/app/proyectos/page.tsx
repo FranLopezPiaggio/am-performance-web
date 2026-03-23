@@ -4,26 +4,17 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import { Send, Ruler, Users, Package, ArrowRight, Check, Settings } from 'lucide-react';
+import { z } from 'zod';
+import { projectFormSchema, ProjectFormValues } from '@/lib/validations/projects';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 import Strength from '@/assets/samuel-girven-fqMu99l8sqo-unsplash.jpg';
 const Machine = '/img/justin-fisher-cf_JUo9Ezdw-unsplash.jpg';
 const LogoAMP = '/logo/AMPerformance_Favicon_verde.png'
 
 
-// Form types
-interface ProjectFormData {
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-  squareMeters: string;
-  gymStyle: string;
-  budget: string;
-  requirements: string;
-}
-
 export default function ProyectosPage() {
-  const [formData, setFormData] = useState<ProjectFormData>({
+  const [formData, setFormData] = useState<ProjectFormValues>({
     name: '',
     email: '',
     phone: '',
@@ -33,25 +24,71 @@ export default function ProyectosPage() {
     budget: '',
     requirements: ''
   });
+  const [errors, setErrors] = useState<Partial<Record<keyof ProjectFormValues, string>>>({});
+  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    if (errors[name as keyof ProjectFormValues]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    try {
+      projectFormSchema.parse(formData);
+      setErrors({});
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Partial<Record<keyof ProjectFormValues, string>> = {};
+        error.issues.forEach((err: z.ZodIssue) => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as keyof ProjectFormValues] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate submission - in production, this would call an API or Server Action
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ customerInfo: formData }),
+      });
 
-    setIsSubmitting(false);
-    setSubmitted(true);
+      const result = await response.json();
+
+      if (result.success) {
+        localStorage.setItem('projectSubmission', JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          submittedAt: new Date().toISOString(),
+        }));
+        
+        window.location.href = getWhatsAppUrl('projects', { name: formData.name });
+      } else {
+        setFormError(result.error || 'Error al enviar la consulta');
+      }
+    } catch (error) {
+      setFormError('Error de conexión. Por favor intenta de nuevo.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -138,10 +175,10 @@ export default function ProyectosPage() {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        required
-                        className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                        className={`w-full bg-white/5 border ${errors.name ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                         placeholder="Tu nombre"
                       />
+                      {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
@@ -152,10 +189,10 @@ export default function ProyectosPage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        required
-                        className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                        className={`w-full bg-white/5 border ${errors.phone ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                         placeholder="Tu teléfono"
                       />
+                      {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                     </div>
                   </div>
 
@@ -168,10 +205,10 @@ export default function ProyectosPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      required
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                      className={`w-full bg-white/5 border ${errors.email ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                       placeholder="tu@email.com"
                     />
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                   </div>
 
                   <div>
@@ -183,10 +220,10 @@ export default function ProyectosPage() {
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                      required
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                      className={`w-full bg-white/5 border ${errors.city ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                       placeholder="Tu ciudad/provincia"
                     />
+                    {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
@@ -197,11 +234,12 @@ export default function ProyectosPage() {
                       <input
                         type="text"
                         name="squareMeters"
-                        value={formData.squareMeters}
+                        value={formData.squareMeters || ''}
                         onChange={handleChange}
-                        className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                        className={`w-full bg-white/5 border ${errors.squareMeters ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                         placeholder="ej. 100m²"
                       />
+                      {errors.squareMeters && <p className="text-red-500 text-xs mt-1">{errors.squareMeters}</p>}
                     </div>
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
@@ -211,7 +249,7 @@ export default function ProyectosPage() {
                         name="gymStyle"
                         value={formData.gymStyle}
                         onChange={handleChange}
-                        className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                        className={`w-full bg-white/5 border ${errors.gymStyle ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                       >
                         <option value="">Seleccionar...</option>
                         <option value="commercial">Gimnasio Comercial</option>
@@ -221,6 +259,7 @@ export default function ProyectosPage() {
                         <option value="personal">Estudio Personal</option>
                         <option value="institution">Institución/Club</option>
                       </select>
+                      {errors.gymStyle && <p className="text-red-500 text-xs mt-1">{errors.gymStyle}</p>}
                     </div>
                   </div>
 
@@ -232,7 +271,7 @@ export default function ProyectosPage() {
                       name="budget"
                       value={formData.budget}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors"
+                      className={`w-full bg-white/5 border ${errors.budget ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
                     >
                       <option value="">Seleccionar...</option>
                       <option value="50k-150k">$50.000 - $150.000</option>
@@ -240,6 +279,7 @@ export default function ProyectosPage() {
                       <option value="500k-1m">$500.000 - $1.000.000</option>
                       <option value="1m+">$1.000.000+</option>
                     </select>
+                    {errors.budget && <p className="text-red-500 text-xs mt-1">{errors.budget}</p>}
                   </div>
 
                   <div>
@@ -248,12 +288,13 @@ export default function ProyectosPage() {
                     </label>
                     <textarea
                       name="requirements"
-                      value={formData.requirements}
+                      value={formData.requirements || ''}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors resize-none"
+                      className={`w-full bg-white/5 border ${errors.requirements ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors resize-none`}
                       placeholder="Cuéntanos sobre tu proyecto..."
                     />
+                    {errors.requirements && <p className="text-red-500 text-xs mt-1">{errors.requirements}</p>}
                   </div>
 
                   <button
