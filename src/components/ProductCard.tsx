@@ -18,6 +18,7 @@ interface ProductCardProps {
     reviews: number;
     isNew?: boolean;
     discount?: number;
+    inmediately_available?: boolean;
   };
 }
 
@@ -35,6 +36,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         {product.isNew && (
           <span className="bg-neon-green text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
             Nuevo
+          </span>
+        )}
+        {product.inmediately_available && (
+          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
+            Entrega Inmediata
           </span>
         )}
         {product.discount && (
@@ -61,8 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             e.stopPropagation();
             openModal(product.id);
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity
-            px-4 py-2 bg-white text-brutal-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white text-brutal-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
         >
           <Eye size={14} />
           <span>Ver Detalles</span>

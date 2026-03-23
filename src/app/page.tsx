@@ -3,6 +3,8 @@ import Hero from '@/components/Hero';
 import CategoryGrid from '@/components/CategoryGrid';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
+import Image from 'next/image';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
 import Crossfit from '@/assets/crossfit-equip.jpg';
 
@@ -109,14 +111,14 @@ export default function Home() {
             <Link href="/contacto" className="text-brutal-black font-bold uppercase tracking-widest text-sm mt-6">Agenda una visita</Link>
           </div>
           <div className="w-full md:w-auto flex flex-col space-y-4">
-            <input
-              type="email"
-              placeholder="TU EMAIL"
-              className="bg-white border-2 border-brutal-black p-4 text-brutal-black font-bold placeholder:text-brutal-black/30 focus:outline-none w-full md:w-80"
-            />
-            <button className="bg-brutal-black text-neon-green p-4 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-brutal-black transition-colors">
-              Suscribirme
-            </button>
+            <a
+              href={getWhatsAppUrl('showroom')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-brutal-black text-neon-green p-4 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-brutal-black transition-colors flex items-center justify-center text-center w-full md:w-80"
+            >
+              Agendar por WhatsApp
+            </a>
           </div>
         </div>
       </section>
@@ -124,10 +126,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="pt-24 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
-          <div className="md:col-span-2">
-            <span className="text-4xl font-display uppercase tracking-tighter text-white mb-6 block">
-              AM <span className="text-neon-green">Performance</span>
-            </span>
+          <div className="md:col-span-2 flex flex-col md:flex-row items-center gap-6 text-center md:text-left -mt-4">
+            <Link href="/" className="flex items-center shrink-0">
+              <Image src="/logo/AMPerformance_Version_vertical(Positiva).png" alt="AMP-Logo" width={50} height={50} />
+            </Link>
             <p className="text-white/50 max-w-md uppercase text-xs font-bold leading-loose tracking-widest">
               Somos líderes en equipamiento de gimnasios y centros de alto rendimiento en Argentina.
               Diseñamos y fabricamos soluciones técnicas para atletas exigentes.
@@ -138,7 +140,6 @@ export default function Home() {
             <ul className="space-y-4 text-sm uppercase tracking-widest font-medium">
               <li><Link href="/catalogo" className="hover:text-neon-green transition-colors">Catálogo</Link></li>
               <li><Link href="/catalogo?ofertas=true" className="hover:text-neon-green transition-colors">Ofertas</Link></li>
-              <li><Link href="/nosotros" className="hover:text-neon-green transition-colors">Nosotros</Link></li>
               <li><Link href="/contacto" className="hover:text-neon-green transition-colors">Contacto</Link></li>
             </ul>
           </div>

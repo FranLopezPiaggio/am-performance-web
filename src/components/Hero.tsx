@@ -71,7 +71,7 @@ export default function Hero() {
               transition={{ delay: 0.2 }}
               className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4"
             >
-              AM Performance
+              AM <span className='text-white'>Performance</span>
             </motion.p>
             <motion.h1
               initial={{ y: 20, opacity: 0 }}

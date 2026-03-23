@@ -1,19 +1,35 @@
 // src/app/admin/page.tsx
-// Admin Dashboard Home - Summary View
+// Admin Dashboard Home - Summary View with Table Views
 
-import React from 'react';
+'use client';
+
+import React, { Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { Package, ShoppingCart, FolderKanban, TrendingUp, ArrowRight } from 'lucide-react';
+import OrdersTable from '@/components/admin/OrdersTable';
+import ProjectsTable from '@/components/admin/ProjectsTable';
+import ProductsTable from '@/components/admin/ProductsTable';
 
-export default function AdminDashboard() {
-  // Static summary for now - will be connected to Supabase later
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <div className="text-white/40 uppercase tracking-widest text-sm animate-pulse">
+        Cargando...
+      </div>
+    </div>
+  );
+}
+
+function DashboardContent() {
   const stats = [
     {
       name: 'Total Productos',
       value: '15',
       change: '+3 esta semana',
       icon: Package,
-      href: '/admin/productos',
+      href: '/admin?view=products',
       color: 'text-neon-green',
     },
     {
@@ -21,7 +37,7 @@ export default function AdminDashboard() {
       value: '0',
       change: 'Sin órdenes aún',
       icon: ShoppingCart,
-      href: '/admin/ordenes',
+      href: '/admin?view=orders',
       color: 'text-blue-400',
     },
     {
@@ -29,7 +45,7 @@ export default function AdminDashboard() {
       value: '0',
       change: 'Sin consultas aún',
       icon: FolderKanban,
-      href: '/admin/proyectos',
+      href: '/admin?view=projects',
       color: 'text-purple-400',
     },
     {
@@ -37,7 +53,7 @@ export default function AdminDashboard() {
       value: '$0',
       change: 'Sin ventas aún',
       icon: TrendingUp,
-      href: '/admin/ordenes',
+      href: '/admin?view=orders',
       color: 'text-neon-green',
     },
   ];
@@ -46,12 +62,12 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-4xl font-display uppercase tracking-tighter mb-2">
-          Dashboard
-        </h1>
-        <p className="text-white/60">
-          Bienvenido al panel de administración de AMPerformance.
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-white/60">
+            Bienvenido al panel de administración
+          </p>
+          <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} loading="eager" />
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -66,9 +82,9 @@ export default function AdminDashboard() {
               <div className={`${stat.color}`}>
                 <stat.icon size={24} />
               </div>
-              <ArrowRight 
-                size={16} 
-                className="text-white/20 group-hover:text-neon-green group-hover:translate-x-1 transition-all" 
+              <ArrowRight
+                size={16}
+                className="text-white/20 group-hover:text-neon-green group-hover:translate-x-1 transition-all"
               />
             </div>
             <p className="text-3xl font-display uppercase tracking-tighter mb-1">
@@ -97,7 +113,7 @@ export default function AdminDashboard() {
             + Nuevo Producto
           </Link>
           <Link
-            href="/admin/ordenes"
+            href="/admin?view=orders"
             className="px-8 py-4 text-center border border-white/20 font-bold uppercase tracking-widest text-sm
               hover:border-white/40 transition-all"
           >
@@ -153,10 +169,91 @@ export default function AdminDashboard() {
       {/* Info Note */}
       <div className="bg-neon-green/10 border border-neon-green/20 p-4">
         <p className="text-sm text-neon-green">
-          <strong>Nota:</strong> Las estadísticas se actualizarán cuando conectes las páginas 
+          <strong>Nota:</strong> Las estadísticas se actualizarán cuando conectes las páginas
           de productos, órdenes y proyectos a Supabase.
         </p>
       </div>
     </div>
   );
+}
+
+function OrdersContent() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-4xl font-display uppercase tracking-tighter mb-2">
+          Órdenes
+        </h1>
+        <p className="text-white/60">
+          Gestiona todas las órdenes de clientes.
+        </p>
+      </div>
+      <div className="bg-white/5 border border-white/10">
+        <OrdersTable />
+      </div>
+    </div>
+  );
+}
+
+function ProjectsContent() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-4xl font-display uppercase tracking-tighter mb-2">
+          Proyectos
+        </h1>
+        <p className="text-white/60">
+          Consulta de proyectos de健身房 (gimnasios).
+        </p>
+      </div>
+      <div className="bg-white/5 border border-white/10">
+        <ProjectsTable />
+      </div>
+    </div>
+  );
+}
+
+function ProductsContent() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-4xl font-display uppercase tracking-tighter mb-2">
+          Productos
+        </h1>
+        <p className="text-white/60">
+          Catálogo completo de productos.
+        </p>
+      </div>
+      <div className="bg-white/5 border border-white/10">
+        <ProductsTable />
+      </div>
+    </div>
+  );
+}
+
+export default function AdminDashboard() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <AdminDashboardContent />
+    </Suspense>
+  );
+}
+
+function AdminDashboardContent() {
+  const searchParams = useSearchParams();
+  const view = searchParams.get('view');
+
+  if (view === 'orders') {
+    return <OrdersContent />;
+  }
+
+  if (view === 'projects') {
+    return <ProjectsContent />;
+  }
+
+  if (view === 'products') {
+    return <ProductsContent />;
+  }
+
+  return <DashboardContent />;
 }

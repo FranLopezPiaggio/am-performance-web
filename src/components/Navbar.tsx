@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, X, ChevronDown, Search } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, ChevronDown, Search, MessageCircle } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { getWhatsAppUrl } from '@/lib/whatsapp/service';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const WhatsAppSVG = '/img/svg/whatsapp.svg';
 
 const categories = [
   { name: 'Cardio', slug: 'cardio' },
@@ -20,11 +23,12 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const { totalItems } = useCart();
-  // const { user, signInWithGoogle, signOut } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { user, signInWithEmail, signOut } = useAuth();
+  const [isClient, setIsClient] = useState(false);
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +40,10 @@ export default function Navbar() {
     }
   };
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const btnClass = "flex items-center space-x-2 px-4 py-2 text-sm font-medium uppercase tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-all duration-200";
 
   return (
@@ -43,12 +51,14 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 w-full z-50 bg-brutal-black border-b border-white/10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2 ml-[-30px]">
               {/* <span className="text-2xl font-display uppercase tracking-tighter text-white">
                 AM <span className="text-neon-green">Performance</span>
               </span> */}
-              <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} />
+              <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300}
+                loading="eager" />
             </Link>
+
 
             <div className="hidden md:flex items-center space-x-8">
               <div
@@ -56,10 +66,10 @@ export default function Navbar() {
                 onMouseEnter={() => setIsCategoriesOpen(true)}
                 onMouseLeave={() => setIsCategoriesOpen(false)}
               >
-                <button className="flex items-center space-x-1 text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                  <span>Categorías</span>
+                <div className="flex items-center space-x-1 text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
+                  <Link href="/catalogo">Catalogo</Link>
                   <ChevronDown size={16} />
-                </button>
+                </div>
 
                 <AnimatePresence>
                   {isCategoriesOpen && (
@@ -89,15 +99,12 @@ export default function Navbar() {
               <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors text-neon-green">
                 Proyectos
               </Link>
-              <Link href="/nosotros" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                Nosotros
-              </Link>
             </div>
 
             <div className="flex items-center space-x-5">
-              <button className="p-2 hover:text-neon-green transition-colors">
+              {/* <button className="p-2 hover:text-neon-green transition-colors">
                 <Search size={20} />
-              </button>
+              </button> */}
 
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -122,13 +129,22 @@ export default function Navbar() {
               )}
               <Link href="/carrito" className="p-2 hover:text-neon-green transition-colors relative">
                 <ShoppingCart size={20} />
-                {totalItems > 0 && (
+                {isClient && totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 bg-neon-green text-brutal-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
                     suppressHydrationWarning={true}>
                     {totalItems}
                   </span>
                 )}
               </Link>
+              <a
+                href={getWhatsAppUrl('help')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 hover:text-neon-green transition-colors"
+                aria-label="Contacto por WhatsApp"
+              >
+                <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} />
+              </a>
               <button
                 className="md:hidden p-2 hover:text-neon-green transition-colors"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -149,7 +165,7 @@ export default function Navbar() {
             >
               <div className="px-4 pt-2 pb-6 space-y-4">
                 <div className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Categorías</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Catalogo</p>
                   {categories.map((cat) => (
                     <Link
                       key={cat.slug}
@@ -164,7 +180,6 @@ export default function Navbar() {
                 <div className="pt-4 border-t border-white/10 space-y-4">
                   <Link href="/catalogo?ofertas=true" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Ofertas</Link>
                   <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
-                  <Link href="/nosotros" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Nosotros</Link>
                 </div>
               </div>
             </motion.div>
