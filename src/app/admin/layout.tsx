@@ -1,9 +1,8 @@
-// src/app/admin/layout.tsx
-// Admin Dashboard Layout - Protected by proxy.ts
 'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -19,9 +18,9 @@ import {
 
 const adminNav = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Productos', href: '/admin/productos', icon: Package },
-  { name: 'Órdenes', href: '/admin/ordenes', icon: ShoppingCart },
-  { name: 'Proyectos', href: '/admin/proyectos', icon: FolderKanban },
+  { name: 'Productos', href: '/admin?view=products', icon: Package },
+  { name: 'Órdenes', href: '/admin?view=orders', icon: ShoppingCart },
+  { name: 'Proyectos', href: '/admin?view=projects', icon: FolderKanban },
 ];
 
 export default function AdminLayout({
@@ -58,15 +57,6 @@ export default function AdminLayout({
           `}
       >
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="p-6 border-b border-white/10">
-            <Link href="/admin" className="flex items-center space-x-2">
-              <span className="text-2xl font-display uppercase tracking-tighter text-white">
-                AM<span className="text-neon-green">ADMIN</span>
-              </span>
-            </Link>
-          </div>
-
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-2">
             {adminNav.map((item) => {
@@ -113,9 +103,7 @@ export default function AdminLayout({
           <div className="flex justify-between items-center">
             {/* Mobile Title */}
             <div className="md:hidden">
-              <span className="text-lg font-display uppercase tracking-tighter">
-                AM<span className="text-neon-green">ADMIN</span>
-              </span>
+              <Image src='/logo/AMPerformance_Favicon_verde.png' height={48} width={48} alt='logoAM' />
             </div>
 
             {/* Spacer */}

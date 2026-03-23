@@ -1,14 +1,23 @@
-// src/proxy.ts
-// AMPerformance - Admin Route Protection
-// Security: JWT verification via Supabase SSR
-
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+
+const PUBLIC_ROUTES = ['/login', '/signup'];
+
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'));
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Create Supabase client for proxy
+  // 1. Crear una respuesta base
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
+
+  // 2. Crear el cliente de Supabase (Nueva API)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -18,53 +27,49 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          for (const { name, value } of cookiesToSet) {
-            request.cookies.set(name, value);
-          }
-          const response = NextResponse.next();
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
+          // Sincronizamos con el Request para que los Server Components lean lo nuevo
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+
+          // Sincronizamos con la Response para que el navegador guarde la cookie
+          response = NextResponse.next({
+            request,
           });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
         },
       },
     }
   );
 
-  // Refresh session to validate JWT
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // 3. Validar usuario (getUser es más seguro que getSession)
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // Admin route protection logic
+  // 4. Lógica de Redirección para Rutas Protegidas
+  if (!user && !isPublicRoute(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  // 5. Protección de Admin
   if (pathname.startsWith('/admin')) {
-    if (!user) {
-      // Not logged in → Redirect to home
-      const url = request.nextUrl.clone();
-      url.pathname = '/';
-      return NextResponse.redirect(url);
-    }
-
-    // Check admin role from app_metadata
-    const isAdmin = user.app_metadata?.role === 'admin';
-
+    const isAdmin = user?.app_metadata?.role === 'admin';
     if (!isAdmin) {
-      // Logged in but not admin → Redirect to home with access denied
-      console.warn(`[Security] Non-admin user ${user.id} attempted to access ${pathname}`);
-      const url = request.nextUrl.clone();
-      url.pathname = '/';
-      return NextResponse.redirect(url);
+      console.warn(`[Security] Access denied to ${pathname} for user ${user?.id}`);
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
   }
 
-  // Allow request to proceed
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
   matcher: [
-    // Match admin routes
-    '/admin/:path*',
-    // Optional: Also protect API routes if needed
-    // '/api/admin/:path*',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
