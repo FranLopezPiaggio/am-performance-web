@@ -1,8 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // DEL PROYECTO NUEVO: Optimización automática de rendimiento (React Compiler)
-  reactCompiler: true,
   reactStrictMode: true,
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -16,7 +14,6 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // DEL PROYECTO VIEJO: Optimización para Docker/Producción
   output: 'standalone',
 
   turbopack: {
@@ -28,9 +25,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  experimental: {
-  },
-  // Para Webpack (fallback)
+
   webpack: (config) => {
     config.module.rules.push({
       test: /\.webm$/,
@@ -38,7 +33,6 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
-
 };
 
 export default nextConfig;

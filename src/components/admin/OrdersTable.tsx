@@ -51,9 +51,7 @@ export default function OrdersTable() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        console.log('[OrdersTable] Fetching /api/admin/orders...');
         const response = await authenticatedFetch('/api/admin/orders');
-        console.log('[OrdersTable] Response status:', response.status);
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -61,10 +59,8 @@ export default function OrdersTable() {
           throw new Error(`Error al cargar órdenes: ${response.status}`);
         }
         const data = await response.json();
-        console.log('[OrdersTable] Data received:', data);
         setOrders(data);
       } catch (err) {
-        console.error('[OrdersTable] Fetch error:', err);
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setLoading(false);
