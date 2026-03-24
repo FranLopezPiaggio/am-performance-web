@@ -19,9 +19,7 @@ export default function ProductsTable() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        console.log('[ProductsTable] Fetching /api/admin/products...');
         const response = await authenticatedFetch('/api/admin/products');
-        console.log('[ProductsTable] Response status:', response.status);
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -29,10 +27,8 @@ export default function ProductsTable() {
           throw new Error(`Error al cargar productos: ${response.status}`);
         }
         const data = await response.json();
-        console.log('[ProductsTable] Data received:', data);
         setProducts(data);
       } catch (err) {
-        console.error('[ProductsTable] Fetch error:', err);
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setLoading(false);

@@ -42,9 +42,7 @@ export default function ProjectsTable() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        console.log('[ProjectsTable] Fetching /api/admin/projects...');
         const response = await authenticatedFetch('/api/admin/projects');
-        console.log('[ProjectsTable] Response status:', response.status);
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -52,10 +50,8 @@ export default function ProjectsTable() {
           throw new Error(`Error al cargar proyectos: ${response.status}`);
         }
         const data = await response.json();
-        console.log('[ProjectsTable] Data received:', data);
         setProjects(data);
       } catch (err) {
-        console.error('[ProjectsTable] Fetch error:', err);
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setLoading(false);

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft } from 'lucide-react';
+import SafeImage from '@/components/SafeImage';
 
 export default function LoginFormContent() {
     const [email, setEmail] = useState('');
@@ -60,11 +61,17 @@ export default function LoginFormContent() {
                     {/* Login Card */}
                     <div className="bg-white/5 border border-white/10 p-8 md:p-12">
                         {/* Logo/Title */}
-                        <div className="text-center mb-8">
-                            <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} loading="eager" />
-                            <p className="text-white/50 text-sm uppercase tracking-widest">
-                                Acceso Restringido
-                            </p>
+                        <div className="ml-20 items-center justify-center m-auto">
+                            <SafeImage
+                                src="/logo/AMPerformance_verde.png"
+                                alt="AMP-Logo"
+                                width={120}
+                                height={120}
+                                priority
+                                sizes='150px'
+                                style={{ width: '150px', height: 'auto' }}
+                                className='mt-4'
+                            />
                         </div>
 
                         {/* Error Message */}
@@ -133,6 +140,6 @@ export default function LoginFormContent() {
                     </div>
                 </div>
             </div>
-        </main>
+        </main >
     );
 }
