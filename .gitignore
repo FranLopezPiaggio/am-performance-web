@@ -53,3 +53,5 @@ coverage/
 .agents/*
 .claude/
 .claude/*
+
+Makefile

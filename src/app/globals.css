@@ -1,9 +1,8 @@
 /* src/app/globals.css */
 
-<<<<<<< HEAD
 /* 1. Importa otras librerías CSS */
 /* @import "tw-animate-css"; */
-=======
+
 @theme {
   --color-brutal-black: #050505;
   --color-neon-green: #00FF00;
@@ -12,7 +11,6 @@
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
 }
->>>>>>> development
 
 /* 2. Importa las capas de Tailwind CSS v3 */
 @tailwind base;
