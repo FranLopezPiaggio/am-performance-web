@@ -1,23 +1,9 @@
 /* src/app/globals.css */
 
-/* 1. Importa otras librerías CSS */
-/* @import "tw-animate-css"; */
-
-@theme {
-  --color-brutal-black: #050505;
-  --color-neon-green: #00FF00;
-  --color-neon-green-hover: #00CC00;
-  --color-yellow: #F5DE11;
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
-}
-
-/* 2. Importa las capas de Tailwind CSS v3 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 3. Define tus estilos base y componentes */
 @layer base {
   body {
     @apply bg-brutal-black text-white font-sans antialiased;
@@ -29,12 +15,23 @@
     @apply border border-white/10;
   }
 
+  /* En lugar de @apply, usa la propiedad CSS directamente */
   .brutal-shadow {
-    @apply shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)];
+    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.1);
   }
 
   .brutal-btn {
-    @apply px-8 py-4 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-x-0 active:translate-y-0 active:shadow-none;
+    @apply px-8 py-4 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0;
+
+    /* Define el estado hover con CSS anidado */
+    &:hover {
+      box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Define el estado active para quitar la sombra */
+    &:active {
+      box-shadow: none;
+    }
   }
 
   .brutal-btn-outline {

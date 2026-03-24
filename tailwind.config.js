@@ -13,6 +13,8 @@ export default {
             colors: {
                 'brutal-black': '#050505',
                 'neon-green': '#00FF00',
+                'neon-green-hover': '#00CC00',
+                'yellow': '#F5DE11',
             },
             fontFamily: {
                 // Asumimos que usas las variables de fuente de Next.js
