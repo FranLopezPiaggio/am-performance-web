@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     formats: ['image/avif', 'image/webp'],
+    unoptimized: true, // Enable for local images to avoid optimization errors
     remotePatterns: [
       {
         protocol: 'https',

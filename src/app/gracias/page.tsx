@@ -28,13 +28,14 @@ export default function GraciasPage() {
   useEffect(() => {
     const stored = localStorage.getItem('orderConfirmation');
     if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOrderData(JSON.parse(stored));
     }
   }, []);
 
   const handleWhatsAppFollowUp = () => {
     if (!orderData?.customer?.telefono) return;
-    
+
     const message = `¡Hola! ${orderData.customer.nombre}, tu pedido #${orderData.orderId} está siendo procesado. ¿Hay algo en lo que pueda ayudarte?`;
     const encodedMessage = encodeURIComponent(message);
     const cleanPhone = orderData.customer.telefono.replace(/\D/g, '');

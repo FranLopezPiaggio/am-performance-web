@@ -27,20 +27,21 @@ export default function Navbar() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { user, signInWithEmail, signOut } = useAuth();
-  const [isClient, setIsClient] = useState(false);
-
+  const [isClient, setIsClient] = useState<boolean>(() => typeof window !== 'undefined');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signInWithEmail(email, password);
       setShowLoginModal(false); // Cerrar modal al éxito
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       alert("Error al iniciar sesión: " + error.message);
     }
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
   }, []);
 
@@ -56,7 +57,7 @@ export default function Navbar() {
                 AM <span className="text-neon-green">Performance</span>
               </span> */}
               <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300}
-                loading="eager" />
+                loading="eager" unoptimized />
             </Link>
 
 
@@ -143,7 +144,7 @@ export default function Navbar() {
                 className="p-2 hover:text-neon-green transition-colors"
                 aria-label="Contacto por WhatsApp"
               >
-                <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} />
+                <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} unoptimized />
               </a>
               <button
                 className="md:hidden p-2 hover:text-neon-green transition-colors"

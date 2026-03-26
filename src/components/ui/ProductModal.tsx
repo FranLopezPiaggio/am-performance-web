@@ -24,6 +24,7 @@ export default function ProductModal() {
   useEffect(() => {
     if (isOpen) {
       // Reset all state when modal opens
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(true);
       setQuantity(1);
       setCurrentImageIndex(0);

@@ -84,9 +84,10 @@ function CatalogContent() {
 
         // Map products to UI format (async to fetch category via join table)
         const mapped = await Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           productsList.map((product: any) => mapProductToCard(product))
         );
-        
+
         setProducts(mapped);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -116,8 +117,8 @@ function CatalogContent() {
               key={cat.slug}
               onClick={() => setActiveCategory(cat.slug)}
               className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all ${activeCategory === cat.slug
-                  ? 'bg-neon-green text-brutal-black'
-                  : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
+                ? 'bg-neon-green text-brutal-black'
+                : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
                 }`}
             >
               {cat.name}

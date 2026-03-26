@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft } from 'lucide-react';
-import SafeImage from '@/components/SafeImage';
 
 export default function LoginFormContent() {
     const [email, setEmail] = useState('');
@@ -61,17 +60,20 @@ export default function LoginFormContent() {
                     {/* Login Card */}
                     <div className="bg-white/5 border border-white/10 p-8 md:p-12">
                         {/* Logo/Title */}
-                        <div className="ml-20 items-center justify-center m-auto">
-                            <SafeImage
+                        <div className="text-center mt-4">
+                            {/* <Image
                                 src="/logo/AMPerformance_verde.png"
                                 alt="AMP-Logo"
                                 width={120}
                                 height={120}
                                 priority
-                                sizes='150px'
-                                style={{ width: '150px', height: 'auto' }}
-                                className='mt-4'
-                            />
+                                onError={(e) => {
+                                    console.error('❌ Error cargando imagen:', e);
+                                    console.error('❌ SRC:', (e.target as HTMLImageElement).src);
+                                }}
+                            /> */}
+                            <h2 className='text-2xl font-bold text-white mb-4'>
+                                <span className='text-2xl font-bold text-neon-green mb-4'>AM</span> Performance</h2>
                         </div>
 
                         {/* Error Message */}

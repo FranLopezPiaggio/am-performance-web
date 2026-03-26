@@ -309,3 +309,39 @@ When the user requests “What's left to do?”, ‘Audit’, or “Next Steps�
 ```
 
 ---
+
+## Global Operational Rules (The "Law")
+
+These rules are mandatory for any Agent (Backend, Frontend, etc.) and take precedence over any code suggestions.
+
+### 1. Zero-Hallucination Protocol
+
+- **Context First:** Before writing a single line, you must declare which files in `@knowledge/` you have read.
+
+- **Schema Truth:** If a task requires accessing the database, the agent MUST validate against `@SCHEMA.md`. Do not invent columns or tables.
+
+### 2. Structural Constraints (Clean & Modular)
+
+- **Service Isolation:** Supabase or WhatsApp logic is prohibited in `src/app/api`. Use `@src/lib/services`.
+
+- **Dumb UI:** Components in `src/components/ui` are unmodified. They do not handle global state or fetch.
+
+- - **Naming:** Folders/Files/Functions in **English**. UI/User Text in **Spanish**.
+
+### 3. Safety & Performance
+
+- **Atomic Operations:** If an action fails (e.g., WhatsApp), the database must remain in a consistent state (`pending`).
+
+- **Performance Budget:** Any new functionality must be evaluated to avoid breaking the <3s rendering time.
+
+- **Zod Validation:** All external input (API or Form) MUST have a Zod validation scheme.
+
+### 4. Definition of Done (DoD)
+
+A task is considered complete only if:
+
+1. It follows the principles of `@ARC-SYS.md`.
+
+2. It does not exceed 300 lines per file.
+
+3. `@WORKFLOW.md` has been updated with the progress.

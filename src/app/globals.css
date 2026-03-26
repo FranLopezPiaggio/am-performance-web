@@ -5,8 +5,14 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --brutal-black: #0a0a0a;
+    --neon-green: #ccff00;
+  }
+
   body {
-    @apply bg-brutal-black text-white font-sans antialiased;
+    background-color: var(--brutal-black);
+    @apply text-white font-sans antialiased;
   }
 }
 
@@ -21,20 +27,27 @@
   }
 
   .brutal-btn {
-    @apply px-8 py-4 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0;
+    @apply px-8 py-4 font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0;
+    background-color: var(--neon-green);
+    color: var(--brutal-black);
 
     /* Define el estado hover con CSS anidado */
     &:hover {
       box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.5);
     }
 
-    /* Define el estado active para quitar la sombra */
+  /* Define el estado active para quitar la sombra */
     &:active {
       box-shadow: none;
     }
   }
 
   .brutal-btn-outline {
-    @apply px-8 py-4 bg-transparent border-2 border-white text-white font-bold uppercase tracking-widest text-sm transition-all hover:bg-white hover:text-brutal-black;
+    @apply px-8 py-4 bg-transparent border-2 border-white text-white font-bold uppercase tracking-widest text-sm transition-all;
+    
+    &:hover {
+      background-color: #ffffff;
+      color: var(--brutal-black);
+    }
   }
 }

@@ -44,11 +44,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Supabase environment variables (required during build for prerendering)
 # Note: These should be provided as build-args for production builds.
 # We provide default placeholder values to prevent the build from failing if they are not provided.
-# Supabase environment variables (required during build)
-# These MUST be provided as build-args during the docker build command.
-ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
-ARG SUPABASE_SERVICE_ROLE_KEY
+ARG NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder
+ARG SUPABASE_SERVICE_ROLE_KEY=placeholder
 
 # Make them available to the Next.js build process inside this stage
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL

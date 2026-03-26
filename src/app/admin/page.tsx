@@ -66,7 +66,7 @@ function DashboardContent() {
           <p className="text-white/60">
             Bienvenido al panel de administración
           </p>
-          <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} loading="eager" />
+          <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} loading="eager" unoptimized />
         </div>
       </div>
 

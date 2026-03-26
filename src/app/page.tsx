@@ -128,7 +128,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
           <div className="md:col-span-2 flex flex-col md:flex-row items-center gap-6 text-center md:text-left -mt-4">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo/AMPerformance_Version_vertical(Positiva).png" alt="AMP-Logo" width={50} height={50} />
+              <Image src="/logo/AMPerformance_Version_vertical(Positiva).png" alt="AMP-Logo" width={50} height={50} unoptimized />
             </Link>
             <p className="text-white/50 max-w-md uppercase text-xs font-bold leading-loose tracking-widest">
               Somos líderes en equipamiento de gimnasios y centros de alto rendimiento en Argentina.
