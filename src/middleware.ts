@@ -1,11 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-const PUBLIC_ROUTES = ['/login', '/signup'];
-
-function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'));
-}
+// PUBLIC_ROUTES removed - all routes except /admin are now public
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -43,21 +39,25 @@ export async function middleware(request: NextRequest) {
   // 3. Validar usuario (getUser es más seguro que getSession)
   const { data: { user } } = await supabase.auth.getUser();
 
-  // 4. Lógica de Redirección para Rutas Protegidas
-  if (!user && !isPublicRoute(pathname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
-  }
-
-  // 5. Protección de Admin
+  // 4. Protección de Admin - Solo /admin rutas requieren auth
   if (pathname.startsWith('/admin')) {
+    // 4a. Verificar que el usuario esté autenticado
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      console.log(`[Auth] Redirecting unauthenticated user to login from ${pathname}`);
+      return NextResponse.redirect(url);
+    }
+
+    // 4b. Verificar que el usuario tenga rol de admin
     const isAdmin = user?.app_metadata?.role === 'admin';
     if (!isAdmin) {
-      console.warn(`[Security] Access denied to ${pathname} for user ${user?.id}`);
+      console.warn(`[Security] Access denied to ${pathname} for user ${user?.id} - not admin`);
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
   }
+
+  // 5. Todas las demás rutas son públicas (sin verificación de auth)
 
   return response;
 }
