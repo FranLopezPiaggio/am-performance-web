@@ -53,5 +53,21 @@ coverage/
 .agents/*
 .claude/
 .claude/*
+.kiro/
+.kiro/*
+.qwen/
+.qwen/*
+.cursor/
+.cursor/*
+.kilocode/
+.kilocode/*
+.gemini/
+.gemini/*
+.zencoder/
+.zencoder/*
+.extra/
+.extra/*
+skills/
+skills/*
 
 Makefile

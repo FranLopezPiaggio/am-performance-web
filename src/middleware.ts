@@ -1,10 +1,31 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-// PUBLIC_ROUTES removed - all routes except /admin are now public
+// Paths to exclude from middleware processing
+const EXCLUDED_PATHS = [
+  '/api/',           // API routes - handled separately
+  '/_next/',         // Next.js internal paths
+  '/favicon.ico',    // Favicon
+  '/static/',        // Static files
+];
+
+function isExcludedPath(pathname: string): boolean {
+  return EXCLUDED_PATHS.some(path => pathname.startsWith(path));
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Skip middleware for excluded paths
+  if (isExcludedPath(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Skip middleware during static generation (check for build-time headers)
+  // This allows SSG to generate pages without middleware interference
+  if (process.env.NEXT_TELEMETRY_DISABLED) {
+    return NextResponse.next();
+  }
 
   // 1. Crear una respuesta base
   let response = NextResponse.next({
@@ -65,11 +86,12 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
+     * Match all request paths except for:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - api routes (handled separately)
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
   ],
 };

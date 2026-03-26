@@ -15,7 +15,8 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  output: 'standalone',
+  // Removed output: 'standalone' - not needed for Vercel deployment
+  // Vercel handles serverless functions automatically
 
   turbopack: {
     root: __dirname,
