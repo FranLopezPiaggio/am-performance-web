@@ -19,6 +19,7 @@ interface ProductCardProps {
     isNew?: boolean;
     discount?: number;
     inmediately_available?: boolean;
+    delivery_lead_days?: number | null;
   };
 }
 
@@ -38,9 +39,17 @@ export default function ProductCard({ product }: ProductCardProps) {
             Nuevo
           </span>
         )}
-        {product.inmediately_available && (
-          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
+        {product.inmediately_available ? (
+          <span className="bg-neon-green/20 text-neon-green border border-neon-green/30 text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
             Entrega Inmediata
+          </span>
+        ) : product.delivery_lead_days ? (
+          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
+            {product.delivery_lead_days} días
+          </span>
+        ) : (
+          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
+            A Coordinar
           </span>
         )}
         {product.discount && (

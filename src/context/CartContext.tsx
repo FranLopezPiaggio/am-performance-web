@@ -10,6 +10,9 @@ export interface CartItem {
   image: string;
   quantity: number;
   category: string;
+  // AMP-023: Delivery fields
+  inmediatamente_available: boolean;
+  delivery_lead_days: number | null;
 }
 
 // StaticImageData has a 'src' property
@@ -29,6 +32,9 @@ interface BaseProduct {
   price: number;
   image: ProductImage;
   category: string;
+  // AMP-023: Delivery fields
+  inmediatamente_available?: boolean;
+  delivery_lead_days?: number | null;
 }
 
 // Extended product with optional fields
@@ -47,6 +53,12 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  // AMP-023: Derived helpers
+  hasImmediateItems: () => boolean;
+  hasDelayedItems: () => boolean;
+  hasOnlyDelayedItems: () => boolean;
+  hasMixedItems: () => boolean;
+  maxLeadDays: () => number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -87,7 +99,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
-      return [...prevCart, { ...product, image: imageString, quantity }];
+      // AMP-023: Include delivery fields
+      return [...prevCart, { 
+        ...product, 
+        image: imageString, 
+        quantity,
+        inmediatamente_available: product.inmediatamente_available ?? true,
+        delivery_lead_days: product.delivery_lead_days ?? null,
+      }];
     });
   };
 
@@ -109,6 +128,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  // AMP-023: Derived helpers
+  const hasImmediateItems = () => cart.some(item => item.inmediatamente_available === true);
+  const hasDelayedItems = () => cart.some(item => item.inmediatamente_available === false);
+  const hasOnlyDelayedItems = () => cart.length > 0 && cart.every(item => item.inmediatamente_available === false);
+  const hasMixedItems = () => {
+    if (cart.length === 0) return false;
+    const hasImmediate = cart.some(item => item.inmediatamente_available === true);
+    const hasDelayed = cart.some(item => item.inmediatamente_available === false);
+    return hasImmediate && hasDelayed;
+  };
+  const maxLeadDays = () => {
+    const delayedItems = cart.filter(item => item.delivery_lead_days !== null);
+    if (delayedItems.length === 0) return 0;
+    return Math.max(...delayedItems.map(item => item.delivery_lead_days || 0));
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -119,6 +154,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        hasImmediateItems,
+        hasDelayedItems,
+        hasOnlyDelayedItems,
+        hasMixedItems,
+        maxLeadDays,
       }}
     >
       {children}

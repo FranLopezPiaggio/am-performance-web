@@ -23,22 +23,23 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const { totalItems } = useCart();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // Login modal state — hidden from navbar. Admin uses /login route directly.
+  // const [showLoginModal, setShowLoginModal] = useState(false);
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
   const { user, signInWithEmail, signOut } = useAuth();
   const [isClient, setIsClient] = useState<boolean>(() => typeof window !== 'undefined');
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await signInWithEmail(email, password);
-      setShowLoginModal(false); // Cerrar modal al éxito
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      alert("Error al iniciar sesión: " + error.message);
-    }
-  };
+  // const handleLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     await signInWithEmail(email, password);
+  //     setShowLoginModal(false); // Cerrar modal al éxito
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   } catch (error: any) {
+  //     alert("Error al iniciar sesión: " + error.message);
+  //   }
+  // };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -97,9 +98,9 @@ export default function Navbar() {
               <Link href="/catalogo?ofertas=true" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
                 Ofertas
               </Link>
-              <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors text-neon-green">
+              {/* <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors text-neon-green">
                 Proyectos
-              </Link>
+              </Link> */}
             </div>
 
             <div className="flex items-center space-x-5">
@@ -120,13 +121,15 @@ export default function Navbar() {
                   </Link>
                 </div>
               ) : (
-                <button
+                // Login icon hidden — admin signs in via /login route
+                null
+                /* <button
                   // onClick={signInWithGoogle}
                   onClick={() => setShowLoginModal(true)}
                   className="p-2 hover:text-neon-green transition-colors"
                 >
                   <User size={20} />
-                </button>
+                </button> */
               )}
               <Link href="/carrito" className="p-2 hover:text-neon-green transition-colors relative">
                 <ShoppingCart size={20} />
@@ -180,7 +183,7 @@ export default function Navbar() {
                 </div>
                 <div className="pt-4 border-t border-white/10 space-y-4">
                   <Link href="/catalogo?ofertas=true" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Ofertas</Link>
-                  <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
+                  {/* <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link> */}
                 </div>
               </div>
             </motion.div>
@@ -188,6 +191,7 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
+      {/* Hidden login modal — admin uses /login route directly.
       {
         showLoginModal && (
           <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
@@ -233,7 +237,7 @@ export default function Navbar() {
             </div>
           </div>
         )
-      }
+      } */}
     </>
   );
 }
