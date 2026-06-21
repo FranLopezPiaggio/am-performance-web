@@ -69,5 +69,7 @@ coverage/
 .extra/*
 skills/
 skills/*
+scripts/
+scripts/*
 
 Makefile
