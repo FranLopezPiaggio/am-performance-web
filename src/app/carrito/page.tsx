@@ -1,13 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { useCart } from '@/context/CartContext';
-import { useRouter } from 'next/navigation';
-import { Trash2, Plus, Minus, ShoppingBag, MessageCircle, CreditCard, Building } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { z } from 'zod';
 import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
 
@@ -66,8 +64,6 @@ const InputField: React.FC<InputFieldProps> = ({
 
 // --- COMPONENTE PRINCIPAL ---
 
-export type PaymentMethod = 'whatsapp' | 'mercadopago' | 'transfer';
-
 export default function CartPage() {
   const { 
     cart, 
@@ -80,9 +76,7 @@ export default function CartPage() {
     hasMixedItems,
     maxLeadDays,
   } = useCart();
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('whatsapp');
   const [form, setForm] = useState<CustomerFormValues>({
     nombre: '',
     email: '',
@@ -118,77 +112,50 @@ export default function CartPage() {
     }
   };
 
-  const handleCheckout = async () => {
-    if (!validateForm()) {
-      return;
-    }
+  const buildWhatsAppMessage = (): string => {
+    const itemsList = cart
+      .map((item) => `• ${item.quantity}x ${item.name} - $${(item.price * item.quantity).toLocaleString()}`)
+      .join('\n');
+
+    return [
+      '🛒 *NUEVO PEDIDO - AM Performance*',
+      '',
+      '*Cliente:*',
+      `Nombre: ${form.nombre}`,
+      `Email: ${form.email}`,
+      `Teléfono: ${form.telefono}`,
+      `Dirección: ${form.direccion}`,
+      ...(form.notas ? [`Notas: ${form.notas}`] : []),
+      '',
+      '*Productos:*',
+      itemsList,
+      '',
+      `*Total: $${totalPrice.toLocaleString()}*`,
+      '',
+      '¡Gracias por tu compra! 🙌',
+    ].join('\n');
+  };
+
+  const handleCheckout = () => {
+    if (!validateForm()) return;
 
     setLoading(true);
-    try {
-      console.log('Sending order data:', {
-        cartItems: cart,
-        customerInfo: form,
-        total: totalPrice,
-        paymentMethod,
-      });
 
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cartItems: cart,
-          customerInfo: form,
-          total: totalPrice,
-          paymentMethod,
-        }),
-      });
+    // Guardar en localStorage para la confirmación
+    localStorage.setItem('orderConfirmation', JSON.stringify({
+      customerInfo: form,
+      cartItems: cart,
+      total: totalPrice,
+    }));
 
-      const data = await response.json();
+    clearCart();
 
-if (data.orderId) {
-        // Guardar en localStorage para la página de confirmación
-        localStorage.setItem('orderConfirmation', JSON.stringify({
-          orderId: data.orderId,
-          customerInfo: form,
-          cartItems: cart,
-          total: totalPrice,
-          paymentMethod,
-          paymentExpiresAt: data.paymentExpiresAt,
-        }));
-        clearCart();
-
-        // Rutear según el método de pago
-        if (paymentMethod === 'transfer') {
-          // Para transferencia, mostrar datos bancarios en página de gracias
-          router.push('/gracias');
-        } else if (paymentMethod === 'mercadopago') {
-          // Para Mercado Pago, redirigir al checkout
-          if (data.paymentUrl) {
-            window.location.href = data.paymentUrl;
-          } else {
-            // Fallback si no hay URL de pago
-            window.location.href = getWhatsAppUrl('order', {
-              nombre: form.nombre,
-              orderId: data.orderId,
-            });
-          }
-        } else {
-          // WhatsApp por defecto
-          window.location.href = getWhatsAppUrl('order', {
-            nombre: form.nombre,
-            orderId: data.orderId,
-          });
-        }
-      } else if (data.error) {
-        console.error('Order error:', data.error);
-        alert('Error al procesar el pedido. Intenta de nuevo.');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Error al procesar el pedido. Intenta de nuevo.');
-    } finally {
-      setLoading(false);
-    }
+    // Armar mensaje y redirigir a WhatsApp
+    const message = buildWhatsAppMessage();
+    const encoded = encodeURIComponent(message);
+    const phone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '5492325511751';
+    const cleanPhone = phone.replace(/\D/g, '');
+    window.location.href = `https://wa.me/${cleanPhone}?text=${encoded}`;
   };
 
   if (cart.length === 0) {
@@ -348,56 +315,17 @@ if (data.orderId) {
               </p>
             </div>
 
-            {/* Selector de Método de Pago */}
+            {/* Método de Pago */}
             <div className="bg-white/5 border border-white/10 p-8">
               <h2 className="text-2xl font-display uppercase tracking-tighter mb-6 text-neon-green">Método de Pago</h2>
               
-              <div className="space-y-3">
-                <label className={`flex items-center gap-4 p-4 border cursor-pointer transition-all ${
-                  paymentMethod === 'whatsapp' 
-                    ? 'border-neon-green bg-neon-green/10' 
-                    : 'border-white/20 hover:border-white/40'
-                }`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="whatsapp"
-                    checked={paymentMethod === 'whatsapp'}
-                    onChange={() => setPaymentMethod('whatsapp')}
-                    className="sr-only"
-                  />
-                  <MessageCircle size={24} className={paymentMethod === 'whatsapp' ? 'text-neon-green' : 'text-white/50'} />
-                  <div className="flex-grow">
-                    <p className="font-bold uppercase text-sm">Orden por WhatsApp</p>
-                    <p className="text-[10px] text-white/50 uppercase tracking-widest">Coordinamos el pago personalmente</p>
-                  </div>
-                  {paymentMethod === 'whatsapp' && (
-                    <span className="text-neon-green text-xs font-bold">✓</span>
-                  )}
-                </label>
-
-                <label className={`flex items-center gap-4 p-4 border cursor-pointer transition-all ${
-                  paymentMethod === 'transfer' 
-                    ? 'border-neon-green bg-neon-green/10' 
-                    : 'border-white/20 hover:border-white/40'
-                }`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="transfer"
-                    checked={paymentMethod === 'transfer'}
-                    onChange={() => setPaymentMethod('transfer')}
-                    className="sr-only"
-                  />
-                  <Building size={24} className={paymentMethod === 'transfer' ? 'text-neon-green' : 'text-white/50'} />
-                  <div className="flex-grow">
-                    <p className="font-bold uppercase text-sm">Transferencia Bancaria</p>
-                    <p className="text-[10px] text-white/50 uppercase tracking-widest">10% de descuento adicional</p>
-                  </div>
-                  {paymentMethod === 'transfer' && (
-                    <span className="text-neon-green text-xs font-bold">✓</span>
-                  )}
-                </label>
+              <div className="flex items-center gap-4 p-4 border border-neon-green bg-neon-green/10">
+                <MessageCircle size={24} className="text-neon-green" />
+                <div className="flex-grow">
+                  <p className="font-bold uppercase text-sm">Orden por WhatsApp</p>
+                  <p className="text-[10px] text-white/50 uppercase tracking-widest">Te enviamos el pedido y coordinamos el pago</p>
+                </div>
+                <span className="text-neon-green text-xs font-bold">✓</span>
               </div>
             </div>
 
@@ -420,7 +348,7 @@ if (data.orderId) {
                 </div>
               </div>
 
-              {/* El botón siempre está visible y llama a handleCheckout */}
+              {/* Botón de envío a WhatsApp */}
               <button
                 onClick={handleCheckout}
                 disabled={loading}
@@ -430,14 +358,8 @@ if (data.orderId) {
                   <span>Enviando...</span>
                 ) : (
                   <>
-                    <span>
-                      {paymentMethod === 'whatsapp' && 'Enviar Orden por WhatsApp'}
-                      {paymentMethod === 'transfer' && 'Proceder con Transferencia'}
-                      {paymentMethod === 'mercadopago' && 'Pagar con Mercado Pago'}
-                    </span>
-                    {paymentMethod === 'whatsapp' && <MessageCircle size={20} />}
-                    {paymentMethod === 'transfer' && <Building size={20} />}
-                    {paymentMethod === 'mercadopago' && <CreditCard size={20} />}
+                    <span>Enviar Orden por WhatsApp</span>
+                    <MessageCircle size={20} />
                   </>
                 )}
               </button>

@@ -1,54 +1,11 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import CategoryGrid from '@/components/CategoryGrid';
-import ProductCard from '@/components/ProductCard';
+import BestSellersSection from '@/components/BestSellersSection';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
-import Crossfit from '@/assets/crossfit-equip.jpg';
-
-
-const bestSellers = [
-  {
-    id: 'bs1',
-    name: 'Mancuerna Hexagonal 20kg',
-    price: 45000,
-    image: Crossfit,
-    category: 'Pesas Libres',
-    rating: 5,
-    reviews: 124,
-    isNew: true
-  },
-  {
-    id: 'bs2',
-    name: 'Rack de Potencia Elite',
-    price: 850000,
-    image: Crossfit,
-    category: 'Máquinas',
-    rating: 5,
-    reviews: 45
-  },
-  {
-    id: 'bs3',
-    name: 'Cinta de Correr T800',
-    price: 1200000,
-    image: Crossfit,
-    category: 'Cardio',
-    rating: 4,
-    reviews: 89,
-    discount: 15
-  },
-  {
-    id: 'bs4',
-    name: 'Banco Multiajustable',
-    price: 180000,
-    image: Crossfit,
-    category: 'Máquinas',
-    rating: 5,
-    reviews: 67
-  }
-];
 
 const trustItems = [
   { icon: Truck, title: 'Envíos a todo el país', desc: 'Llegamos a cada rincón de Argentina.' },
@@ -80,26 +37,7 @@ export default function Home() {
 
       <CategoryGrid />
 
-      {/* Best Sellers */}
-      <section className="py-24 bg-white/5">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Lo más buscado</p>
-              <h2 className="text-5xl font-display uppercase tracking-tighter">Best Sellers</h2>
-            </div>
-            <Link href="/catalogo" className="text-sm font-bold uppercase tracking-widest border-b-2 border-neon-green pb-1 hover:text-neon-green transition-colors">
-              Ver Catálogo
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {bestSellers.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <BestSellersSection />
 
       {/* Newsletter / CTA */}
       <section className="py-24 max-w-7xl mx-auto px-4">

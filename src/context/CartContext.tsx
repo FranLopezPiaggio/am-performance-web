@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { StaticImageData } from 'next/image';
 
 export interface CartItem {
   id: string;

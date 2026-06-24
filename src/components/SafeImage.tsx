@@ -24,6 +24,7 @@ export default function SafeImage({ src, alt, width, height, priority, unoptimiz
 
     if (!useNextImage) {
         // Fallback a la etiqueta img estándar
+        // eslint-disable-next-line @next/next/no-img-element
         return <img src={src} alt={alt} width={width} height={height} {...props} />;
     }
 

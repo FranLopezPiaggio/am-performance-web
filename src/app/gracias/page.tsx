@@ -40,7 +40,24 @@ interface OrderData {
 export default function GraciasPage() {
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+  // Initialize timer from localStorage on mount (avoids setState in effect)
+  const [timeRemaining, setTimeRemaining] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const saved = localStorage.getItem('orderConfirmation');
+      if (!saved) return null;
+      const data = JSON.parse(saved);
+      if (!data.paymentExpiresAt) return null;
+      const expires = new Date(data.paymentExpiresAt).getTime();
+      const diff = expires - Date.now();
+      if (diff <= 0) return 'Expirado';
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      return `${hours}h ${minutes}m`;
+    } catch {
+      return null;
+    }
+  });
 
   // Support both old (customer/items) and new (customerInfo/cartItems) structure
   const customer = orderData?.customerInfo || orderData?.customer;
@@ -48,31 +65,23 @@ export default function GraciasPage() {
   const isTransfer = orderData?.paymentMethod === 'transfer';
   const transferTotal = isTransfer ? calculateTransferDiscount(orderData?.total || 0) : 0;
 
-  // Calculate time remaining for transfer payment (runs on client only)
+  // Update timer every minute
   useEffect(() => {
-    if (!orderData?.paymentExpiresAt) {
-      setTimeRemaining(null);
-      return;
-    }
+    if (!orderData?.paymentExpiresAt) return;
 
     const calculateTime = () => {
       const expires = new Date(orderData.paymentExpiresAt!).getTime();
       const now = Date.now();
       const diff = expires - now;
-      
       if (diff <= 0) return 'Expirado';
-      
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      
       return `${hours}h ${minutes}m`;
     };
 
-    setTimeRemaining(calculateTime());
-    
     const interval = setInterval(() => {
       setTimeRemaining(calculateTime());
-    }, 60000); // Update every minute
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [orderData?.paymentExpiresAt]);

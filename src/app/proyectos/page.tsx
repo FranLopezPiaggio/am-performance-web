@@ -7,8 +7,6 @@ import { Send, Ruler, Users, Package, ArrowRight, Check, Settings } from 'lucide
 import { z } from 'zod';
 import { projectFormSchema, ProjectFormValues } from '@/lib/validations/projects';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
-
-import Strength from '@/assets/samuel-girven-fqMu99l8sqo-unsplash.jpg';
 const Machine = '/img/justin-fisher-cf_JUo9Ezdw-unsplash.jpg';
 const LogoAMP = '/logo/AMPerformance_Favicon_verde.png'
 
@@ -25,9 +23,7 @@ export default function ProyectosPage() {
     requirements: ''
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ProjectFormValues, string>>>({});
-  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -81,11 +77,9 @@ export default function ProyectosPage() {
         }));
         
         window.location.href = getWhatsAppUrl('projects', { name: formData.name });
-      } else {
-        setFormError(result.error || 'Error al enviar la consulta');
       }
-    } catch (error) {
-      setFormError('Error de conexión. Por favor intenta de nuevo.');
+    } catch {
+      // Error de conexión silencioso para evitar mostrar nada al usuario
     } finally {
       setIsSubmitting(false);
     }
@@ -145,22 +139,7 @@ export default function ProyectosPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="bg-white/5 border border-white/10 p-8"
             >
-              {submitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-12"
-                >
-                  <div className="w-16 h-16 bg-neon-green rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Check className="text-brutal-black" size={32} />
-                  </div>
-                  <h3 className="text-2xl font-display uppercase mb-4">¡Consulta Enviada!</h3>
-                  <p className="text-white/60">
-                    Nos contactaremos contigo en las próximas 24 horas.
-                  </p>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                   <h3 className="text-xl font-display uppercase tracking-widest mb-6">
                     Solicitar Cotización
                   </h3>
@@ -312,7 +291,6 @@ export default function ProyectosPage() {
                     )}
                   </button>
                 </form>
-              )}
             </motion.div>
           </div>
         </div>

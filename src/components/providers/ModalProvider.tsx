@@ -2,7 +2,7 @@
 // Modal State Management
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 
 interface ModalContextType {
   isOpen: boolean;
@@ -20,16 +20,23 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const openModal = useCallback((id: string) => {
     setProductId(id);
     setIsOpen(true);
-    // Prevent body scroll when modal is open
-    document.body.style.overflow = 'hidden';
   }, []);
 
   const closeModal = useCallback(() => {
     setIsOpen(false);
     setProductId(null);
-    // Restore body scroll
-    document.body.style.overflow = '';
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <ModalContext.Provider value={{ isOpen, productId, openModal, closeModal }}>

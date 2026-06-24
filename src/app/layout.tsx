@@ -5,7 +5,7 @@ import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ModalProvider } from '@/components/providers/ModalProvider';
-import ProductModal from '@/components/ui/ProductModal';
+import ProductModalWrapper from '@/components/providers/ProductModalWrapper';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -36,7 +36,7 @@ export default function RootLayout({
             <CartProvider>
               <ModalProvider>
                 {children}
-                <ProductModal />
+                <ProductModalWrapper />
               </ModalProvider>
             </CartProvider>
           </AuthProvider>

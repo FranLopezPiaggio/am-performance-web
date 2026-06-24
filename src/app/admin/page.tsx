@@ -5,12 +5,12 @@
 
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Package, ShoppingCart, FolderKanban, TrendingUp, ArrowRight } from 'lucide-react';
 import OrdersTable from '@/components/admin/OrdersTable';
 import ProjectsTable from '@/components/admin/ProjectsTable';
 import ProductsTable from '@/components/admin/ProductsTable';
+import { useAdminStats } from '@/hooks/useAdminStats';
 
 function LoadingFallback() {
   return (
@@ -23,35 +23,37 @@ function LoadingFallback() {
 }
 
 function DashboardContent() {
+  const { products, orders, projects, loading } = useAdminStats();
+
   const stats = [
     {
       name: 'Total Productos',
-      value: '15',
-      change: '+3 esta semana',
+      value: loading ? '...' : String(products),
+      change: loading ? 'Cargando...' : `Activos en catálogo`,
       icon: Package,
       href: '/admin?view=products',
       color: 'text-neon-green',
     },
     {
       name: 'Órdenes',
-      value: '0',
-      change: 'Sin órdenes aún',
+      value: loading ? '...' : String(orders),
+      change: loading ? 'Cargando...' : orders === 0 ? 'Sin órdenes aún' : `Registradas en el sistema`,
       icon: ShoppingCart,
       href: '/admin?view=orders',
       color: 'text-blue-400',
     },
     {
       name: 'Proyectos',
-      value: '0',
-      change: 'Sin consultas aún',
+      value: loading ? '...' : String(projects),
+      change: loading ? 'Cargando...' : projects === 0 ? 'Sin consultas aún' : `Consultas recibidas`,
       icon: FolderKanban,
       href: '/admin?view=projects',
       color: 'text-purple-400',
     },
     {
       name: 'Ventas',
-      value: '$0',
-      change: 'Sin ventas aún',
+      value: loading ? '...' : `$${0}`,
+      change: loading ? 'Cargando...' : 'Sin ventas aún',
       icon: TrendingUp,
       href: '/admin?view=orders',
       color: 'text-neon-green',
@@ -62,12 +64,9 @@ function DashboardContent() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <div className="flex items-center gap-2">
-          <p className="text-white/60">
-            Bienvenido al panel de administración
-          </p>
-          <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300} loading="eager" unoptimized />
-        </div>
+        <p className="text-white/60">
+          Bienvenido al panel de administración
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -130,33 +129,15 @@ function DashboardContent() {
         </div>
       </div>
 
-      {/* Recent Activity (Placeholder) */}
+      {/* System Status */}
       <div className="bg-white/5 border border-white/10 p-6">
         <h2 className="text-xl font-display uppercase tracking-widest mb-6">
-          Actividad Reciente
+          Estado del Sistema
         </h2>
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
-            <div>
-              <p className="text-white/80">Sistema iniciado</p>
-              <p className="text-xs text-white/40">Hace unos minutos</p>
-            </div>
-            <span className="text-neon-green text-xs uppercase tracking-widest">
-              Bienvenido
-            </span>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
-            <div>
-              <p className="text-white/80">Proxy de autenticación activo</p>
-              <p className="text-xs text-white/40">Protección de rutas /admin/*</p>
-            </div>
-            <span className="text-blue-400 text-xs uppercase tracking-widest">
-              Activo
-            </span>
-          </div>
           <div className="flex items-center justify-between py-3">
             <div>
-              <p className="text-white/80">Base de datos conectada</p>
+              <p className="text-white/80">Base de datos</p>
               <p className="text-xs text-white/40">Supabase PostgreSQL</p>
             </div>
             <span className="text-neon-green text-xs uppercase tracking-widest">
@@ -164,14 +145,6 @@ function DashboardContent() {
             </span>
           </div>
         </div>
-      </div>
-
-      {/* Info Note */}
-      <div className="bg-neon-green/10 border border-neon-green/20 p-4">
-        <p className="text-sm text-neon-green">
-          <strong>Nota:</strong> Las estadísticas se actualizarán cuando conectes las páginas
-          de productos, órdenes y proyectos a Supabase.
-        </p>
       </div>
     </div>
   );

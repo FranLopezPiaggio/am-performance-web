@@ -3,31 +3,29 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, X, ChevronDown, Search, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Menu, X, ChevronDown, Search } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useCategories } from '@/hooks/useCategories';
 import { useAuth } from '@/context/AuthContext';
 import { getWhatsAppUrl } from '@/lib/whatsapp/service';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 const WhatsAppSVG = '/img/svg/whatsapp.svg';
-
-const categories = [
-  { name: 'Cardio', slug: 'cardio' },
-  { name: 'Máquinas', slug: 'maquinas' },
-  { name: 'Pesas Libres', slug: 'pesas-libres' },
-  { name: 'Accesorios', slug: 'accesorios' },
-  { name: 'Suplementos', slug: 'suplementos' },
-];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { totalItems } = useCart();
+  const { categories } = useCategories();
+  const router = useRouter();
   // Login modal state — hidden from navbar. Admin uses /login route directly.
   // const [showLoginModal, setShowLoginModal] = useState(false);
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
-  const { user, signInWithEmail, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [isClient, setIsClient] = useState<boolean>(() => typeof window !== 'undefined');
 
   // const handleLogin = async (e: React.FormEvent) => {
@@ -40,6 +38,16 @@ export default function Navbar() {
   //     alert("Error al iniciar sesión: " + error.message);
   //   }
   // };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/catalogo?search=${encodeURIComponent(q)}`);
+      setShowSearch(false);
+      setSearchQuery('');
+    }
+  };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -104,9 +112,36 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center space-x-5">
-              {/* <button className="p-2 hover:text-neon-green transition-colors">
-                <Search size={20} />
-              </button> */}
+              <div className="relative flex items-center">
+                <button
+                  onClick={() => setShowSearch(!showSearch)}
+                  className="p-2 hover:text-neon-green transition-colors"
+                  aria-label="Buscar productos"
+                >
+                  <Search size={20} />
+                </button>
+                <AnimatePresence>
+                  {showSearch && (
+                    <motion.form
+                      initial={{ width: 0, opacity: 0 }}
+                      animate={{ width: 240, opacity: 1 }}
+                      exit={{ width: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onSubmit={handleSearchSubmit}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 origin-right overflow-hidden"
+                    >
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Buscar productos..."
+                        className="w-full bg-white/5 border border-white/20 text-white text-sm px-4 py-2 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/30"
+                        autoFocus
+                      />
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -168,6 +203,18 @@ export default function Navbar() {
               className="md:hidden bg-brutal-black border-t border-white/10 overflow-hidden"
             >
               <div className="px-4 pt-2 pb-6 space-y-4">
+                <form onSubmit={(e) => { handleSearchSubmit(e); setIsMenuOpen(false); }} className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar productos..."
+                    className="w-full bg-white/5 border border-white/20 text-white text-sm px-4 py-3 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/30"
+                  />
+                  <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-neon-green">
+                    <Search size={18} />
+                  </button>
+                </form>
                 <div className="space-y-2">
                   <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Catalogo</p>
                   {categories.map((cat) => (

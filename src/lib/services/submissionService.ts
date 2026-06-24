@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs';
 import { getWhatsAppUrl, WhatsAppMsgContext } from '@/lib/whatsapp';
 import { z } from 'zod';
 
@@ -35,15 +34,6 @@ export async function handleSubmission<T>(
             return { success: true, recordId: savedRecord.id, whatsappUrl };
         } catch (whatsappError) {
             console.error('Fallo al generar URL de WhatsApp:', whatsappError);
-            Sentry.captureException(whatsappError, {
-                tags: {
-                    feature: 'whatsapp_notification',
-                    topic: whatsappTopic,
-                },
-                extra: {
-                    recordId: savedRecord.id,
-                },
-            });
             // Devolvemos éxito porque la orden ya está guardada.
             return { success: true, recordId: savedRecord.id };
         }
@@ -51,11 +41,6 @@ export async function handleSubmission<T>(
     } catch (dbError) {
         // 5. Si el guardado en la DB falla, SÍ fallamos la operación.
         console.error('Fallo al guardar en la base de datos:', dbError);
-        Sentry.captureException(dbError, {
-            tags: {
-                feature: 'database_save',
-            },
-        });
         return { success: false, error: 'No se pudo guardar la solicitud. Por favor, inténtalo de nuevo.' };
     }
 }

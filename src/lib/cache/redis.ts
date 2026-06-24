@@ -190,7 +190,7 @@ export const ShippingCacheKeys = {
     `shipping:cart:${cpDestino}:${totalPeso}:${totalVolumen}:${contract}`,
 };
 
-export default {
+const redisClient = {
   redis,
   getOrSet,
   get,
@@ -200,3 +200,5 @@ export default {
   isRedisConnected,
   ShippingCacheKeys,
 };
+
+export default redisClient;

@@ -2,39 +2,41 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 
 import Strengh from '@/assets/dumbells.jpg'
 import Machine from '@/assets/machine-inside.jpg'
+import { useCategories } from '@/hooks/useCategories';
 
-const categories = [
-  {
-    name: 'Cardio',
-    image: Strengh,
-    slug: 'cardio',
-    gridArea: 'md:col-span-2 md:row-span-2'
-  },
-  {
-    name: 'Máquinas',
-    image: Machine,
-    slug: 'maquinas',
-    gridArea: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    name: 'Strengh',
-    image: Strengh,
-    slug: 'pesas-libres',
-    gridArea: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    name: 'Accesorios',
-    image: Machine,
-    slug: 'accesorios',
-    gridArea: 'md:col-span-2 md:row-span-1'
-  }
-];
+const categoryConfig: Record<string, { image: StaticImageData; gridArea: string }> = {
+  cardio: { image: Strengh, gridArea: 'md:col-span-2 md:row-span-2' },
+  maquinas: { image: Machine, gridArea: 'md:col-span-1 md:row-span-1' },
+  'pesas-libres': { image: Strengh, gridArea: 'md:col-span-1 md:row-span-1' },
+  accesorios: { image: Machine, gridArea: 'md:col-span-2 md:row-span-1' },
+};
 
 export default function CategoryGrid() {
+  const { categories: dbCategories } = useCategories();
+
+  const displayCategories = dbCategories
+    .filter(c => categoryConfig[c.slug])
+    .slice(0, 4)
+    .map(c => ({
+      name: c.name,
+      slug: c.slug,
+      image: categoryConfig[c.slug].image,
+      gridArea: categoryConfig[c.slug].gridArea,
+    }));
+
+  const categories = displayCategories.length === 4 ? displayCategories : Object.entries(categoryConfig).map(([slug, config]) => ({
+    name: slug.charAt(0).toUpperCase() + slug.slice(1),
+    slug,
+    image: config.image,
+    gridArea: config.gridArea,
+  }));
+
+  // console.log('[CategoryGrid] categories:', categories, { loading, error });
+
   return (
     <section className="py-24 max-w-7xl mx-auto px-4">
       <div className="flex justify-between items-end mb-12">

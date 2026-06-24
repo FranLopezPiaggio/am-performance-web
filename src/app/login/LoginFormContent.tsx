@@ -3,9 +3,19 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft } from 'lucide-react';
+
+/**
+ * Valida que un redirectTo sea una URL segura (relativa al mismo sitio).
+ * Previene open redirect attacks donde un atacante usa:
+ *   /login?redirectTo=https://evil.com
+ */
+function isValidRedirect(url: string | null): url is string {
+  if (!url) return false;
+  // Solo permitir paths relativos que empiecen con /
+  return url.startsWith('/') && !url.includes('://') && !url.includes('\\');
+}
 
 export default function LoginFormContent() {
     const [email, setEmail] = useState('');
@@ -30,9 +40,9 @@ export default function LoginFormContent() {
         if (error) {
             setError(error.message);
         } else {
-            // Redirect to home page after successful login
+            // Redirect seguro — solo paths relativos
             const redirectTo = searchParams.get('redirectTo');
-            router.push(redirectTo || '/');
+            router.push(isValidRedirect(redirectTo) ? redirectTo : '/');
         }
 
         setLoading(false);

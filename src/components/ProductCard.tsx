@@ -1,26 +1,15 @@
 'use client';
 
 import React from 'react';
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { ShoppingCart, Star, Eye } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useModal } from '@/components/providers/ModalProvider';
 import { motion } from 'framer-motion';
+import type { ProductCardData } from '@/lib/mappers/productMapper';
 
 interface ProductCardProps {
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    image: string | StaticImageData;
-    category: string;
-    rating: number;
-    reviews: number;
-    isNew?: boolean;
-    discount?: number;
-    inmediately_available?: boolean;
-    delivery_lead_days?: number | null;
-  };
+  product: ProductCardData;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -74,7 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            openModal(product.id);
+            openModal(product.slug);
           }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white text-brutal-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
         >
