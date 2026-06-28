@@ -34,7 +34,13 @@ export default function ImageManager({ productId, productName, initialImages }: 
     setTimeout(() => setSuccess(null), 3000);
   };
 
-  // ── Upload ───────────────────────────────────────────────────────
+  // ── Upload (Direct Client-to-Cloud con Backend Signing) ──────────
+  //
+  // 1. POST /api/admin/images/sign  → obtiene firma + params
+  // 2. POST https://api.cloudinary.com/… → sube el archivo directo
+  // 3. POST /api/admin/images/save  → persiste en nuestra DB
+  //
+  // Beneficio: los bytes NUNCA pasan por Vercel serverless.
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,22 +50,59 @@ export default function ImageManager({ productId, productName, initialImages }: 
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('product_id', productId);
-
-      const res = await fetch('/api/admin/images/upload', {
+      // ── 1. Get upload signature from server ────────────────────────
+      const signRes = await fetch('/api/admin/images/sign', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId }),
       });
 
-      const data = await res.json();
+      const signData = await signRes.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Error al subir la imagen');
+      if (!signRes.ok) {
+        throw new Error(signData.error || 'Error al obtener firma de upload');
       }
 
-      setImages((prev) => [...prev, data]);
+      const { signature, timestamp, apiKey, cloudName, folder, publicId } = signData;
+
+      // ── 2. Upload directly to Cloudinary ───────────────────────────
+      const cloudFormData = new FormData();
+      cloudFormData.append('file', file);
+      cloudFormData.append('api_key', apiKey);
+      cloudFormData.append('timestamp', String(timestamp));
+      cloudFormData.append('signature', signature);
+      cloudFormData.append('folder', folder);
+      cloudFormData.append('public_id', publicId);
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        { method: 'POST', body: cloudFormData }
+      );
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadRes.ok) {
+        throw new Error(uploadData.error?.message || 'Error al subir la imagen a Cloudinary');
+      }
+
+      // ── 3. Save the result to our database ─────────────────────────
+      const saveRes = await fetch('/api/admin/images/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          publicId: uploadData.public_id,
+          secureUrl: uploadData.secure_url,
+          productId,
+        }),
+      });
+
+      const saveData = await saveRes.json();
+
+      if (!saveRes.ok) {
+        throw new Error(saveData.error || 'Error al guardar la imagen en la base de datos');
+      }
+
+      setImages((prev) => [...prev, saveData]);
       flashSuccess('Imagen subida correctamente');
     } catch (err) {
       flashError(err instanceof Error ? err.message : 'Error al subir la imagen');
@@ -70,7 +113,7 @@ export default function ImageManager({ productId, productName, initialImages }: 
     }
   };
 
-  // ── Delete ───────────────────────────────────────────────────────
+  // ── Delete (de Cloudinary + DB) ──────────────────────────────────
 
   const handleDelete = async (imageId: string) => {
     if (!confirm('¿Eliminar esta imagen? Esta acción no se puede deshacer.')) return;

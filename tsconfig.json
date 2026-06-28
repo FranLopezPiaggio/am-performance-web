@@ -34,7 +34,15 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    ".agents/extra/scripts/set-defaults.ts",
+    ".agents/extra/scripts/seed-from-excel.ts",
+    ".agents/extra/scripts/expand-variants.ts",
+    ".agents/extra/scripts/_findvariants4.mts",
+    ".agents/extra/scripts/_findvariants3.mts",
+    ".agents/extra/scripts/_findvariants2.mts",
+    ".agents/extra/scripts/_findvariants.mts",
+    ".agents/extra/scripts/_db_summary.mts"
   ],
   "exclude": [
     "node_modules",
