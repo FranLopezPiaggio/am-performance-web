@@ -52,6 +52,7 @@ export function useProducts(
       })
       .catch((err) => {
         if (cancelled) return;
+        console.error('[useProducts] fetch error:', err);
         setError(err instanceof Error ? err : new Error('Failed to fetch products'));
         setProducts([]);
       })
@@ -87,6 +88,7 @@ export function useProducts(
       })
       .catch((err) => {
         if (cancelled) return;
+        console.error('[useProducts] loadMore error:', err);
         setError(err instanceof Error ? err : new Error('Failed to load more products'));
       })
       .finally(() => {

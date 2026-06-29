@@ -50,13 +50,19 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-brutal-black">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
-          referrerPolicy="no-referrer"
-        />
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-white/20 text-xs uppercase tracking-widest p-4 text-center">
+            Sin imagen
+          </div>
+        )}
         <div className="absolute inset-0 bg-brutal-black/20 group-hover:bg-transparent transition-colors" />
 
         {/* View Details Button */}

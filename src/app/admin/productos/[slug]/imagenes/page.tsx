@@ -5,25 +5,25 @@ import { notFound } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 
 /**
- * Page: /admin/productos/:id/imagenes
+ * Page: /admin/productos/:slug/imagenes
  *
- * Server component que carga datos iniciales del producto y sus imágenes,
- * y los pasa al componente cliente ImageManager para su gestión interactiva.
- * La autenticación admin está protegida por middleware.
+ * Server component that loads product data and existing images by slug,
+ * then passes them to the client ImageManager for interactive management.
+ * Admin authentication is protected by middleware.
  */
 export default async function ProductImagesPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
   const supabase = createAdminClient();
 
-  // Fetch product basic info
+  // Fetch product by slug
   const { data: product, error: productError } = await supabase
     .from('products')
     .select('id, name, slug')
-    .eq('id', id)
+    .eq('slug', slug)
     .single();
 
   if (productError || !product) notFound();
@@ -32,7 +32,7 @@ export default async function ProductImagesPage({
   const { data: images } = await supabase
     .from('product_images')
     .select('*')
-    .eq('product_id', id)
+    .eq('product_id', product.id)
     .order('display_order', { ascending: true });
 
   return (

@@ -24,6 +24,7 @@ export function useCategories(): UseCategoriesReturn {
         const data = await getCategories(supabase);
         setCategories(data);
       } catch (err) {
+        console.error('[useCategories] fetch error:', err);
         setError(err instanceof Error ? err : new Error('Failed to fetch categories'));
       } finally {
         setLoading(false);

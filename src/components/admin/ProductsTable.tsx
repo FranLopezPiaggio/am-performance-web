@@ -104,7 +104,7 @@ export default function ProductsTable() {
               <td className="px-4 py-4 text-right">
                 <div className="flex items-center justify-end gap-3">
                   <Link
-                    href={`/admin/productos/${p.id}/imagenes`}
+                    href={`/admin/productos/${p.slug}/imagenes`}
                     className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-white/40 hover:text-neon-green transition-colors"
                   >
                     <ImageUp size={12} />
