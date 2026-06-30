@@ -16,6 +16,7 @@ export default function ProyectosPage() {
     name: '',
     email: '',
     phone: '',
+    address: '',
     city: '',
     squareMeters: '',
     gymStyle: '',
@@ -188,6 +189,21 @@ export default function ProyectosPage() {
                       placeholder="tu@email.com"
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
+                      Dirección
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      className={`w-full bg-white/5 border ${errors.address ? 'border-red-500' : 'border-white/10'} px-4 py-3 text-white focus:border-neon-green focus:outline-none transition-colors`}
+                      placeholder="Calle y número"
+                    />
+                    {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
                   </div>
 
                   <div>

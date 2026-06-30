@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { z } from 'zod';
 import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
+import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
 
 import CartDisclaimer from '@/components/CartDisclaimer';
 
@@ -77,6 +78,7 @@ export default function CartPage() {
     maxLeadDays,
   } = useCart();
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [form, setForm] = useState<CustomerFormValues>({
     nombre: '',
     email: '',
@@ -112,13 +114,14 @@ export default function CartPage() {
     }
   };
 
-  const buildWhatsAppMessage = (): string => {
-    const itemsList = cart
-      .map((item) => `• ${item.quantity}x ${item.name} - $${(item.price * item.quantity).toLocaleString()}`)
+  const buildWhatsAppMessage = (data: { orderNumber: string; items: Array<{name: string; quantity: number; total: number}>; total: number }): string => {
+    const itemsList = data.items
+      .map((item) => `• ${item.quantity}x ${item.name} - $${item.total.toLocaleString()}`)
       .join('\n');
 
     return [
       '🛒 *NUEVO PEDIDO - AM Performance*',
+      `*Orden: ${data.orderNumber}*`,
       '',
       '*Cliente:*',
       `Nombre: ${form.nombre}`,
@@ -130,32 +133,54 @@ export default function CartPage() {
       '*Productos:*',
       itemsList,
       '',
-      `*Total: $${totalPrice.toLocaleString()}*`,
+      `*Total: $${data.total.toLocaleString()}*`,
       '',
       '¡Gracias por tu compra! 🙌',
     ].join('\n');
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
+    setSubmitError(null);
 
-    // Guardar en localStorage para la confirmación
-    localStorage.setItem('orderConfirmation', JSON.stringify({
-      customerInfo: form,
-      cartItems: cart,
-      total: totalPrice,
-    }));
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerInfo: form,
+          cartItems: cart.map(item => ({ variant_id: item.id, quantity: item.quantity })),
+        }),
+      });
 
-    clearCart();
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Error al procesar el pedido' }));
+        throw new Error(err.error || 'Error al procesar el pedido');
+      }
 
-    // Armar mensaje y redirigir a WhatsApp
-    const message = buildWhatsAppMessage();
-    const encoded = encodeURIComponent(message);
-    const phone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '5492325511751';
-    const cleanPhone = phone.replace(/\D/g, '');
-    window.location.href = `https://wa.me/${cleanPhone}?text=${encoded}`;
+      const data = await res.json();
+
+      // Guardar datos verificados por el servidor
+      localStorage.setItem('orderConfirmation', JSON.stringify({
+        customerInfo: form,
+        orderNumber: data.orderNumber,
+        items: data.items,
+        total: data.total,
+      }));
+
+      clearCart();
+
+      // Armar mensaje con datos verificados del servidor
+      const message = buildWhatsAppMessage(data);
+      const shortFallback = `🛒 *NUEVO PEDIDO - AM Performance*\n*Orden: ${data.orderNumber}*\nTotal: $${data.total.toLocaleString()}\n\nTe contactaremos para coordinar el pago y envío.`;
+      const url = getWhatsAppUrlSafe(message, shortFallback);
+      window.location.href = url;
+    } catch (e) {
+      setSubmitError(e instanceof Error ? e.message : 'Error al procesar el pedido');
+      setLoading(false);
+    }
   };
 
   if (cart.length === 0) {
@@ -363,6 +388,12 @@ export default function CartPage() {
                   </>
                 )}
               </button>
+
+              {submitError && (
+                <p className="text-red-500 text-xs text-center mt-4 uppercase tracking-widest">
+                  {submitError}
+                </p>
+              )}
 
               <p className="text-[10px] text-center mt-6 uppercase font-bold opacity-50 tracking-widest">
                 Pedidos procesados por WhatsApp

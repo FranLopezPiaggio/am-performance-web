@@ -19,7 +19,7 @@ const createProjectLeadSchema = z.object({
  * No requiere autenticación (es un formulario público).
  * Usa service_role key para insertar (bypass de RLS).
  *
- * Request body: { customerInfo: { name, email, phone, city, squareMeters?, gymStyle, budget, requirements? } }
+ * Request body: { customerInfo: { name, email, phone, address, city, squareMeters?, gymStyle, budget, requirements? } }
  * Success: { success: true, recordId: string }
  * Error:   { success: false, error: string }
  */
@@ -37,16 +37,16 @@ export async function POST(req: Request) {
     const { data, error } = await supabase
       .from('project_leads')
       .insert({
-        name: customerInfo.name,
-        email: customerInfo.email,
-        phone: customerInfo.phone,
-        city: customerInfo.city,
+        client_name: customerInfo.name,
+        client_email: customerInfo.email,
+        client_phone: customerInfo.phone,
+        client_address: `${customerInfo.address}, ${customerInfo.city}`,
         square_meters: customerInfo.squareMeters
           ? parseInt(customerInfo.squareMeters, 10)
-          : null,
-        gym_style: customerInfo.gymStyle,
-        budget: customerInfo.budget,
-        requirements: customerInfo.requirements || null,
+          : 0,
+        gym_type: customerInfo.gymStyle,
+        budget_range: customerInfo.budget,
+        additional_notes: customerInfo.requirements || null,
         status: 'new',
       })
       .select('id')

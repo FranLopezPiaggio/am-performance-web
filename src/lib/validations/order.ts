@@ -9,18 +9,14 @@ export const customerFormSchema = z.object({
 });
 
 export const cartItemSchema = z.object({
-    id: z.string().min(1, "El ID del producto es requerido."),
-    name: z.string().optional(),
-    price: z.number().min(0).optional(),
+    variant_id: z.string().min(1, "El ID de la variante es requerido."),
     quantity: z.number().min(1, "La cantidad debe ser mayor a 0."),
-    image: z.string().optional(),
-    category: z.string().optional()
 });
 
 export const createOrderSchema = z.object({
     customerInfo: customerFormSchema,
     cartItems: z.array(cartItemSchema).min(1, "El carrito no puede estar vacío."),
-    total: z.number().min(0, "El total no puede ser negativo.")
+    paymentMethod: z.enum(['whatsapp', 'mercadopago', 'transfer']).default('whatsapp'),
 });
 
 export type CustomerFormValues = z.infer<typeof customerFormSchema>;
