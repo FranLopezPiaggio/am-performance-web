@@ -176,7 +176,7 @@ function ProjectsContent() {
           Proyectos
         </h1>
         <p className="text-white/60">
-          Consulta de proyectos de健身房 (gimnasios).
+          Consulta de proyectos de gimnasios.
         </p>
       </div>
       <div className="bg-white/5 border border-white/10">

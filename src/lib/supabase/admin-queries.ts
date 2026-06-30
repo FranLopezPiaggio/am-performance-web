@@ -1,6 +1,8 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import type {
   Database,
+  Lead,
+  OrderStatus,
   OrderWithDetails,
   ProjectLead,
 } from '@/types/database';
@@ -113,4 +115,97 @@ export async function getAdminProductCount(
 
   if (error) throw error;
   return count || 0;
+}
+
+// ====== Order Status Queries ======
+
+export async function getOrderStatuses(
+  supabase: SupabaseClient<Database>
+): Promise<OrderStatus[]> {
+  const { data, error } = await supabase
+    .from('order_statuses')
+    .select('*')
+    .order('display_order', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function updateOrder(
+  supabase: SupabaseClient<Database>,
+  id: string,
+  fields: { status_id?: string; admin_notes?: string | null }
+): Promise<void> {
+  const { error } = await supabase
+    .from('orders')
+    .update(fields as never)
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+// ====== Project Lead Mutations ======
+
+export async function updateProjectLead(
+  supabase: SupabaseClient<Database>,
+  id: string,
+  fields: { status?: string; assigned_to?: string | null }
+): Promise<void> {
+  const { error } = await supabase
+    .from('project_leads')
+    .update(fields as never)
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+// ====== Lead (Customer) Queries ======
+
+export async function getLeads(
+  supabase: SupabaseClient<Database>
+): Promise<Lead[]> {
+  const { data, error } = await supabase
+    .from('leads')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getLead(
+  supabase: SupabaseClient<Database>,
+  id: string
+): Promise<Lead | null> {
+  const { data, error } = await supabase
+    .from('leads')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+export async function getLeadOrders(
+  supabase: SupabaseClient<Database>,
+  leadId: string
+): Promise<OrderWithDetails[]> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      status:order_statuses(*),
+      lead:leads(*),
+      shipping_address:addresses!shipping_address_id(*),
+      billing_address:addresses!billing_address_id(*),
+      items:order_items(*),
+      payments:payments(*),
+      coupons:order_coupons(*)
+    `)
+    .eq('lead_id', leadId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return (data as unknown as OrderWithDetails[]) || [];
 }
