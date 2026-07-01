@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { projectFormSchema } from '@/lib/validations/projects';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, ratelimits } from '@/lib/rate-limit';
+import { captureEvent } from '@/lib/analytics/server';
 
 /**
  * Schema para la request entrante del formulario de proyectos.
@@ -53,6 +54,16 @@ export async function POST(req: Request) {
       .single();
 
     if (error) throw error;
+
+    // ── Analytics ────────────────────────────────────────────────────
+    captureEvent('project_lead_submitted', customerInfo.email, {
+      lead_id: data.id,
+      budget_range: customerInfo.budget,
+      gym_type: customerInfo.gymStyle,
+      square_meters: customerInfo.squareMeters
+        ? parseInt(customerInfo.squareMeters, 10)
+        : 0,
+    });
 
     return NextResponse.json({ success: true, recordId: data.id });
   } catch (error) {

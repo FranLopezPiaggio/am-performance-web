@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ModalProvider } from '@/components/providers/ModalProvider';
 import ProductModalWrapper from '@/components/providers/ProductModalWrapper';
+import { PostHogProvider } from '@/lib/analytics/posthog-provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,14 +33,16 @@ export default function RootLayout({
     <html lang="es" className={`${inter.variable} ${anton.variable}`}>
       <body suppressHydrationWarning className="antialiased">
         <ErrorBoundary>
-          <AuthProvider>
-            <CartProvider>
-              <ModalProvider>
-                {children}
-                <ProductModalWrapper />
-              </ModalProvider>
-            </CartProvider>
-          </AuthProvider>
+          <PostHogProvider>
+            <AuthProvider>
+              <CartProvider>
+                <ModalProvider>
+                  {children}
+                  <ProductModalWrapper />
+                </ModalProvider>
+              </CartProvider>
+            </AuthProvider>
+          </PostHogProvider>
         </ErrorBoundary>
       </body>
     </html>

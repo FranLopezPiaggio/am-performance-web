@@ -4,6 +4,7 @@ import { createOrderSchema } from '@/lib/validations/order';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { checkRateLimit, ratelimits } from '@/lib/rate-limit';
+import { captureEvent } from '@/lib/analytics/server';
 
 const mpClient = new MercadoPagoConfig({
   accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || '',
@@ -223,6 +224,16 @@ export async function POST(req: Request) {
       expiresAt.setHours(expiresAt.getHours() + 24);
       response.paymentExpiresAt = expiresAt.toISOString();
     }
+
+    // ── Analytics ────────────────────────────────────────────────────
+    captureEvent('order_created', customerInfo.email, {
+      order_id: order.id,
+      order_number: orderNumber,
+      total,
+      items_count: orderItems.length,
+      payment_method: paymentMethod,
+      currency: 'ARS',
+    });
 
     return NextResponse.json(response);
   } catch (error) {

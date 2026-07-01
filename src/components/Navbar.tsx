@@ -10,6 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { getWhatsAppUrl } from '@/lib/whatsapp/service';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { trackWhatsappClicked, trackCatalogFiltered } from '@/lib/analytics/events';
 
 const WhatsAppSVG = '/img/svg/whatsapp.svg';
 
@@ -43,6 +44,7 @@ export default function Navbar() {
     e.preventDefault();
     const q = searchQuery.trim();
     if (q) {
+      trackCatalogFiltered({ type: 'search', value: q });
       router.push(`/catalogo?search=${encodeURIComponent(q)}`);
       setShowSearch(false);
       setSearchQuery('');
@@ -181,6 +183,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="p-2 hover:text-neon-green transition-colors"
                 aria-label="Contacto por WhatsApp"
+                onClick={() => trackWhatsappClicked('navbar')}
               >
                 <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} unoptimized />
               </a>

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { useLeads } from '@/hooks/useLeads';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { trackProductAddedToCart } from '@/lib/analytics/events';
 
 export interface CartItem {
   id: string;
@@ -90,6 +91,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } else {
       imageString = product.image;
     }
+
+    trackProductAddedToCart({
+      variant_id: product.id,
+      product_name: product.name,
+      price: product.price,
+      quantity,
+      category: product.category,
+      is_immediate: product.inmediatamente_available ?? true,
+    });
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);

@@ -11,6 +11,7 @@ import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order'
 import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
 
 import CartDisclaimer from '@/components/CartDisclaimer';
+import { trackCheckoutStarted, trackWhatsappClicked } from '@/lib/analytics/events';
 
 // --- SOLUCIÓN 1: MOVER EL COMPONENTE FUERA ---
 // Se mueve el componente InputField fuera de CartPage para evitar el bug de tipeo.
@@ -145,6 +146,12 @@ export default function CartPage() {
     setLoading(true);
     setSubmitError(null);
 
+    trackCheckoutStarted({
+      total: totalPrice,
+      items_count: cart.length,
+      has_delayed_items: hasDelayedItems(),
+    });
+
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -175,6 +182,7 @@ export default function CartPage() {
       // Armar mensaje con datos verificados del servidor
       const message = buildWhatsAppMessage(data);
       const shortFallback = `🛒 *NUEVO PEDIDO - AM Performance*\n*Orden: ${data.orderNumber}*\nTotal: $${data.total.toLocaleString()}\n\nTe contactaremos para coordinar el pago y envío.`;
+      trackWhatsappClicked('checkout');
       const url = getWhatsAppUrlSafe(message, shortFallback);
       window.location.href = url;
     } catch (e) {
