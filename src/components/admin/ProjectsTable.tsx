@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { FolderKanban } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
 
@@ -39,6 +40,7 @@ const budgetLabels: Record<string, string> = {
 
 export default function ProjectsTable() {
   const { projects, loading, error, total } = useProjects();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -106,7 +108,7 @@ export default function ProjectsTable() {
             const gymType = gymTypeLabels[project.gym_type] || project.gym_type;
 
             return (
-              <tr key={project.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <tr key={project.id} onClick={() => router.push(`/admin/proyectos/${project.id}`)} className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
                 <td className="px-4 py-4">
                   <span className="font-bold text-white uppercase tracking-wider">
                     {project.client_name}

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { ShoppingCart } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
 
@@ -24,6 +25,7 @@ const statusLabels: Record<string, string> = {
 
 export default function OrdersTable() {
   const { orders, loading, error, total } = useOrders();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -91,7 +93,7 @@ export default function OrdersTable() {
             const statusLabel = statusLabels[statusName] || statusName;
 
             return (
-              <tr key={order.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <tr key={order.id} onClick={() => router.push(`/admin/orders/${order.id}`)} className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
                 <td className="px-4 py-4">
                   <span className="font-bold text-white font-mono text-xs">
                     #{order.order_number}

@@ -10,6 +10,7 @@ import {
   Package,
   ShoppingCart,
   FolderKanban,
+  Users,
   LogOut,
   Menu,
   X,
@@ -18,9 +19,10 @@ import {
 
 const adminNav = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Órdenes', href: '/admin/orders', icon: ShoppingCart },
+  { name: 'Proyectos', href: '/admin/proyectos', icon: FolderKanban },
+  { name: 'Clientes', href: '/admin/leads', icon: Users },
   { name: 'Productos', href: '/admin?view=products', icon: Package },
-  { name: 'Órdenes', href: '/admin?view=orders', icon: ShoppingCart },
-  { name: 'Proyectos', href: '/admin?view=projects', icon: FolderKanban },
 ];
 
 export default function AdminLayout({

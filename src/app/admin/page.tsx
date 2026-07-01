@@ -228,5 +228,13 @@ function AdminDashboardContent() {
     return <ProductsContent />;
   }
 
+  if (view === 'leads') {
+    // Ahora redirigido a /admin/leads
+    if (typeof window !== 'undefined') {
+      window.location.href = '/admin/leads';
+    }
+    return null;
+  }
+
   return <DashboardContent />;
 }
