@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, User, Save, Ruler, DollarSign, Clock, FileText } from 'lucide-react';
@@ -51,16 +51,13 @@ function LoadingSkeleton() {
   );
 }
 
-export default function ProjectDetailPage() {
-  const params = useParams<{ id: string }>();
-  const { project, loading, error, updateStatus } = useProjectDetail(params.id);
-  const [selectedStatus, setSelectedStatus] = useState('');
+function ProjectForm({ project, updateStatus }: {
+  project: NonNullable<ReturnType<typeof useProjectDetail>['project']>;
+  updateStatus: ReturnType<typeof useProjectDetail>['updateStatus'];
+}) {
+  const [selectedStatus, setSelectedStatus] = useState(project.status);
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState('');
-
-  useEffect(() => {
-    if (project) setSelectedStatus(project.status);
-  }, [project]);
 
   const handleSave = async () => {
     setUpdating(true);
@@ -73,24 +70,6 @@ export default function ProjectDetailPage() {
       setUpdating(false);
     }
   };
-
-  if (loading) return <LoadingSkeleton />;
-
-  if (error) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-red-500 uppercase tracking-widest text-sm font-bold mb-2">
-          Error al cargar el proyecto
-        </p>
-        <p className="text-white/30 text-xs uppercase tracking-widest">{error.message}</p>
-        <Link href="/admin?view=projects" className="text-neon-green text-sm mt-4 inline-block hover:underline">
-          ← Volver a proyectos
-        </Link>
-      </div>
-    );
-  }
-
-  if (!project) return null;
 
   return (
     <div className="space-y-6">
@@ -226,4 +205,29 @@ export default function ProjectDetailPage() {
       </div>
     </div>
   );
+}
+
+export default function ProjectDetailPage() {
+  const params = useParams<{ id: string }>();
+  const { project, loading, error, updateStatus } = useProjectDetail(params.id);
+
+  if (loading) return <LoadingSkeleton />;
+
+  if (error) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-red-500 uppercase tracking-widest text-sm font-bold mb-2">
+          Error al cargar el proyecto
+        </p>
+        <p className="text-white/30 text-xs uppercase tracking-widest">{error.message}</p>
+        <Link href="/admin?view=projects" className="text-neon-green text-sm mt-4 inline-block hover:underline">
+          ← Volver a proyectos
+        </Link>
+      </div>
+    );
+  }
+
+  if (!project) return null;
+
+  return <ProjectForm key={project.id} project={project} updateStatus={updateStatus} />;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -38,20 +38,14 @@ function LoadingSkeleton() {
   );
 }
 
-export default function OrderDetailPage() {
-  const params = useParams<{ id: string }>();
-  const { order, loading, error, updateStatus } = useOrderDetail(params.id);
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [adminNotes, setAdminNotes] = useState('');
+function OrderForm({ order, updateStatus }: {
+  order: NonNullable<ReturnType<typeof useOrderDetail>['order']>;
+  updateStatus: ReturnType<typeof useOrderDetail>['updateStatus'];
+}) {
+  const [selectedStatus, setSelectedStatus] = useState(order.status?.name || 'pending');
+  const [adminNotes, setAdminNotes] = useState(order.admin_notes || '');
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState('');
-
-  useEffect(() => {
-    if (order) {
-      setSelectedStatus(order.status?.name || 'pending');
-      setAdminNotes(order.admin_notes || '');
-    }
-  }, [order]);
 
   const handleSave = async () => {
     setUpdating(true);
@@ -64,24 +58,6 @@ export default function OrderDetailPage() {
       setUpdating(false);
     }
   };
-
-  if (loading) return <LoadingSkeleton />;
-
-  if (error) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-red-500 uppercase tracking-widest text-sm font-bold mb-2">
-          Error al cargar la orden
-        </p>
-        <p className="text-white/30 text-xs uppercase tracking-widest">{error.message}</p>
-        <Link href="/admin?view=orders" className="text-neon-green text-sm mt-4 inline-block hover:underline">
-          ← Volver a órdenes
-        </Link>
-      </div>
-    );
-  }
-
-  if (!order) return null;
 
   return (
     <div className="space-y-6">
@@ -272,4 +248,29 @@ export default function OrderDetailPage() {
       </div>
     </div>
   );
+}
+
+export default function OrderDetailPage() {
+  const params = useParams<{ id: string }>();
+  const { order, loading, error, updateStatus } = useOrderDetail(params.id);
+
+  if (loading) return <LoadingSkeleton />;
+
+  if (error) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-red-500 uppercase tracking-widest text-sm font-bold mb-2">
+          Error al cargar la orden
+        </p>
+        <p className="text-white/30 text-xs uppercase tracking-widest">{error.message}</p>
+        <Link href="/admin?view=orders" className="text-neon-green text-sm mt-4 inline-block hover:underline">
+          ← Volver a órdenes
+        </Link>
+      </div>
+    );
+  }
+
+  if (!order) return null;
+
+  return <OrderForm key={order.id} order={order} updateStatus={updateStatus} />;
 }

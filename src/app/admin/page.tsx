@@ -5,7 +5,7 @@
 
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
 import { Package, ShoppingCart, FolderKanban, TrendingUp, ArrowRight } from 'lucide-react';
 import OrdersTable from '@/components/admin/OrdersTable';
 import ProjectsTable from '@/components/admin/ProjectsTable';
@@ -229,11 +229,7 @@ function AdminDashboardContent() {
   }
 
   if (view === 'leads') {
-    // Ahora redirigido a /admin/leads
-    if (typeof window !== 'undefined') {
-      window.location.href = '/admin/leads';
-    }
-    return null;
+    return redirect('/admin/leads');
   }
 
   return <DashboardContent />;

@@ -64,26 +64,6 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Removed output: 'standalone' - not needed for Vercel deployment
-  // Vercel handles serverless functions automatically
-
-  turbopack: {
-    root: __dirname,
-    rules: {
-      '*.webm': {
-        loaders: ['file-loader'],
-        as: '*.webm',
-      },
-    },
-  },
-
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.webm$/,
-      use: 'file-loader',
-    });
-    return config;
-  },
 };
 
 export default withSentryConfig(nextConfig);
