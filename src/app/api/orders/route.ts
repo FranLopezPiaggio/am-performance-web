@@ -4,6 +4,7 @@ import { createOrderSchema } from '@/lib/validations/order';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { checkRateLimit, ratelimits } from '@/lib/rate-limit';
+import { checkBodySize } from '@/lib/api-security';
 import { captureEvent } from '@/lib/analytics/server';
 
 const mpClient = new MercadoPagoConfig({
@@ -11,6 +12,9 @@ const mpClient = new MercadoPagoConfig({
 });
 
 export async function POST(req: Request) {
+  const sizeCheck = checkBodySize(req);
+  if (sizeCheck) return sizeCheck;
+
   const rateLimitResponse = await checkRateLimit(req, ratelimits.orders);
   if (rateLimitResponse) return rateLimitResponse;
 

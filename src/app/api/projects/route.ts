@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { projectFormSchema } from '@/lib/validations/projects';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, ratelimits } from '@/lib/rate-limit';
+import { checkBodySize } from '@/lib/api-security';
 import { captureEvent } from '@/lib/analytics/server';
 
 /**
@@ -25,6 +26,9 @@ const createProjectLeadSchema = z.object({
  * Error:   { success: false, error: string }
  */
 export async function POST(req: Request) {
+  const sizeCheck = checkBodySize(req);
+  if (sizeCheck) return sizeCheck;
+
   const rateLimitResponse = await checkRateLimit(req, ratelimits.projects);
   if (rateLimitResponse) return rateLimitResponse;
 

@@ -26,6 +26,7 @@ export async function POST() {
 //
 // import { MercadoPagoConfig, Preference } from 'mercadopago';
 // import { checkRateLimit, ratelimits } from '@/lib/rate-limit';
+// import { checkBodySize } from '@/lib/api-security';
 //
 // const client = new MercadoPagoConfig({
 //   accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || '',
