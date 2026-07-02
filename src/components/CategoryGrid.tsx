@@ -1,12 +1,10 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
+import type { Category } from '@/types/database';
 
 import Strengh from '@/assets/dumbells.jpg'
 import Machine from '@/assets/machine-inside.jpg'
-import { useCategories } from '@/hooks/useCategories';
 
 const categoryConfig: Record<string, { image: StaticImageData; gridArea: string }> = {
   cardio: { image: Strengh, gridArea: 'md:col-span-2 md:row-span-2' },
@@ -15,8 +13,7 @@ const categoryConfig: Record<string, { image: StaticImageData; gridArea: string 
   accesorios: { image: Machine, gridArea: 'md:col-span-2 md:row-span-1' },
 };
 
-export default function CategoryGrid() {
-  const { categories: dbCategories } = useCategories();
+export default function CategoryGrid({ categories: dbCategories }: { categories: Category[] }) {
 
   const displayCategories = dbCategories
     .filter(c => categoryConfig[c.slug])

@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
+import { createClient } from '@/lib/supabase/server';
+import { getCategories, getBestSellers } from '@/lib/supabase/queries';
 
 const trustItems = [
   { icon: Truck, title: 'Envíos a todo el país', desc: 'Llegamos a cada rincón de Argentina.' },
@@ -14,7 +16,13 @@ const trustItems = [
   { icon: Headphones, title: 'Soporte 24/7', desc: 'Asesoramiento técnico especializado.' }
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const [categories, bestSellers] = await Promise.all([
+    getCategories(supabase),
+    getBestSellers(supabase, 8),
+  ]);
+
   return (
     <main className="min-h-screen pb-24">
       <Navbar />
@@ -35,9 +43,9 @@ export default function Home() {
         </div>
       </section>
 
-      <CategoryGrid />
+      <CategoryGrid categories={categories} />
 
-      <BestSellersSection />
+      <BestSellersSection products={bestSellers} />
 
       {/* Newsletter / CTA */}
       <section className="py-24 max-w-7xl mx-auto px-4">

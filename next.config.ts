@@ -53,7 +53,6 @@ const nextConfig: NextConfig = {
   // ── Images ────────────────────────────────────────────────────────
   images: {
     formats: ['image/avif', 'image/webp'],
-    unoptimized: true, // Enable for local images to avoid optimization errors
     remotePatterns: [
       {
         protocol: 'https',
@@ -66,4 +65,6 @@ const nextConfig: NextConfig = {
 
 };
 
-export default withSentryConfig(nextConfig);
+export default withSentryConfig(nextConfig, {
+  silent: !process.env.CI,
+});
