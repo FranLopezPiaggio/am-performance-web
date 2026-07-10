@@ -12,7 +12,7 @@ export interface ProductCardData {
   reviews: number;
   isNew?: boolean;
   discount?: number;
-  inmediately_available?: boolean;
+  immediatelyAvailable?: boolean;
   delivery_lead_days?: number | null;
 }
 
@@ -43,7 +43,7 @@ export function mapProductToCard(product: ProductWithVariants): ProductCardData 
     reviews: 0,
     isNew: isNew || undefined,
     discount,
-    inmediately_available: product.variants.length > 0 ? stock > 0 : true,
+    immediatelyAvailable: product.variants.length > 0 ? stock > 0 : true,
     delivery_lead_days: null,
   };
 }

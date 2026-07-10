@@ -296,7 +296,7 @@ export default function ProductDetailPage() {
           product.images[0]?.image_url ??
           '',
         category: product.category.name,
-        inmediatamente_available: (selectedVariant?.stock ?? 0) > 0,
+        immediatelyAvailable: (selectedVariant?.stock ?? 0) > 0,
         delivery_lead_days: null,
       },
       1

@@ -71,6 +71,8 @@ skills/
 skills/*
 scripts/
 scripts/*
+backups/
+.ruff_cache
 
 Makefile
 .gstack/

@@ -27,6 +27,19 @@ function CatalogoContent() {
   const currentCategory = categoria
     ? allCategories.find((c) => c.slug === categoria)
     : null;
+  const parentCategories = allCategories.filter((c) => !c.parent_id);
+
+  // Group by subcategory when a parent category is selected
+  const grouped = currentCategory && !currentCategory.parent_id
+    ? Object.entries(
+        displayProducts.reduce<Record<string, typeof displayProducts>>((acc, p) => {
+          const key = p.category;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(p);
+          return acc;
+        }, {}),
+      )
+    : null;
 
   return (
     <>
@@ -59,7 +72,7 @@ function CatalogoContent() {
           >
             Todos
           </Link>
-          {allCategories.map((cat) => (
+          {parentCategories.map((cat) => (
             <Link
               key={cat.slug}
               href={`/catalogo?categoria=${cat.slug}`}
@@ -112,11 +125,26 @@ function CatalogoContent() {
 
         {products.length > 0 && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {displayProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {grouped ? (
+              grouped.map(([subcatName, prods]) => (
+                <div key={subcatName} className="mb-12">
+                  <h3 className="text-lg font-display uppercase tracking-tighter text-white/40 mb-6 border-b border-white/10 pb-2">
+                    {subcatName}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {prods.map((p) => (
+                      <ProductCard key={p.id} product={p} />
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {displayProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
 
             {hasMore && (
               <div className="flex justify-center mt-12">

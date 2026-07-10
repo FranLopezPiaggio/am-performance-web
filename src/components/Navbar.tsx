@@ -20,7 +20,8 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { totalItems } = useCart();
-  const { categories } = useCategories();
+  const { categories: allCategories } = useCategories();
+  const categories = allCategories.filter(c => !c.parent_id);
   const router = useRouter();
   // Login modal state — hidden from navbar. Admin uses /login route directly.
   // const [showLoginModal, setShowLoginModal] = useState(false);
@@ -108,9 +109,9 @@ export default function Navbar() {
               <Link href="/catalogo?ofertas=true" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
                 Ofertas
               </Link>
-              {/* <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors text-neon-green">
+              <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
                 Proyectos
-              </Link> */}
+              </Link>
             </div>
 
             <div className="flex items-center space-x-5">
@@ -233,7 +234,7 @@ export default function Navbar() {
                 </div>
                 <div className="pt-4 border-t border-white/10 space-y-4">
                   <Link href="/catalogo?ofertas=true" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Ofertas</Link>
-                  {/* <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link> */}
+                  <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
                 </div>
               </div>
             </motion.div>

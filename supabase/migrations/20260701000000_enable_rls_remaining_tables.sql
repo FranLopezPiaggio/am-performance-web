@@ -16,6 +16,7 @@ ALTER TABLE addresses ENABLE ROW LEVEL SECURITY;
 -- ====== Order Statuses (reference catalog) ======
 ALTER TABLE order_statuses ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "public_select_order_statuses" ON order_statuses;
 CREATE POLICY "public_select_order_statuses" ON order_statuses
   FOR SELECT
   TO anon

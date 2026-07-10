@@ -28,7 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             Nuevo
           </span>
         )}
-        {product.inmediately_available ? (
+        {product.immediatelyAvailable ? (
           <span className="bg-neon-green/20 text-neon-green border border-neon-green/30 text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
             Entrega Inmediata
           </span>

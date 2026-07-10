@@ -29,17 +29,15 @@ export async function POST(req: Request) {
     const variantIds = cartItems.map(i => i.variant_id);
     const { data: variants, error: variantsError } = await supabase
       .from('product_variants')
-      .select('id, product_id, price, variant_name, sku, products!inner(name)')
+      .select('id, product_id, price, variant_name, sku, stock, products!inner(name)')
       .in('id', variantIds)
       .eq('is_active', true);
 
     if (variantsError) throw variantsError;
 
     if (!variants || variants.length !== variantIds.length) {
-      const found = new Set((variants || []).map(v => v.id));
-      const missing = variantIds.filter(id => !found.has(id));
       return NextResponse.json(
-        { error: `Productos no disponibles: ${missing.join(', ')}` },
+        { error: 'Algunos productos de tu carrito ya no están disponibles. Eliminalos e intentá de nuevo.' },
         { status: 400 }
       );
     }
@@ -56,8 +54,18 @@ export async function POST(req: Request) {
         sku: v.sku,
         unit_price: Number(v.price),
         quantity: cartQuantity.get(v.id)!,
+        stock: v.stock,
       };
     });
+
+    // Stock validation
+    const outOfStock = resolvedItems.filter(i => i.quantity > i.stock);
+    if (outOfStock.length > 0) {
+      return NextResponse.json(
+        { error: 'Algunos productos no tienen stock suficiente. Revisá tu carrito.' },
+        { status: 400 }
+      );
+    }
 
     const subtotal = resolvedItems.reduce((s, i) => s + i.unit_price * i.quantity, 0);
     const total = subtotal;

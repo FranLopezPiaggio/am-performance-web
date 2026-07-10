@@ -241,7 +241,7 @@ export default function CartPage() {
                 <div className="flex-grow">
                   <div className="flex items-center gap-2 mb-1">
                     {/* Delivery badge */}
-                    {item.inmediatamente_available ? (
+                    {item.immediatelyAvailable ? (
                       <span className="bg-green-500/20 text-green-400 text-[8px] px-2 py-0.5 uppercase font-bold tracking-wider">
                         Entrega Inmediata
                       </span>
@@ -373,7 +373,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-sm font-bold uppercase tracking-widest">
                   <span>Envío</span>
-                  <span className="text-neon-green">Gratis</span>
+                  <span className="text-xs text-white/60 uppercase">A calcular al enviar</span>
                 </div>
                 <div className="pt-4 border-t border-brutal-black/10 flex justify-between text-2xl font-display uppercase tracking-tighter">
                   <span>Total</span>

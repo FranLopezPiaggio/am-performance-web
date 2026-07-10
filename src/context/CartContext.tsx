@@ -11,7 +11,7 @@ export interface CartItem {
   quantity: number;
   category: string;
   // AMP-023: Delivery fields
-  inmediatamente_available: boolean;
+  immediatelyAvailable: boolean;
   delivery_lead_days: number | null;
 }
 
@@ -33,7 +33,7 @@ interface BaseProduct {
   image: ProductImage;
   category: string;
   // AMP-023: Delivery fields
-  inmediatamente_available?: boolean;
+  immediatelyAvailable?: boolean;
   delivery_lead_days?: number | null;
 }
 
@@ -98,7 +98,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       price: product.price,
       quantity,
       category: product.category,
-      is_immediate: product.inmediatamente_available ?? true,
+      is_immediate: product.immediatelyAvailable ?? true,
     });
 
     setCart((prevCart) => {
@@ -113,7 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ...product, 
         image: imageString, 
         quantity,
-        inmediatamente_available: product.inmediatamente_available ?? true,
+        immediatelyAvailable: product.immediatelyAvailable ?? true,
         delivery_lead_days: product.delivery_lead_days ?? null,
       }];
     });
@@ -138,13 +138,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // AMP-023: Derived helpers
-  const hasImmediateItems = () => cart.some(item => item.inmediatamente_available === true);
-  const hasDelayedItems = () => cart.some(item => item.inmediatamente_available === false);
-  const hasOnlyDelayedItems = () => cart.length > 0 && cart.every(item => item.inmediatamente_available === false);
+  const hasImmediateItems = () => cart.some(item => item.immediatelyAvailable === true);
+  const hasDelayedItems = () => cart.some(item => item.immediatelyAvailable === false);
+  const hasOnlyDelayedItems = () => cart.length > 0 && cart.every(item => item.immediatelyAvailable === false);
   const hasMixedItems = () => {
     if (cart.length === 0) return false;
-    const hasImmediate = cart.some(item => item.inmediatamente_available === true);
-    const hasDelayed = cart.some(item => item.inmediatamente_available === false);
+    const hasImmediate = cart.some(item => item.immediatelyAvailable === true);
+    const hasDelayed = cart.some(item => item.immediatelyAvailable === false);
     return hasImmediate && hasDelayed;
   };
   const maxLeadDays = () => {

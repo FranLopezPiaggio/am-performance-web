@@ -84,9 +84,9 @@ export default function ProductsTable() {
               </td>
               <td className="px-4 py-4 text-center">
                 <span className={`text-xs font-bold ${
-                  p.inmediately_available ? 'text-green-400' : 'text-yellow'
+                  p.immediatelyAvailable ? 'text-green-400' : 'text-yellow'
                 }`}>
-                  {p.inmediately_available ? 'Disponible' : 'A Coordinar'}
+                  {p.immediatelyAvailable ? 'Disponible' : 'A Coordinar'}
                 </span>
               </td>
               <td className="px-4 py-4 text-center">

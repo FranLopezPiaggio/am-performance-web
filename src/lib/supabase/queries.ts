@@ -58,6 +58,18 @@ export async function getCategory(
   return data;
 }
 
+/** Resolve a category slug to its ID + all subcategory IDs (if it's a parent). */
+async function resolveCategoryIds(
+  supabase: SupabaseClient<Database>,
+  slug: string,
+): Promise<string[]> {
+  const cat = await getCategory(supabase, slug);
+  if (!cat) return [];
+  if (cat.parent_id) return [cat.id];
+  const all = await getCategories(supabase);
+  return [cat.id, ...all.filter(c => c.parent_id === cat.id).map(c => c.id)];
+}
+
 // ====== Line Queries ======
 
 export async function getLines(
@@ -89,7 +101,8 @@ export async function getProducts(
     `);
 
   if (filters.categorySlug) {
-    query = query.eq('categories.slug', filters.categorySlug);
+    const ids = await resolveCategoryIds(supabase, filters.categorySlug);
+    if (ids.length > 0) query = query.in('category_id', ids);
   }
   if (filters.lineSlug) {
     query = query.eq('lines.slug', filters.lineSlug);
@@ -175,10 +188,8 @@ export async function getProductCount(
     .select('*', { count: 'exact', head: true });
 
   if (filters.categorySlug) {
-    const cat = await getCategory(supabase, filters.categorySlug);
-    if (cat) {
-      query = query.eq('category_id', cat.id);
-    }
+    const ids = await resolveCategoryIds(supabase, filters.categorySlug);
+    if (ids.length > 0) query = query.in('category_id', ids);
   }
   if (filters.isActive !== undefined) {
     query = query.eq('is_active', filters.isActive);

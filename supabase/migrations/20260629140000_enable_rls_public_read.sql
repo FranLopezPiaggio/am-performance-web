@@ -5,6 +5,7 @@
 -- ====== Products ======
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "public_select_products" ON products;
 CREATE POLICY "public_select_products" ON products
   FOR SELECT
   TO anon
@@ -13,6 +14,7 @@ CREATE POLICY "public_select_products" ON products
 -- ====== Product Variants ======
 ALTER TABLE product_variants ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "public_select_variants" ON product_variants;
 CREATE POLICY "public_select_variants" ON product_variants
   FOR SELECT
   TO anon
@@ -21,6 +23,7 @@ CREATE POLICY "public_select_variants" ON product_variants
 -- ====== Product Images ======
 ALTER TABLE product_images ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "public_select_images" ON product_images;
 CREATE POLICY "public_select_images" ON product_images
   FOR SELECT
   TO anon
@@ -29,6 +32,7 @@ CREATE POLICY "public_select_images" ON product_images
 -- ====== Categories ======
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "public_select_categories" ON categories;
 CREATE POLICY "public_select_categories" ON categories
   FOR SELECT
   TO anon
@@ -37,6 +41,7 @@ CREATE POLICY "public_select_categories" ON categories
 -- ====== Lines ======
 ALTER TABLE lines ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "public_select_lines" ON lines;
 CREATE POLICY "public_select_lines" ON lines
   FOR SELECT
   TO anon
