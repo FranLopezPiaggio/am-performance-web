@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const customerFormSchema = z.object({
     nombre: z.string().min(2, "El nombre es requerido y debe tener al menos 2 caracteres."),
     email: z.string().email("Ingresa un email válido."),
-    telefono: z.string().min(8, "El teléfono es requerido y debe tener al menos 8 caracteres."),
+    telefono: z.string().regex(/^\+[1-9]\d{6,14}$/, "El teléfono debe estar en formato internacional: +541112345678."),
     direccion: z.string().min(5, "La dirección es requerida."),
     notas: z.string().optional(),
 });

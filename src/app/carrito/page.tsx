@@ -115,31 +115,6 @@ export default function CartPage() {
     }
   };
 
-  const buildWhatsAppMessage = (data: { orderNumber: string; items: Array<{name: string; quantity: number; total: number}>; total: number }): string => {
-    const itemsList = data.items
-      .map((item) => `• ${item.quantity}x ${item.name} - $${item.total.toLocaleString()}`)
-      .join('\n');
-
-    return [
-      '🛒 *NUEVO PEDIDO - AM Performance*',
-      `*Orden: ${data.orderNumber}*`,
-      '',
-      '*Cliente:*',
-      `Nombre: ${form.nombre}`,
-      `Email: ${form.email}`,
-      `Teléfono: ${form.telefono}`,
-      `Dirección: ${form.direccion}`,
-      ...(form.notas ? [`Notas: ${form.notas}`] : []),
-      '',
-      '*Productos:*',
-      itemsList,
-      '',
-      `*Total: $${data.total.toLocaleString()}*`,
-      '',
-      '¡Gracias por tu compra! 🙌',
-    ].join('\n');
-  };
-
   const handleCheckout = async () => {
     if (!validateForm()) return;
 
@@ -179,9 +154,8 @@ export default function CartPage() {
 
       clearCart();
 
-      // Armar mensaje con datos verificados del servidor
-      const message = buildWhatsAppMessage(data);
-      const shortFallback = `🛒 *NUEVO PEDIDO - AM Performance*\n*Orden: ${data.orderNumber}*\nTotal: $${data.total.toLocaleString()}\n\nTe contactaremos para coordinar el pago y envío.`;
+      const message = `Hola, mi nombre es ${form.nombre}. Acabo de realizar una consulta/orden. Número de orden: ${data.orderNumber}. Por favor, revisar detalles en el sistema.`;
+      const shortFallback = `Nuevo pedido: ${form.nombre} - Orden: ${data.orderNumber}`;
       trackWhatsappClicked('checkout');
       const url = getWhatsAppUrlSafe(message, shortFallback);
       window.location.href = url;
