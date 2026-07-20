@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Loader2 } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
+import type { OrderWithDetails } from '@/types/database';
 
 const statusColors: Record<string, string> = {
   pending: 'text-yellow',
@@ -22,6 +23,51 @@ const statusLabels: Record<string, string> = {
   delivered: 'Entregado',
   cancelled: 'Cancelado',
 };
+
+const statusOptions = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'] as const;
+
+function StatusCell({ order }: { order: OrderWithDetails }) {
+  const [status, setStatus] = useState(order.status?.name ?? 'pending');
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = async (newStatus: string) => {
+    setSaving(true);
+    setStatus(newStatus);
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Error al actualizar');
+      }
+    } catch {
+      setStatus(order.status?.name ?? 'pending'); // revert
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center gap-1">
+      <select
+        value={status}
+        onChange={(e) => handleChange(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+        className={`bg-transparent border border-white/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest cursor-pointer focus:outline-none focus:border-neon-green transition-colors ${statusColors[status] || 'text-white/40'}`}
+      >
+        {statusOptions.map((opt) => (
+          <option key={opt} value={opt} className="bg-black text-white">
+            {statusLabels[opt]}
+          </option>
+        ))}
+      </select>
+      {saving && <Loader2 size={12} className="animate-spin text-white/40" />}
+    </div>
+  );
+}
 
 export default function OrdersTable() {
   const { orders, loading, error, total } = useOrders();
@@ -88,10 +134,6 @@ export default function OrdersTable() {
         </thead>
         <tbody>
           {orders.map((order) => {
-            const statusName = order.status?.name ?? 'pending';
-            const statusColor = statusColors[statusName] || 'text-white/40';
-            const statusLabel = statusLabels[statusName] || statusName;
-
             return (
               <tr key={order.id} onClick={() => router.push(`/admin/orders/${order.id}`)} className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
                 <td className="px-4 py-4">
@@ -113,9 +155,7 @@ export default function OrdersTable() {
                   ${order.total.toLocaleString()}
                 </td>
                 <td className="px-4 py-4 text-center">
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${statusColor}`}>
-                    {statusLabel}
-                  </span>
+                  <StatusCell order={order} />
                 </td>
                 <td className="px-4 py-4 text-right text-white/40 text-[10px] uppercase tracking-widest">
                   {new Date(order.created_at).toLocaleDateString('es-AR', {

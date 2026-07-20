@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { getAdminProductCount, getOrderCount, getProjectLeadCount } from '@/lib/supabase/admin-queries';
+import { getAdminKPIs } from '@/lib/supabase/admin-queries';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/admin/stats
  *
- * Devuelve los conteos del dashboard admin (productos activos, órdenes, proyectos).
+ * Devuelve las KPIs del dashboard admin (productos activos, órdenes, consultas, ingresos, etc.).
  * Requiere sesión de administrador válida.
  */
 export async function GET() {
@@ -17,13 +17,9 @@ export async function GET() {
 
   try {
     const supabase = createAdminClient();
-    const [products, orders, projects] = await Promise.all([
-      getAdminProductCount(supabase),
-      getOrderCount(supabase),
-      getProjectLeadCount(supabase),
-    ]);
+    const kpis = await getAdminKPIs(supabase);
 
-    return NextResponse.json({ products, orders, projects });
+    return NextResponse.json(kpis);
   } catch (error) {
     console.error('Error fetching admin stats:', error);
     return NextResponse.json(

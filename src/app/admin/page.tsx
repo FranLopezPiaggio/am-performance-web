@@ -6,7 +6,7 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { redirect, useSearchParams } from 'next/navigation';
-import { Package, ShoppingCart, FolderKanban, TrendingUp, ArrowRight } from 'lucide-react';
+import { Package, ShoppingCart, FolderKanban, TrendingUp, AlertTriangle, Clock, Archive, ArrowRight } from 'lucide-react';
 import OrdersTable from '@/components/admin/OrdersTable';
 import ProjectsTable from '@/components/admin/ProjectsTable';
 import ProductsTable from '@/components/admin/ProductsTable';
@@ -23,7 +23,19 @@ function LoadingFallback() {
 }
 
 function DashboardContent() {
-  const { products, orders, projects, loading } = useAdminStats();
+  const {
+    products,
+    orders,
+    projects_consultations,
+    total_revenue,
+    pending_orders,
+    pending_projects,
+    low_stock_count,
+    loading,
+  } = useAdminStats();
+
+  const formatCurrency = (amount: number) =>
+    `$${amount.toLocaleString('es-AR')}`;
 
   const stats = [
     {
@@ -44,19 +56,43 @@ function DashboardContent() {
     },
     {
       name: 'Proyectos',
-      value: loading ? '...' : String(projects),
-      change: loading ? 'Cargando...' : projects === 0 ? 'Sin consultas aún' : `Consultas recibidas`,
+      value: loading ? '...' : String(projects_consultations),
+      change: loading ? 'Cargando...' : projects_consultations === 0 ? 'Sin consultas aún' : `Consultas recibidas`,
       icon: FolderKanban,
       href: '/admin?view=projects',
       color: 'text-purple-400',
     },
     {
       name: 'Ventas',
-      value: loading ? '...' : `$${0}`,
-      change: loading ? 'Cargando...' : 'Sin ventas aún',
+      value: loading ? '...' : formatCurrency(total_revenue),
+      change: loading ? 'Cargando...' : total_revenue === 0 ? 'Sin ventas aún' : `Ingreso total`,
       icon: TrendingUp,
       href: '/admin?view=orders',
       color: 'text-neon-green',
+    },
+    {
+      name: 'Órdenes Pendientes',
+      value: loading ? '...' : String(pending_orders),
+      change: loading ? 'Cargando...' : pending_orders === 0 ? 'Sin pendientes' : `Por procesar`,
+      icon: Clock,
+      href: '/admin?view=orders',
+      color: 'text-yellow-400',
+    },
+    {
+      name: 'Proyectos Pendientes',
+      value: loading ? '...' : String(pending_projects),
+      change: loading ? 'Cargando...' : pending_projects === 0 ? 'Sin pendientes' : `Por contactar`,
+      icon: AlertTriangle,
+      href: '/admin?view=projects',
+      color: 'text-orange-400',
+    },
+    {
+      name: 'Stock Bajo',
+      value: loading ? '...' : String(low_stock_count),
+      change: loading ? 'Cargando...' : low_stock_count === 0 ? 'Sin alertas' : `Variantes con stock ≤ 5`,
+      icon: Archive,
+      href: '/admin?view=products',
+      color: 'text-red-400',
     },
   ];
 
@@ -106,10 +142,10 @@ function DashboardContent() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
-            href="/admin/productos/nuevo"
+            href="/admin?view=products"
             className="brutal-btn text-center"
           >
-            + Nuevo Producto
+            Gestionar Productos
           </Link>
           <Link
             href="/admin?view=orders"

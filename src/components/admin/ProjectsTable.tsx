@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FolderKanban } from 'lucide-react';
+import { FolderKanban, Loader2 } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
 
 const statusColors: Record<string, string> = {
@@ -21,6 +21,8 @@ const statusLabels: Record<string, string> = {
   lost: 'Perdido',
 };
 
+const statusOptions = ['new', 'contacted', 'quoted', 'won', 'lost'] as const;
+
 const gymTypeLabels: Record<string, string> = {
   commercial: 'Comercial',
   institutional: 'Institución',
@@ -37,6 +39,49 @@ const budgetLabels: Record<string, string> = {
   high: 'Alto',
   premium: 'Premium',
 };
+
+function StatusCell({ projectId, initialStatus }: { projectId: string; initialStatus: string }) {
+  const [status, setStatus] = useState(initialStatus);
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = async (newStatus: string) => {
+    setSaving(true);
+    setStatus(newStatus);
+    try {
+      const res = await fetch(`/api/admin/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Error al actualizar');
+      }
+    } catch {
+      setStatus(initialStatus); // revert
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center gap-1">
+      <select
+        value={status}
+        onChange={(e) => handleChange(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+        className={`bg-transparent border border-white/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest cursor-pointer focus:outline-none focus:border-neon-green transition-colors ${statusColors[status] || 'text-white/40'}`}
+      >
+        {statusOptions.map((opt) => (
+          <option key={opt} value={opt} className="bg-black text-white">
+            {statusLabels[opt]}
+          </option>
+        ))}
+      </select>
+      {saving && <Loader2 size={12} className="animate-spin text-white/40" />}
+    </div>
+  );
+}
 
 export default function ProjectsTable() {
   const { projects, loading, error, total } = useProjects();
@@ -103,8 +148,6 @@ export default function ProjectsTable() {
         </thead>
         <tbody>
           {projects.map((project) => {
-            const statusColor = statusColors[project.status] || 'text-white/40';
-            const statusLabel = statusLabels[project.status] || project.status;
             const gymType = gymTypeLabels[project.gym_type] || project.gym_type;
 
             return (
@@ -132,9 +175,7 @@ export default function ProjectsTable() {
                   {project.square_meters}
                 </td>
                 <td className="px-4 py-4 text-center">
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${statusColor}`}>
-                    {statusLabel}
-                  </span>
+                  <StatusCell projectId={project.id} initialStatus={project.status} />
                 </td>
                 <td className="px-4 py-4 text-right text-white/40 text-[10px] uppercase tracking-widest">
                   {new Date(project.created_at).toLocaleDateString('es-AR', {

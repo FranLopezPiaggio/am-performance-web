@@ -147,18 +147,69 @@ export async function getProjectLeadCount(
   return count || 0;
 }
 
-// ====== Product Count (for dashboard) ======
+// ====== Admin Dashboard KPI ======
 
-export async function getAdminProductCount(
+export interface AdminKPIs {
+  products: number;
+  orders: number;
+  projects_consultations: number;
+  total_revenue: number;
+  pending_orders: number;
+  pending_projects: number;
+  low_stock_count: number;
+}
+
+export async function getAdminKPIs(
   supabase: SupabaseClient<Database>
-): Promise<number> {
-  const { count, error } = await supabase
-    .from('products')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_active', true);
+): Promise<AdminKPIs> {
+  // Grab status IDs for orders
+  const { data: statuses } = await supabase
+    .from('order_statuses')
+    .select('id, name');
 
-  if (error) throw error;
-  return count || 0;
+  const statusList = (statuses || []) as { id: string; name: string }[];
+  if (statusList.length === 0) {
+    return { products: 0, orders: 0, projects_consultations: 0, total_revenue: 0, pending_orders: 0, pending_projects: 0, low_stock_count: 0 };
+  }
+
+  const byName = new Map(statusList.map(s => [s.name, s.id]));
+  const deliveredId = byName.get('delivered');
+  const pendingId = byName.get('pending');
+
+  const [
+    { count: products },
+    { count: orders },
+    { count: projects_consultations },
+    deliveredResult,
+    { count: pending_orders },
+    { count: pending_projects },
+    { count: low_stock_count },
+  ] = await Promise.all([
+    supabase.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('orders').select('*', { count: 'exact', head: true }),
+    supabase.from('project_consultations').select('*', { count: 'exact', head: true }),
+    deliveredId
+      ? supabase.from('orders').select('total').eq('status_id', deliveredId)
+      : { data: [] },
+    pendingId
+      ? supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status_id', pendingId)
+      : { count: 0 },
+    supabase.from('project_consultations').select('*', { count: 'exact', head: true }).eq('status', 'new'),
+    supabase.from('product_variants').select('*', { count: 'exact', head: true }).lte('stock', 5).eq('is_active', true),
+  ]);
+
+  const total_revenue = ((deliveredResult as { data?: { total: number }[] })?.data || [])
+    .reduce((sum: number, o: { total: number }) => sum + Number(o.total), 0);
+
+  return {
+    products: products || 0,
+    orders: orders || 0,
+    projects_consultations: projects_consultations || 0,
+    total_revenue,
+    pending_orders: pending_orders || 0,
+    pending_projects: pending_projects || 0,
+    low_stock_count: low_stock_count || 0,
+  };
 }
 
 // ====== Order Status Queries ======
