@@ -252,19 +252,17 @@ export type OrderCouponInsert = Omit<OrderCoupon, 'id' | 'created_at'>;
 export type OrderCouponUpdate = Partial<OrderCouponInsert>;
 
 // ==========================================
-// 6. PROJECT LEADS (Build Your Gym)
+// 6. PROJECT CONSULTATIONS (Build Your Gym)
 // ==========================================
 
-export interface ProjectLead {
+export interface ProjectConsultation {
   id: string;
-  client_name: string;
-  client_email: string;
-  client_phone: string;
-  client_address: string;
+  lead_id: string;
   square_meters: number;
   gym_type: string; // commercial, institutional, boutique, hotel, personal, box, studio
   budget_range: string | null; // low, medium, high, premium
   timeline: string | null; // immediate, 1-3_months, 3-6_months, flexible
+  address: string | null;
   additional_notes: string | null;
   status: string; // new, contacted, quoted, won, lost
   assigned_to: string | null;
@@ -272,8 +270,27 @@ export interface ProjectLead {
   updated_at: string;
 }
 
-export type ProjectLeadInsert = Omit<ProjectLead, 'id' | 'created_at' | 'updated_at'> & { status?: string };
-export type ProjectLeadUpdate = Partial<ProjectLeadInsert>;
+export type ProjectConsultationInsert = Pick<ProjectConsultation, 'lead_id' | 'square_meters' | 'gym_type'> & Partial<Pick<ProjectConsultation, 'budget_range' | 'timeline' | 'address' | 'additional_notes' | 'status' | 'assigned_to'>>;
+export type ProjectConsultationUpdate = Partial<ProjectConsultationInsert>;
+
+// Flat shape returned by admin queries (JOINs leads + project_consultations)
+// Matches the old ProjectLead shape so frontend components need zero changes.
+export interface ProjectLeadFlat {
+  id: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  client_address: string;
+  square_meters: number;
+  gym_type: string;
+  budget_range: string | null;
+  timeline: string | null;
+  additional_notes: string | null;
+  status: string;
+  assigned_to: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 // ==========================================
 // COMPOSITE TYPES
@@ -373,10 +390,10 @@ export interface Database {
         Insert: OrderCouponInsert;
         Update: OrderCouponUpdate;
       };
-      project_leads: {
-        Row: ProjectLead;
-        Insert: ProjectLeadInsert;
-        Update: ProjectLeadUpdate;
+      project_consultations: {
+        Row: ProjectConsultation;
+        Insert: ProjectConsultationInsert;
+        Update: ProjectConsultationUpdate;
       };
     };
   };

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { ProjectLead } from '@/types/database';
+import type { ProjectLeadFlat } from '@/types/database';
 
 interface UseProjectsReturn {
-  projects: ProjectLead[];
+  projects: ProjectLeadFlat[];
   loading: boolean;
   error: Error | null;
   total: number;
@@ -15,7 +15,7 @@ interface UseProjectsReturn {
  * La API route verifica la sesión admin vía cookie y usa service_role para los datos.
  */
 export function useProjects(): UseProjectsReturn {
-  const [projects, setProjects] = useState<ProjectLead[]>([]);
+  const [projects, setProjects] = useState<ProjectLeadFlat[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [total, setTotal] = useState(0);
 

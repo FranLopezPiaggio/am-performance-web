@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { ProjectLead } from '@/types/database';
+import type { ProjectLeadFlat } from '@/types/database';
 
 interface UseProjectDetailReturn {
-  project: ProjectLead | null;
+  project: ProjectLeadFlat | null;
   loading: boolean;
   error: Error | null;
   updateStatus: (status: string) => Promise<void>;
 }
 
 export function useProjectDetail(id: string): UseProjectDetailReturn {
-  const [project, setProject] = useState<ProjectLead | null>(null);
+  const [project, setProject] = useState<ProjectLeadFlat | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const loading = project === null && error === null;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import { Send, Ruler, Users, Package, ArrowRight, Check, Settings } from 'lucide-react';
@@ -25,6 +25,7 @@ export default function ProyectosPage() {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ProjectFormValues, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const websiteRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -64,7 +65,7 @@ export default function ProyectosPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ customerInfo: formData }),
+        body: JSON.stringify({ customerInfo: formData, website: websiteRef.current?.value || '' }),
       });
 
       const result = await response.json();
@@ -77,7 +78,7 @@ export default function ProyectosPage() {
           submittedAt: new Date().toISOString(),
         }));
         
-        window.location.href = getWhatsAppUrl('projects', { name: formData.name });
+        window.location.href = getWhatsAppUrl('projects', { name: formData.name, recordId: result.recordId });
       }
     } catch {
       // Error de conexión silencioso para evitar mostrar nada al usuario
@@ -141,6 +142,7 @@ export default function ProyectosPage() {
               className="bg-white/5 border border-white/10 p-8"
             >
               <form onSubmit={handleSubmit} className="space-y-6">
+                  <input ref={websiteRef} name="website" type="text" tabIndex={-1} autoComplete="off" style={{ display: 'none' }} />
                   <h3 className="text-xl font-display uppercase tracking-widest mb-6">
                     Solicitar Cotización
                   </h3>

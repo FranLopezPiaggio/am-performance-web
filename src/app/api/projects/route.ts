@@ -34,18 +34,40 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
+    // Honeypot: si el campo oculto tiene contenido, es un bot
+    if (body.website) {
+      return NextResponse.json({ success: true, recordId: '00000000-0000-0000-0000-000000000000' });
+    }
     const parsed = createProjectLeadSchema.parse(body);
     const { customerInfo } = parsed;
 
     const supabase = createAdminClient();
 
-    const { data, error } = await supabase
-      .from('project_leads')
+    // 1. Split name into first/last (ponytail: split on first space)
+    const [first_name, ...lastParts] = customerInfo.name.trim().split(' ');
+    const last_name = lastParts.join(' ') || '';
+
+    // 2. Upsert lead by email (table shared with checkout orders)
+    const { data: lead, error: leadError } = await supabase
+      .from('leads')
+      .upsert({
+        email: customerInfo.email,
+        first_name,
+        last_name,
+        phone: customerInfo.phone,
+        source: 'web',
+      }, { onConflict: 'email' })
+      .select('id')
+      .single();
+
+    if (leadError) throw leadError;
+
+    // 3. Insert consultation
+    const { data: consultation, error: consultError } = await supabase
+      .from('project_consultations')
       .insert({
-        client_name: customerInfo.name,
-        client_email: customerInfo.email,
-        client_phone: customerInfo.phone,
-        client_address: `${customerInfo.address}, ${customerInfo.city}`,
+        lead_id: lead.id,
+        address: `${customerInfo.address}, ${customerInfo.city}`,
         square_meters: customerInfo.squareMeters
           ? parseInt(customerInfo.squareMeters, 10)
           : 0,
@@ -57,11 +79,11 @@ export async function POST(req: Request) {
       .select('id')
       .single();
 
-    if (error) throw error;
+    if (consultError) throw consultError;
 
     // ── Analytics ────────────────────────────────────────────────────
     captureEvent('project_lead_submitted', customerInfo.email, {
-      lead_id: data.id,
+      lead_id: consultation.id,
       budget_range: customerInfo.budget,
       gym_type: customerInfo.gymStyle,
       square_meters: customerInfo.squareMeters
@@ -69,7 +91,7 @@ export async function POST(req: Request) {
         : 0,
     });
 
-    return NextResponse.json({ success: true, recordId: data.id });
+    return NextResponse.json({ success: true, recordId: consultation.id });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

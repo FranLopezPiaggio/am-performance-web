@@ -4,7 +4,7 @@ import type {
   Lead,
   OrderStatus,
   OrderWithDetails,
-  ProjectLead,
+  ProjectLeadFlat,
 } from '@/types/database';
 
 // ====== Order Queries ======
@@ -64,39 +64,83 @@ export async function getOrderCount(
   return count || 0;
 }
 
-// ====== Project Lead Queries ======
+// ====== Project Lead Queries (normalized: leads + project_consultations) ======
+// Return flat shape matching ProjectLeadFlat so frontend needs zero changes.
 
 export async function getProjectLeads(
   supabase: SupabaseClient<Database>
-): Promise<ProjectLead[]> {
+): Promise<ProjectLeadFlat[]> {
   const { data, error } = await supabase
-    .from('project_leads')
-    .select('*')
+    .from('project_consultations')
+    .select(`
+      *,
+      lead:leads(first_name, last_name, email, phone)
+    `)
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data || [];
+
+  return (data || []).map((pc: Record<string, unknown>) => {
+    const lead = pc.lead as Record<string, unknown> | null;
+    return {
+      id: pc.id as string,
+      client_name: lead ? `${lead.first_name || ''} ${lead.last_name || ''}`.trim() : '',
+      client_email: (lead?.email as string) || '',
+      client_phone: (lead?.phone as string) || '',
+      client_address: (pc.address as string) || '',
+      square_meters: pc.square_meters as number,
+      gym_type: pc.gym_type as string,
+      budget_range: pc.budget_range as string | null,
+      timeline: pc.timeline as string | null,
+      additional_notes: pc.additional_notes as string | null,
+      status: pc.status as string,
+      assigned_to: pc.assigned_to as string | null,
+      created_at: pc.created_at as string,
+      updated_at: pc.updated_at as string,
+    };
+  });
 }
 
 export async function getProjectLead(
   supabase: SupabaseClient<Database>,
   id: string
-): Promise<ProjectLead | null> {
+): Promise<ProjectLeadFlat | null> {
   const { data, error } = await supabase
-    .from('project_leads')
-    .select('*')
+    .from('project_consultations')
+    .select(`
+      *,
+      lead:leads(first_name, last_name, email, phone)
+    `)
     .eq('id', id)
     .single();
 
   if (error) return null;
-  return data;
+
+  const pc = data as Record<string, unknown>;
+  const lead = pc.lead as Record<string, unknown> | null;
+  return {
+    id: pc.id as string,
+    client_name: lead ? `${lead.first_name || ''} ${lead.last_name || ''}`.trim() : '',
+    client_email: (lead?.email as string) || '',
+    client_phone: (lead?.phone as string) || '',
+    client_address: (pc.address as string) || '',
+    square_meters: pc.square_meters as number,
+    gym_type: pc.gym_type as string,
+    budget_range: pc.budget_range as string | null,
+    timeline: pc.timeline as string | null,
+    additional_notes: pc.additional_notes as string | null,
+    status: pc.status as string,
+    assigned_to: pc.assigned_to as string | null,
+    created_at: pc.created_at as string,
+    updated_at: pc.updated_at as string,
+  };
 }
 
 export async function getProjectLeadCount(
   supabase: SupabaseClient<Database>
 ): Promise<number> {
   const { count, error } = await supabase
-    .from('project_leads')
+    .from('project_consultations')
     .select('*', { count: 'exact', head: true });
 
   if (error) throw error;
@@ -152,7 +196,7 @@ export async function updateProjectLead(
   fields: { status?: string; assigned_to?: string | null }
 ): Promise<void> {
   const { error } = await supabase
-    .from('project_leads')
+    .from('project_consultations')
     .update(fields as never)
     .eq('id', id);
 
