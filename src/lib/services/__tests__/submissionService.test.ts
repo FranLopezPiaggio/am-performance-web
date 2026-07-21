@@ -11,7 +11,6 @@ const testSchema = z.object({
 });
 
 const validData = { name: 'Test', email: 'test@example.com' };
-const mockSave = vi.fn();
 
 describe('handleSubmission', () => {
   it('returns error on validation failure', async () => {

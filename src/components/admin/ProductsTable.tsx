@@ -72,6 +72,7 @@ export default function ProductsTable() {
   const { products, loading, error, total } = useProducts({}, 100);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [variantStock, setVariantStock] = useState<Record<string, number>>({});
+  const [now] = useState(() => Date.now());
 
   const toggleExpand = (productId: string) => {
     setExpanded((prev) => {
@@ -160,7 +161,7 @@ export default function ProductsTable() {
             const activeVariants = p.variants.filter((v) => v.is_active);
             const stockInfo = getStockDisplay(p.variants);
             const isNew =
-              Date.now() - new Date(p.created_at).getTime() <= 30 * 24 * 60 * 60 * 1000;
+              now - new Date(p.created_at).getTime() <= 30 * 24 * 60 * 60 * 1000;
 
             return (
               <React.Fragment key={p.id}>

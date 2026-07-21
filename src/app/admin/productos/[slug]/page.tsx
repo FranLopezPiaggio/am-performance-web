@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink, ImageUp, Package, Save, Eye, EyeOff } from 'lucide-react';
@@ -8,11 +8,9 @@ import { useAdminProductDetail } from '@/hooks/useAdminProductDetail';
 
 function VariantEditRow({
   variant,
-  productId,
   onSave,
 }: {
   variant: { id: string; variant_name: string; price: number; compare_at_price: number | null; cost_price: number | null; stock: number; is_active: boolean };
-  productId: string;
   onSave: (variantId: string, fields: Record<string, unknown>) => Promise<void>;
 }) {
   const [name, setName] = useState(variant.variant_name);
@@ -161,17 +159,15 @@ export default function AdminProductDetailPage() {
     is_active: boolean;
   } | null>(null);
 
-  // Init form when product loads
-  React.useEffect(() => {
-    if (product && !productForm) {
-      setProductForm({
-        name: product.name,
-        description: product.description,
-        short_description: product.short_description ?? '',
-        is_active: product.is_active,
-      });
-    }
-  }, [product, productForm]);
+  // Init form when product loads (derived state — not useEffect, avoids cascading render warning)
+  if (product && !productForm) {
+    setProductForm({
+      name: product.name,
+      description: product.description,
+      short_description: product.short_description ?? '',
+      is_active: product.is_active,
+    });
+  }
 
   const handleProductSave = async () => {
     if (!productForm || !product) return;
@@ -356,7 +352,6 @@ export default function AdminProductDetailPage() {
                 <VariantEditRow
                   key={v.id}
                   variant={v}
-                  productId={product.id}
                   onSave={handleVariantSave}
                 />
               ))}
