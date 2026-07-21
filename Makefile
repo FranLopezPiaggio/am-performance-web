@@ -1,67 +1,35 @@
-# AM Performance Web — Docker Makefile
-# ─────────────────────────────────────────────────────────────
-# Uso: make <comando>
-# ─────────────────────────────────────────────────────────────
-.PHONY: help build up down kill restart logs shell status clean prune \
-        dev dev-build dev-down dev-logs dev-shell
+# AM Performance Web — Makefile
+# ──────────────────────────────────────────────────
 
-COMPOSE     := docker compose -f docker-compose.yml
-COMPOSE_DEV := docker compose -f docker-compose.dev.yml
+.PHONY: dev build test test-e2e lint clean
 
-# ─────────────────────────── Ayuda ───────────────────────────
+dev:
+	docker compose -f docker-compose.dev.yml up
 
-help: ## Mostrar todos los comandos disponibles
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-	  awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+dev-build:
+	docker compose -f docker-compose.dev.yml up --build
 
-# ──────────────────────── Producción ─────────────────────────
+build:
+	docker compose build
 
-build: ## Construir imagen de producción (sin caché)
-	$(COMPOSE) build --no-cache
+up:
+	docker compose up -d
 
-up: ## Iniciar contenedor de producción en background
-	$(COMPOSE) up -d
+down:
+	docker compose down
 
-down: ## Detener y eliminar contenedor de producción
-	$(COMPOSE) down
+test:
+	npm test
 
-kill: ## Forzar el apagado inmediato del contenedor
-	$(COMPOSE) kill
-	$(COMPOSE) rm -f
+test-watch:
+	npm run test:watch
 
-restart: down up ## Reiniciar contenedor de producción
+test-e2e:
+	npm run test:e2e
 
-logs: ## Ver logs del contenedor de producción (streaming)
-	$(COMPOSE) logs -f
+lint:
+	npm run lint
 
-status: ## Ver estado de los contenedores
-	$(COMPOSE) ps
-
-shell: ## Abrir shell en el contenedor de producción
-	$(COMPOSE) exec web sh
-
-# ──────────────────────── Desarrollo ─────────────────────────
-
-dev: ## Iniciar en modo desarrollo con hot-reload
-	$(COMPOSE_DEV) up
-
-dev-build: ## Construir imagen de desarrollo (sin caché)
-	$(COMPOSE_DEV) build --no-cache
-
-dev-down: ## Detener el entorno de desarrollo
-	$(COMPOSE_DEV) down
-
-dev-logs: ## Ver logs del contenedor de desarrollo (streaming)
-	$(COMPOSE_DEV) logs -f
-
-dev-shell: ## Abrir shell en el contenedor de desarrollo
-	$(COMPOSE_DEV) exec web sh
-
-# ────────────────────────── Limpieza ─────────────────────────
-
-clean: ## Eliminar contenedores, imágenes y volúmenes del proyecto
-	$(COMPOSE) down --rmi local --volumes --remove-orphans
-	$(COMPOSE_DEV) down --rmi local --volumes --remove-orphans
-
-prune: ## Limpiar recursos Docker no usados en el sistema (con confirmación)
-	docker system prune -f --volumes
+clean:
+	rm -rf .next node_modules
+	npm install

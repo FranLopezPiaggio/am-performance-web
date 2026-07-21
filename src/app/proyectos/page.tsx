@@ -507,7 +507,7 @@ export default function ProyectosPage() {
       <footer className="py-8 border-t border-white/10 bg-brutal-black">
         <div className="max-w-7xl mx-auto px-4 text-center text-white/40 text-sm">
           <p className="font-display uppercase tracking-widest">
-            AM Performance © 2025
+            AM Performance © 2026
           </p>
         </div>
       </footer>

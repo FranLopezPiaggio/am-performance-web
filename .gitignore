@@ -76,3 +76,8 @@ backups/
 
 Makefile
 .gstack/
+
+# playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
