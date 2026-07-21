@@ -12,14 +12,17 @@ export const dynamic = 'force-dynamic';
  * Requiere sesión de administrador válida (vía cookie de Supabase Auth).
  * Usa service_role key para bypass de RLS (que no existe).
  */
-export async function GET() {
+export async function GET(request: Request) {
   const auth = await verifyAdminRequest();
   if (!auth.authorized) return auth.response;
 
   try {
+    const url = new URL(request.url);
+    const limit = parseInt(url.searchParams.get('limit') || '', 10) || undefined;
+    const offset = parseInt(url.searchParams.get('offset') || '', 10) || undefined;
     const supabase = createAdminClient();
     const [orders, total] = await Promise.all([
-      getOrders(supabase),
+      getOrders(supabase, { limit, offset }),
       getOrderCount(supabase),
     ]);
 

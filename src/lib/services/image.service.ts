@@ -123,13 +123,16 @@ export async function deleteAsset(publicId: string): Promise<DestroyResult> {
  * para servir el mejor formato/tamaño según el browser del cliente.
  *
  * @param publicId - El public_id del asset
+ * @param width - Opcional: ancho en px para redimensionar
+ * @param crop - Opcional: modo de crop (default: 'fill')
  * @returns URL optimizada absoluta (https)
  */
-export function getOptimizedUrl(publicId: string): string {
+export function getOptimizedUrl(publicId: string, width?: number, crop: string = 'fill'): string {
   return cloudinary.url(publicId, {
     fetch_format: 'auto',
     quality: 'auto',
     secure: true,
+    ...(width ? { width, crop } : {}),
   });
 }
 

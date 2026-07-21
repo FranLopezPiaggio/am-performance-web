@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard,
@@ -31,12 +31,21 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, signOut, isAdmin } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // ponytail: defense-in-depth — middleware ya bloquea, este redirect cubre
+  // el caso de que alguien llegue acá por un bug en middleware
+  useEffect(() => {
+    if (user && !isAdmin) {
+      router.push('/login');
+    }
+  }, [user, isAdmin, router]);
+
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = '/';
+    router.push('/');
   };
 
   return (

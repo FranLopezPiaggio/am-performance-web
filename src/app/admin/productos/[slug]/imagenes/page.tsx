@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import ImageManager from '@/components/admin/ImageManager';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,12 @@ export default async function ProductImagesPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  // ponytail: defense-in-depth — middleware ya bloquea, este check server-side
+  // cubre el caso de que alguien llegue acá sin ser admin
+  const auth = await verifyAdminRequest();
+  if (!auth.authorized) redirect('/login');
+
   const supabase = createAdminClient();
 
   // Fetch product by slug

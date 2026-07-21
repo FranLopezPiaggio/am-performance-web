@@ -152,6 +152,8 @@ export default function CartPage() {
         total: data.total,
       }));
 
+      // ponytail: clearCart antes del redirect — el pedido ya fue creado,
+      // y pago-exitoso también limpia como safety net
       clearCart();
 
       const message = `Hola, mi nombre es ${form.nombre}. Acabo de realizar una consulta/orden. Número de orden: ${data.orderNumber}. Por favor, revisar detalles en el sistema.`;

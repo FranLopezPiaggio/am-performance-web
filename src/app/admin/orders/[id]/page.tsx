@@ -7,26 +7,7 @@ import {
   ArrowLeft, User, Package, MapPin, Save, CreditCard
 } from 'lucide-react';
 import { useOrderDetail } from '@/hooks/useOrderDetail';
-
-const statusColors: Record<string, string> = {
-  pending: 'text-yellow',
-  paid: 'text-blue-400',
-  processing: 'text-neon-green',
-  shipped: 'text-neon-green',
-  delivered: 'text-green-400',
-  cancelled: 'text-red-500',
-};
-
-const statusLabels: Record<string, string> = {
-  pending: 'Pendiente',
-  paid: 'Pagado',
-  processing: 'Procesando',
-  shipped: 'Enviado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
-
-const statusOptions = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'] as const;
+import { orderStatusColors as statusColors, orderStatusLabels as statusLabels, orderStatusOptions as statusOptions } from '@/lib/constants/status';
 
 function LoadingSkeleton() {
   return (

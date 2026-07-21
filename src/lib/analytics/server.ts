@@ -28,7 +28,6 @@ export async function captureEvent(
       event,
       properties,
     });
-    await client.flush();
   } catch {
     // Silently fail — analytics should never break the app
   }

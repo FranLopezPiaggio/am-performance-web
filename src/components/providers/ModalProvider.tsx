@@ -28,13 +28,12 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const original = document.body.style.overflow;
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = original;
     };
   }, [isOpen]);
 

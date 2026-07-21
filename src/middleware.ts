@@ -21,12 +21,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Skip middleware during static generation (check for build-time headers)
-  // This allows SSG to generate pages without middleware interference
-  if (process.env.NEXT_TELEMETRY_DISABLED) {
-    return NextResponse.next();
-  }
-
   // 1. Crear una respuesta base
   let response = NextResponse.next({
     request: {

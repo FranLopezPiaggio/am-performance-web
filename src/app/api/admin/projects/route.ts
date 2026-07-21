@@ -11,14 +11,17 @@ export const dynamic = 'force-dynamic';
  * Devuelve todos los project leads + total count.
  * Requiere sesión de administrador válida.
  */
-export async function GET() {
+export async function GET(request: Request) {
   const auth = await verifyAdminRequest();
   if (!auth.authorized) return auth.response;
 
   try {
+    const url = new URL(request.url);
+    const limit = parseInt(url.searchParams.get('limit') || '', 10) || undefined;
+    const offset = parseInt(url.searchParams.get('offset') || '', 10) || undefined;
     const supabase = createAdminClient();
     const [projects, total] = await Promise.all([
-      getProjectLeads(supabase),
+      getProjectLeads(supabase, { limit, offset }),
       getProjectLeadCount(supabase),
     ]);
 

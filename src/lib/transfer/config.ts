@@ -28,13 +28,13 @@ export const transferConfig: TransferConfig = {
   ],
   bankAccounts: [
     {
-      bank: 'Banco Patagonia',
-      accountType: 'Cuenta Corriente',
-      accountNumber: '1234567890',
-      cbu: '0340215608123456789012',
-      alias: 'AM.PERFORMANCE',
-      owner: 'AM PERFORMANCE SRL',
-      dni: '30-12345678-9',
+      bank: process.env.NEXT_PUBLIC_TRANSFER_BANK || 'Banco Patagonia',
+      accountType: process.env.NEXT_PUBLIC_TRANSFER_ACCOUNT_TYPE || 'Cuenta Corriente',
+      accountNumber: process.env.NEXT_PUBLIC_TRANSFER_ACCOUNT_NUMBER || '1234567890',
+      cbu: process.env.NEXT_PUBLIC_TRANSFER_CBU || '0340215608123456789012',
+      alias: process.env.NEXT_PUBLIC_TRANSFER_ALIAS || 'AM.PERFORMANCE',
+      owner: process.env.NEXT_PUBLIC_TRANSFER_OWNER || 'AM PERFORMANCE SRL',
+      dni: process.env.NEXT_PUBLIC_TRANSFER_DNI || '30-12345678-9',
     },
   ],
 };

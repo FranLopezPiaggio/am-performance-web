@@ -8,7 +8,6 @@ import { useCart } from '@/context/CartContext';
 import { useCategories } from '@/hooks/useCategories';
 import { useAuth } from '@/context/AuthContext';
 import { getWhatsAppUrl } from '@/lib/whatsapp/service';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { trackWhatsappClicked, trackCatalogFiltered } from '@/lib/analytics/events';
 
@@ -23,23 +22,8 @@ export default function Navbar() {
   const { categories: allCategories } = useCategories();
   const categories = allCategories.filter(c => !c.parent_id);
   const router = useRouter();
-  // Login modal state — hidden from navbar. Admin uses /login route directly.
-  // const [showLoginModal, setShowLoginModal] = useState(false);
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
   const { user, signOut } = useAuth();
   const [isClient, setIsClient] = useState<boolean>(() => typeof window !== 'undefined');
-
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     await signInWithEmail(email, password);
-  //     setShowLoginModal(false); // Cerrar modal al éxito
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } catch (error: any) {
-  //     alert("Error al iniciar sesión: " + error.message);
-  //   }
-  // };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,9 +49,6 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center space-x-2 ml-[-30px]">
-              {/* <span className="text-2xl font-display uppercase tracking-tighter text-white">
-                AM <span className="text-neon-green">Performance</span>
-              </span> */}
               <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300}
                 loading="eager" unoptimized />
             </Link>
@@ -84,12 +65,8 @@ export default function Navbar() {
                   <ChevronDown size={16} />
                 </div>
 
-                <AnimatePresence>
-                  {isCategoriesOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                {isCategoriesOpen && (
+                    <div
                       className="absolute top-full left-0 w-48 bg-brutal-black border border-white/10 mt-2 p-2 brutal-shadow"
                     >
                       {categories.map((cat) => (
@@ -101,9 +78,8 @@ export default function Navbar() {
                           {cat.name}
                         </Link>
                       ))}
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
               </div>
 
               <Link href="/catalogo?ofertas=true" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
@@ -123,27 +99,21 @@ export default function Navbar() {
                 >
                   <Search size={20} />
                 </button>
-                <AnimatePresence>
-                  {showSearch && (
-                    <motion.form
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: 240, opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
+                {showSearch && (
+                    <form
                       onSubmit={handleSearchSubmit}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 origin-right overflow-hidden"
+                      className="absolute right-0 top-1/2 -translate-y-1/2"
                     >
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Buscar productos..."
-                        className="w-full bg-white/5 border border-white/20 text-white text-sm px-4 py-2 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/30"
+                        className="w-60 bg-white/5 border border-white/20 text-white text-sm px-4 py-2 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/30"
                         autoFocus
                       />
-                    </motion.form>
+                    </form>
                   )}
-                </AnimatePresence>
               </div>
 
               {user ? (
@@ -158,17 +128,7 @@ export default function Navbar() {
                     {user.email?.[0]?.toUpperCase() || 'U'}
                   </Link>
                 </div>
-              ) : (
-                // Login icon hidden — admin signs in via /login route
-                null
-                /* <button
-                  // onClick={signInWithGoogle}
-                  onClick={() => setShowLoginModal(true)}
-                  className="p-2 hover:text-neon-green transition-colors"
-                >
-                  <User size={20} />
-                </button> */
-              )}
+              ) : null}
               <Link href="/carrito" className="p-2 hover:text-neon-green transition-colors relative">
                 <ShoppingCart size={20} />
                 {isClient && totalItems > 0 && (
@@ -198,13 +158,9 @@ export default function Navbar() {
           </div>
         </div>
 
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="md:hidden bg-brutal-black border-t border-white/10 overflow-hidden"
+        {isMenuOpen && (
+            <div
+              className="md:hidden bg-brutal-black border-t border-white/10"
             >
               <div className="px-4 pt-2 pb-6 space-y-4">
                 <form onSubmit={(e) => { handleSearchSubmit(e); setIsMenuOpen(false); }} className="relative">
@@ -237,58 +193,11 @@ export default function Navbar() {
                   <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
       </nav>
 
-      {/* Hidden login modal — admin uses /login route directly.
-      {
-        showLoginModal && (
-          <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-            <div className="bg-black border border-white/10 p-8 w-full max-w-md brutal-shadow">
-              <h2 className="text-2xl font-display uppercase tracking-tighter text-white mb-6">
-                Acceso Admin
-              </h2>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-white/60 mb-2">Email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-neon-green"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-white/60 mb-2">Contraseña</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-neon-green"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-neon-green text-brutal-black font-bold uppercase tracking-widest py-4 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-x-0 active:translate-y-0 active:shadow-none"
-                >
-                  Ingresar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowLoginModal(false)}
-                  className="w-full text-center text-xs uppercase tracking-widest text-white/40 mt-4 hover:text-white"
-                >
-                  Cancelar
-                </button>
-              </form>
-            </div>
-          </div>
-        )
-      } */}
+      
     </>
   );
 }

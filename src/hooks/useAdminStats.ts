@@ -27,8 +27,7 @@ export function useAdminStats(): AdminStats {
   const [pending_projects, setPendingProjects] = useState(0);
   const [low_stock_count, setLowStockCount] = useState(0);
   const [error, setError] = useState<Error | null>(null);
-
-  const loading = products === 0 && orders === 0 && error === null;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,10 +46,12 @@ export function useAdminStats(): AdminStats {
         setPendingOrders(data.pending_orders ?? 0);
         setPendingProjects(data.pending_projects ?? 0);
         setLowStockCount(data.low_stock_count ?? 0);
+        setLoading(false);
         setError(null);
       })
       .catch((err) => {
         if (cancelled) return;
+        setLoading(false);
         setError(err instanceof Error ? err : new Error('Failed to fetch stats'));
       });
 

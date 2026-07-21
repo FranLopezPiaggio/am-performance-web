@@ -82,7 +82,7 @@ export async function getOrSet<T>(
     };
     
     // Upstash set with EX option
-    await redis.set(cacheKey, JSON.stringify(cacheItem), { ex: ttl });
+    await redis.set(cacheKey, cacheItem, { ex: ttl });
   } catch (error) {
     // Si falla guardar, no es crítico
     console.warn('[Cache] Redis set failed:', error);
@@ -128,7 +128,7 @@ export async function set<T>(
     expiresAt: Date.now() + ttl * 1000,
   };
 
-  await redis.set(cacheKey, JSON.stringify(cacheItem), { ex: ttl });
+  await redis.set(cacheKey, cacheItem, { ex: ttl });
 }
 
 /**

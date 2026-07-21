@@ -27,16 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
-      let errorMessage = 'Algo salió mal. Por favor, intenta recargar la página.';
-      
-      try {
-        if (this.state.error?.message.startsWith('{')) {
-          const firestoreError = JSON.parse(this.state.error.message);
-          errorMessage = `Error de base de datos: ${firestoreError.error}. Por favor, contacta a soporte.`;
-        }
-      } catch {
-        // Not JSON
-      }
+      const errorMessage = 'Algo salió mal. Por favor, intenta recargar la página.';
 
       return (
         <div className="min-h-screen bg-brutal-black flex items-center justify-center p-4 text-center">

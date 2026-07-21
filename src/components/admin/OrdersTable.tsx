@@ -5,26 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, Loader2 } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
 import type { OrderWithDetails } from '@/types/database';
-
-const statusColors: Record<string, string> = {
-  pending: 'text-yellow',
-  paid: 'text-blue-400',
-  processing: 'text-neon-green',
-  shipped: 'text-neon-green',
-  delivered: 'text-green-400',
-  cancelled: 'text-red-500',
-};
-
-const statusLabels: Record<string, string> = {
-  pending: 'Pendiente',
-  paid: 'Pagado',
-  processing: 'Procesando',
-  shipped: 'Enviado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
-
-const statusOptions = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'] as const;
+import { orderStatusColors as statusColors, orderStatusLabels as statusLabels, orderStatusOptions as statusOptions } from '@/lib/constants/status';
 
 function StatusCell({ order }: { order: OrderWithDetails }) {
   const [status, setStatus] = useState(order.status?.name ?? 'pending');

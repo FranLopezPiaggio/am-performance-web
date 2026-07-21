@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkBodySize } from '@/lib/api-security';
 
 export const dynamic = 'force-dynamic';
+
+// ── Validation ───────────────────────────────────────────────────────
+
+const primarySchema = z.object({
+  imageId: z.string().uuid('imageId debe ser un UUID válido'),
+  productId: z.string().uuid('productId debe ser un UUID válido'),
+});
 
 /**
  * POST /api/admin/images/primary
@@ -15,15 +24,13 @@ export async function POST(request: Request) {
   const auth = await verifyAdminRequest();
   if (!auth.authorized) return auth.response;
 
-  try {
-    const { imageId, productId } = await request.json();
+  const sizeCheck = checkBodySize(request);
+  if (sizeCheck) return sizeCheck;
 
-    if (!imageId || !productId) {
-      return NextResponse.json(
-        { error: 'imageId y productId son requeridos' },
-        { status: 400 }
-      );
-    }
+  try {
+    const body = await request.json();
+    const parsed = primarySchema.parse(body);
+    const { imageId, productId } = parsed;
 
     const supabase = createAdminClient();
 

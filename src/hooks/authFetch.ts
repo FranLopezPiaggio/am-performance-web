@@ -25,5 +25,5 @@ export const authenticatedFetch = async (url: string, options: RequestInit = {})
         },
     };
 
-    return fetch(url, { ...defaultOptions, ...options });
+    return fetch(url, { ...defaultOptions, ...options, headers: { ...defaultOptions.headers, ...(options.headers || {}) } });
 };

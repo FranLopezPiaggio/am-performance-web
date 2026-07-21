@@ -3,6 +3,7 @@ import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateUploadSignature } from '@/lib/services/image.service';
 import { z } from 'zod';
+import { checkBodySize } from '@/lib/api-security';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,9 @@ const signSchema = z.object({
 export async function POST(request: Request) {
   const auth = await verifyAdminRequest();
   if (!auth.authorized) return auth.response;
+
+  const sizeCheck = checkBodySize(request);
+  if (sizeCheck) return sizeCheck;
 
   try {
     // ── Validate body ──────────────────────────────────────────────

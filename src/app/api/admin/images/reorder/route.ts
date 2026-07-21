@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkBodySize } from '@/lib/api-security';
 
 export const dynamic = 'force-dynamic';
+
+// ── Validation ───────────────────────────────────────────────────────
+
+const reorderSchema = z.object({
+  productId: z.string().uuid('productId debe ser un UUID válido'),
+  imageIds: z.array(z.string().uuid()).min(1, 'imageIds debe tener al menos un UUID'),
+});
 
 /**
  * POST /api/admin/images/reorder
@@ -15,15 +24,13 @@ export async function POST(request: Request) {
   const auth = await verifyAdminRequest();
   if (!auth.authorized) return auth.response;
 
-  try {
-    const { productId, imageIds } = await request.json();
+  const sizeCheck = checkBodySize(request);
+  if (sizeCheck) return sizeCheck;
 
-    if (!productId || !Array.isArray(imageIds)) {
-      return NextResponse.json(
-        { error: 'productId y imageIds[] son requeridos' },
-        { status: 400 }
-      );
-    }
+  try {
+    const body = await request.json();
+    const parsed = reorderSchema.parse(body);
+    const { productId, imageIds } = parsed;
 
     const supabase = createAdminClient();
 

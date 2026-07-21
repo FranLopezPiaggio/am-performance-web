@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const customerFormSchema = z.object({
-    nombre: z.string().min(2, "El nombre es requerido y debe tener al menos 2 caracteres."),
-    email: z.string().email("Ingresa un email válido."),
+    nombre: z.string().min(2, "El nombre es requerido y debe tener al menos 2 caracteres.").max(255),
+    email: z.string().email("Ingresa un email válido.").max(255),
     telefono: z.string().regex(/^\+[1-9]\d{6,14}$/, "El teléfono debe estar en formato internacional: +541112345678."),
-    direccion: z.string().min(5, "La dirección es requerida."),
-    notas: z.string().optional(),
+    direccion: z.string().min(5, "La dirección es requerida.").max(500),
+    notas: z.string().max(2000).optional(),
 });
 
 export const cartItemSchema = z.object({

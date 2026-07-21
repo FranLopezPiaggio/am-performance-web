@@ -4,24 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FolderKanban, Loader2 } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
-
-const statusColors: Record<string, string> = {
-  new: 'text-neon-green',
-  contacted: 'text-blue-400',
-  quoted: 'text-yellow',
-  won: 'text-green-400',
-  lost: 'text-red-500',
-};
-
-const statusLabels: Record<string, string> = {
-  new: 'Nuevo',
-  contacted: 'Contactado',
-  quoted: 'Cotizado',
-  won: 'Ganado',
-  lost: 'Perdido',
-};
-
-const statusOptions = ['new', 'contacted', 'quoted', 'won', 'lost'] as const;
+import { projectStatusColors as statusColors, projectStatusLabels as statusLabels, projectStatusOptions as statusOptions } from '@/lib/constants/status';
 
 const gymTypeLabels: Record<string, string> = {
   commercial: 'Comercial',

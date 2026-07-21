@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { ShoppingCart, Star, Eye } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useModal } from '@/components/providers/ModalProvider';
-import { motion } from 'framer-motion';
 import type { ProductCardData } from '@/lib/mappers/productMapper';
 
 interface ProductCardProps {
@@ -17,9 +16,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { openModal } = useModal();
 
   return (
-    <motion.div
-      whileHover={{ y: -10 }}
-      className="group bg-white/5 border border-white/10 overflow-hidden relative"
+    <div
+      className="group bg-white/5 border border-white/10 overflow-hidden relative hover:-translate-y-2.5 transition-transform duration-200"
     >
       {/* Badges */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
@@ -117,6 +115,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

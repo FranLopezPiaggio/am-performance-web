@@ -1,28 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, User, ShoppingCart, Mail, Phone, Globe } from 'lucide-react';
 import { useLeadDetail } from '@/hooks/useLeadDetail';
-
-const statusColors: Record<string, string> = {
-  pending: 'text-yellow',
-  paid: 'text-blue-400',
-  processing: 'text-neon-green',
-  shipped: 'text-neon-green',
-  delivered: 'text-green-400',
-  cancelled: 'text-red-500',
-};
-
-const statusLabels: Record<string, string> = {
-  pending: 'Pendiente',
-  paid: 'Pagado',
-  processing: 'Procesando',
-  shipped: 'Enviado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
+import { orderStatusColors as statusColors, orderStatusLabels as statusLabels } from '@/lib/constants/status';
 
 function LoadingSkeleton() {
   return (
@@ -35,6 +18,7 @@ function LoadingSkeleton() {
 }
 
 export default function LeadDetailPage() {
+  const router = useRouter();
   const params = useParams<{ id: string }>();
   const { lead, orders, loading, error } = useLeadDetail(params.id);
 
@@ -127,7 +111,7 @@ export default function LeadDetailPage() {
                 {orders.map((order) => (
                   <tr
                     key={order.id}
-                    onClick={() => window.location.href = `/admin/orders/${order.id}`}
+                    onClick={() => router.push(`/admin/orders/${order.id}`)}
                     className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <td className="px-4 py-4">

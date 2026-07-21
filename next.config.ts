@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' blob: data: https:",
+              "img-src 'self' blob: data: https://res.cloudinary.com",
               "font-src 'self' data:",
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mercadopago.com https://*.upstash.io",
               "frame-src 'self' https://*.mercadopago.com",

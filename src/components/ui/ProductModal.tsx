@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { useModal } from '@/components/providers/ModalProvider';
@@ -15,19 +14,12 @@ export default function ProductModal() {
   const { addToCart } = useCart();
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+    <>{isOpen && (
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
           onClick={closeModal}
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+          <div
             className="bg-brutal-black border border-white/10 p-8 max-w-2xl w-full relative"
             onClick={(e) => e.stopPropagation()}
           >
@@ -89,9 +81,8 @@ export default function ProductModal() {
                 </div>
               </>
             )}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
+      )}</>
   );
 }

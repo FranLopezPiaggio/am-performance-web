@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit, ratelimits } from '@/lib/rate-limit';
+import { checkBodySize } from '@/lib/api-security';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,6 +28,12 @@ export async function PATCH(
 ) {
   const auth = await verifyAdminRequest();
   if (!auth.authorized) return auth.response;
+
+  const sizeCheck = checkBodySize(req);
+  if (sizeCheck) return sizeCheck;
+
+  const rateLimitResponse = await checkRateLimit(req, ratelimits.admin);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const { variantId } = await params;
 

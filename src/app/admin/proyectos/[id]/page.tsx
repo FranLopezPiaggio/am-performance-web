@@ -5,22 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, User, Save, Ruler, DollarSign, Clock, FileText } from 'lucide-react';
 import { useProjectDetail } from '@/hooks/useProjectDetail';
-
-const statusColors: Record<string, string> = {
-  new: 'text-neon-green',
-  contacted: 'text-blue-400',
-  quoted: 'text-yellow',
-  won: 'text-green-400',
-  lost: 'text-red-500',
-};
-
-const statusLabels: Record<string, string> = {
-  new: 'Nuevo',
-  contacted: 'Contactado',
-  quoted: 'Cotizado',
-  won: 'Ganado',
-  lost: 'Perdido',
-};
+import { projectStatusColors as statusColors, projectStatusLabels as statusLabels } from '@/lib/constants/status';
 
 const gymTypeLabels: Record<string, string> = {
   commercial: 'Comercial',

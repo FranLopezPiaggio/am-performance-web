@@ -23,6 +23,7 @@ interface Ratelimits {
   orders: Ratelimit;
   checkout: Ratelimit;
   projects: Ratelimit;
+  admin: Ratelimit;
 }
 
 let _ratelimits: Ratelimits;
@@ -51,6 +52,13 @@ function getRatelimits(): Ratelimits {
         limiter: Ratelimit.slidingWindow(3, '60 s'),
         analytics: true,
         prefix: 'rl:projects',
+      }),
+      // 60 requests cada 10s — admin PATCH endpoints (autenticados, generous)
+      admin: new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(60, '10 s'),
+        analytics: true,
+        prefix: 'rl:admin',
       }),
     };
   }

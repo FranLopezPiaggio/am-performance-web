@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Users } from 'lucide-react';
 import { useLeads } from '@/hooks/useLeads';
 
@@ -15,6 +16,7 @@ function LoadingSkeleton() {
 }
 
 export default function AdminLeadsPage() {
+  const router = useRouter();
   const { leads, loading, error, total } = useLeads();
 
   if (loading) return <LoadingSkeleton />;
@@ -68,7 +70,7 @@ export default function AdminLeadsPage() {
                 {leads.map((lead) => (
                   <tr
                     key={lead.id}
-                    onClick={() => window.location.href = `/admin/leads/${lead.id}`}
+                    onClick={() => router.push(`/admin/leads/${lead.id}`)}
                     className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <td className="px-4 py-4">

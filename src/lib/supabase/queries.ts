@@ -7,6 +7,7 @@ import type {
   ProductVariant,
   ProductImage,
 } from '@/types/database';
+import { getOrSet } from '@/lib/cache/redis';
 
 // Re-export types for convenience
 export type { Database };
@@ -183,19 +184,23 @@ export async function getProductCount(
   supabase: SupabaseClient<Database>,
   filters: Omit<ProductFilters, 'limit' | 'offset'> = {}
 ): Promise<number> {
-  let query = supabase
-    .from('products')
-    .select('*', { count: 'exact', head: true });
+  const cacheKey = `product-count:${filters.categorySlug || 'all'}:${filters.isActive ?? true}`;
 
-  if (filters.categorySlug) {
-    const ids = await resolveCategoryIds(supabase, filters.categorySlug);
-    if (ids.length > 0) query = query.in('category_id', ids);
-  }
-  if (filters.isActive !== undefined) {
-    query = query.eq('is_active', filters.isActive);
-  }
+  return getOrSet(cacheKey, async () => {
+    let query = supabase
+      .from('products')
+      .select('*', { count: 'exact', head: true });
 
-  const { count, error } = await query;
-  if (error) throw error;
-  return count || 0;
+    if (filters.categorySlug) {
+      const ids = await resolveCategoryIds(supabase, filters.categorySlug);
+      if (ids.length > 0) query = query.in('category_id', ids);
+    }
+    if (filters.isActive !== undefined) {
+      query = query.eq('is_active', filters.isActive);
+    }
+
+    const { count, error } = await query;
+    if (error) throw error;
+    return count || 0;
+  }, { ttl: 300 }); // ponytail: 5min TTL, el catálogo no cambia frecuentemente
 }

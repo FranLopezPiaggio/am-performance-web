@@ -10,9 +10,10 @@ import type {
 // ====== Order Queries ======
 
 export async function getOrders(
-  supabase: SupabaseClient<Database>
+  supabase: SupabaseClient<Database>,
+  options?: { limit?: number; offset?: number }
 ): Promise<OrderWithDetails[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from('orders')
     .select(`
       *,
@@ -26,6 +27,12 @@ export async function getOrders(
     `)
     .order('created_at', { ascending: false });
 
+  if (options?.limit) {
+    const from = options.offset ?? 0;
+    query = query.range(from, from + options.limit - 1);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return (data as unknown as OrderWithDetails[]) || [];
 }
@@ -68,9 +75,10 @@ export async function getOrderCount(
 // Return flat shape matching ProjectLeadFlat so frontend needs zero changes.
 
 export async function getProjectLeads(
-  supabase: SupabaseClient<Database>
+  supabase: SupabaseClient<Database>,
+  options?: { limit?: number; offset?: number }
 ): Promise<ProjectLeadFlat[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from('project_consultations')
     .select(`
       *,
@@ -78,6 +86,12 @@ export async function getProjectLeads(
     `)
     .order('created_at', { ascending: false });
 
+  if (options?.limit) {
+    const from = options.offset ?? 0;
+    query = query.range(from, from + options.limit - 1);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
 
   return (data || []).map((pc: Record<string, unknown>) => {
@@ -257,15 +271,33 @@ export async function updateProjectLead(
 // ====== Lead (Customer) Queries ======
 
 export async function getLeads(
-  supabase: SupabaseClient<Database>
+  supabase: SupabaseClient<Database>,
+  options?: { limit?: number; offset?: number }
 ): Promise<Lead[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from('leads')
     .select('*')
     .order('created_at', { ascending: false });
 
+  if (options?.limit) {
+    const from = options.offset ?? 0;
+    query = query.range(from, from + options.limit - 1);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return data || [];
+}
+
+export async function getLeadCount(
+  supabase: SupabaseClient<Database>
+): Promise<number> {
+  const { count, error } = await supabase
+    .from('leads')
+    .select('*', { count: 'exact', head: true });
+
+  if (error) throw error;
+  return count || 0;
 }
 
 export async function getLead(
