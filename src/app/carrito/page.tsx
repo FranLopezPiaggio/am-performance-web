@@ -134,7 +134,7 @@ export default function CartPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerInfo: form,
-          cartItems: cart.map(item => ({ variant_id: item.id, quantity: item.quantity })),
+          cartItems: cart.map(item => ({ product_id: item.id, quantity: item.quantity })),
         }),
       });
 

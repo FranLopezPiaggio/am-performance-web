@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { CheckCircle, MessageCircle, ArrowLeft, Package, Building, Clock, Copy, Check } from 'lucide-react';
 import { transferConfig, calculateTransferDiscount } from '@/lib/transfer/config';
+import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
 
 interface OrderData {
   orderId: string;
@@ -109,9 +110,7 @@ export default function GraciasPage() {
     if (!phone) return;
 
     const message = `¡Hola! ${customer.nombre}, tu pedido #${orderData?.orderId} está siendo procesado. ¿Hay algo en lo que pueda ayudarte?`;
-    const encodedMessage = encodeURIComponent(message);
-    const cleanPhone = phone.replace(/\D/g, '');
-    window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_blank');
+    window.open(getWhatsAppUrlSafe(message, message, customer.telefono), '_blank');
   };
 
   return (

@@ -20,13 +20,6 @@ export const getWhatsAppUrl = (
   return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
 };
 
-export const openWhatsApp = (intent: WhatsAppMsgContext, params?: Record<string, string>) => {
-  if (typeof window !== "undefined") {
-    const url = getWhatsAppUrl(intent, params);
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
-};
-
 /** Máximo seguro para el parámetro `text` de wa.me (límite real ~4096 total URL). */
 const MAX_ENCODED_TEXT = 4000;
 

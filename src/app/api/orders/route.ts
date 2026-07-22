@@ -25,25 +25,34 @@ export async function POST(req: Request) {
 
     const supabase = createAdminClient();
 
-    // ── Resolve variants from DB ──────────────────────────────────────
-    const variantIds = cartItems.map(i => i.variant_id);
-    const { data: variants, error: variantsError } = await supabase
+    // ── Resolve variants from DB (by product_id) ─────────────────────
+    const productIds = cartItems.map(i => i.product_id);
+    const { data: allVariants, error: variantsError } = await supabase
       .from('product_variants')
       .select('id, product_id, price, variant_name, sku, stock, products!inner(name)')
-      .in('id', variantIds)
+      .in('product_id', productIds)
       .eq('is_active', true);
 
     if (variantsError) throw variantsError;
 
-    if (!variants || variants.length !== variantIds.length) {
+    if (!allVariants || allVariants.length === 0) {
       return NextResponse.json(
         { error: 'Algunos productos de tu carrito ya no están disponibles. Eliminalos e intentá de nuevo.' },
         { status: 400 }
       );
     }
 
+    // Deduplicate: first active variant per product
+    const variantsMap = new Map<string, typeof allVariants[0]>();
+    for (const v of allVariants) {
+      if (!variantsMap.has(v.product_id)) {
+        variantsMap.set(v.product_id, v);
+      }
+    }
+    const variants = Array.from(variantsMap.values());
+
     // Build resolved items from DB data
-    const cartQuantity = new Map(cartItems.map(i => [i.variant_id, i.quantity]));
+    const cartQuantity = new Map(cartItems.map(i => [i.product_id, i.quantity]));
     const resolvedItems = variants.map(v => {
       const p = (v.products as unknown as { name: string }[])[0];
       return {
@@ -53,7 +62,7 @@ export async function POST(req: Request) {
         variant_name: v.variant_name,
         sku: v.sku,
         unit_price: Number(v.price),
-        quantity: cartQuantity.get(v.id)!,
+        quantity: cartQuantity.get(v.product_id)!,
         stock: v.stock,
       };
     });

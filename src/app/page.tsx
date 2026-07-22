@@ -12,7 +12,7 @@ import { getCategories, getBestSellers } from '@/lib/supabase/queries';
 const trustItems = [
   { icon: Truck, title: 'Envíos a todo el país', desc: 'Llegamos a cada rincón de Argentina.' },
   { icon: ShieldCheck, title: 'Garantía Oficial', desc: 'Todos nuestros productos tienen respaldo.' },
-  { icon: CreditCard, title: 'Pagos Seguros', desc: 'Mercado Pago y cuotas sin interés.' },
+  { icon: CreditCard, title: 'Pagos Seguros', desc: 'Mercado Pago y cuotas fijas.' },
   { icon: Headphones, title: 'Soporte 24/7', desc: 'Asesoramiento técnico especializado.' }
 ];
 
@@ -54,7 +54,7 @@ export default async function Home() {
             <h2 className="text-4xl md:text-6xl font-display uppercase tracking-tighter text-brutal-black leading-[1]">
               Veni a conocer nuestro <b>SHOWROOM</b>
             </h2>
-            <Link href="/contacto" className="text-brutal-black font-bold uppercase tracking-widest text-sm mt-6">Agenda una visita</Link>
+            <a href={getWhatsAppUrl('info')} target="_blank" rel="noopener noreferrer" className="text-brutal-black font-bold uppercase tracking-widest text-sm mt-6 inline-block hover:underline">Agenda una visita</a>
           </div>
           <div className="w-full md:w-auto flex flex-col space-y-4">
             <a
@@ -86,7 +86,7 @@ export default async function Home() {
             <ul className="space-y-4 text-sm uppercase tracking-widest font-medium">
               <li><Link href="/catalogo" className="hover:text-neon-green transition-colors">Catálogo</Link></li>
               <li><Link href="/catalogo?ofertas=true" className="hover:text-neon-green transition-colors">Ofertas</Link></li>
-              <li><Link href="/contacto" className="hover:text-neon-green transition-colors">Contacto</Link></li>
+              <li><a href={getWhatsAppUrl('info')} target="_blank" rel="noopener noreferrer" className="hover:text-neon-green transition-colors">Contacto</a></li>
             </ul>
           </div>
           <div>

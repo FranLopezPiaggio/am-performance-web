@@ -31,21 +31,21 @@ describe('customerFormSchema', () => {
 
 describe('cartItemSchema', () => {
   it('accepts valid item', () => {
-    expect(cartItemSchema.safeParse({ variant_id: 'abc-123', quantity: 1 }).success).toBe(true);
+    expect(cartItemSchema.safeParse({ product_id: 'abc-123', quantity: 1 }).success).toBe(true);
   });
 
   it('rejects zero quantity', () => {
-    expect(cartItemSchema.safeParse({ variant_id: 'abc-123', quantity: 0 }).success).toBe(false);
+    expect(cartItemSchema.safeParse({ product_id: 'abc-123', quantity: 0 }).success).toBe(false);
   });
 
-  it('rejects empty variant_id', () => {
-    expect(cartItemSchema.safeParse({ variant_id: '', quantity: 1 }).success).toBe(false);
+  it('rejects empty product_id', () => {
+    expect(cartItemSchema.safeParse({ product_id: '', quantity: 1 }).success).toBe(false);
   });
 });
 
 const validOrder = {
   customerInfo: validCustomer,
-  cartItems: [{ variant_id: 'abc-123', quantity: 2 }],
+  cartItems: [{ product_id: 'abc-123', quantity: 2 }],
 };
 
 describe('createOrderSchema', () => {

@@ -9,7 +9,7 @@ export const customerFormSchema = z.object({
 });
 
 export const cartItemSchema = z.object({
-    variant_id: z.string().min(1, "El ID de la variante es requerido."),
+    product_id: z.string().min(1, "El ID del producto es requerido."),
     quantity: z.number().min(1, "La cantidad debe ser mayor a 0."),
 });
 
