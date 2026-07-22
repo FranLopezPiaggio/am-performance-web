@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { verifyAdminRequest } from '@/lib/supabase/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { generateUploadSignature } from '@/lib/services/image.service';
+import { imageService } from '@/lib/services/image.service';
 import { z } from 'zod';
 import { checkBodySize } from '@/lib/api-security';
 
@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 
 const signSchema = z.object({
   productId: z.string().uuid('productId debe ser un UUID válido'),
+  originalName: z.string().min(1, 'originalName es requerido').max(255),
 });
 
 // ── Route ────────────────────────────────────────────────────────────
@@ -19,19 +20,22 @@ const signSchema = z.object({
  * POST /api/admin/images/sign
  *
  * Genera una firma de upload para Cloudinary (Direct Client-to-Cloud).
+ * Construye el public_id con estructura IMS:
+ *   AMPerformance/products/{productId}/{imageId}/{slug}
  *
  * El cliente debe:
- *   1. Llamar a este endpoint para obtener { signature, timestamp, apiKey, cloudName, folder, publicId }
+ *   1. Llamar a este endpoint para obtener { signature, timestamp, apiKey, cloudName, folder, publicId, imageId }
  *   2. Subir el archivo DIRECTAMENTE a Cloudinary:
  *        POST https://api.cloudinary.com/v1_1/{cloudName}/image/upload
  *        Body: FormData con { file, api_key, timestamp, signature, folder, public_id }
  *   3. Llamar a POST /api/admin/images/save para persistir en DB
+ *      Enviando imageId, publicId (el que devuelve Cloudinary), y los metadatos
  *
  * Body esperado:
- *   { productId: "uuid-del-producto" }
+ *   { productId: "uuid-del-producto", originalName: "nombre-del-archivo.jpg" }
  *
  * Retorna:
- *   { signature, timestamp, apiKey, cloudName, folder, publicId, allowedFormats, maxFileSize }
+ *   { signature, timestamp, apiKey, cloudName, folder, publicId, imageId, allowedFormats, maxFileSize }
  */
 export async function POST(request: Request) {
   const auth = await verifyAdminRequest();
@@ -52,7 +56,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { productId } = parsed.data;
+    const { productId, originalName } = parsed.data;
 
     // ── Verify product exists ──────────────────────────────────────
     const supabase = createAdminClient();
@@ -70,7 +74,7 @@ export async function POST(request: Request) {
     }
 
     // ── Generate signature ─────────────────────────────────────────
-    const signature = generateUploadSignature(productId);
+    const signature = imageService.generateUploadSignature(productId, originalName);
 
     return NextResponse.json(signature, { status: 200 });
   } catch (error) {

@@ -8,6 +8,8 @@
   :root {
     --brutal-black: #0a0a0a;
     --neon-green: #ccff00;
+    --neon-green-strong: #00FF00;
+    --green : #00CC00;
   }
 
   body {
@@ -37,6 +39,20 @@
     }
 
   /* Define el estado active para quitar la sombra */
+    &:active {
+      box-shadow: none;
+    }
+  }
+
+  .brutal-btn-strong {
+    @apply px-8 py-4 font-bold uppercase tracking-widest text-sm transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0;
+    background-color: var(--neon-green-strong);
+    color: var(--brutal-black);
+
+    &:hover {
+      box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.5);
+    }
+
     &:active {
       box-shadow: none;
     }

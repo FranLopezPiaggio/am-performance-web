@@ -101,10 +101,27 @@ export interface ProductImage {
   alt_text: string | null;
   display_order: number;
   is_primary: boolean;
+
+  // IMS metadata (nullable para backward compat)
+  public_id: string | null;
+  folder: string | null;
+  original_name: string | null;
+  slugified_name: string | null;
+  format: string | null;
+  width: number | null;
+  height: number | null;
+  bytes: number | null;
+  mime_type: string | null;
+  checksum: string | null;
+  status: string;
+  marked_deleted_at: string | null;
+  delete_attempts: number;
+
   created_at: string;
+  updated_at: string;
 }
 
-export type ProductImageInsert = Omit<ProductImage, 'id' | 'created_at'>;
+export type ProductImageInsert = Omit<ProductImage, 'id' | 'created_at' | 'updated_at'>;
 export type ProductImageUpdate = Partial<ProductImageInsert>;
 
 // ==========================================

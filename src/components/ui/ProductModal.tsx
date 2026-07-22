@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { X, ShoppingCart } from 'lucide-react';
-import Image from 'next/image';
+import SafeImage from '@/components/SafeImage';
 import { useModal } from '@/components/providers/ModalProvider';
 import { useProduct } from '@/hooks/useProduct';
 import { useCart } from '@/context/CartContext';
@@ -52,14 +52,19 @@ export default function ProductModal() {
                     const firstImage = product.images.find(i => i.is_primary) || product.images[0];
                     return firstImage ? (
                       <div className="w-48 h-48 flex-shrink-0 relative">
-                        <Image
+                        <SafeImage
                           src={firstImage.image_url}
                           alt={firstImage.alt_text ?? product.name}
                           fill
                           className="object-cover"
+                          unoptimized
                         />
                       </div>
-                    ) : null;
+                    ) : (
+                      <div className="w-48 h-48 flex-shrink-0 flex items-center justify-center bg-brutal-black text-white/20 text-xs uppercase tracking-widest">
+                        Sin imagen
+                      </div>
+                    );
                   })()}
                   <div className="flex flex-col gap-4 flex-1">
                     <p className="text-white/80 text-sm leading-relaxed">

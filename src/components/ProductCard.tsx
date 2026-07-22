@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import SafeImage from '@/components/SafeImage';
 import { ShoppingCart, Star, Eye } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useModal } from '@/components/providers/ModalProvider';
@@ -26,19 +26,20 @@ export default function ProductCard({ product }: ProductCardProps) {
             Nuevo
           </span>
         )}
-        {product.immediatelyAvailable ? (
-          <span className="bg-neon-green/20 text-neon-green border border-neon-green/30 text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
-            Entrega Inmediata
-          </span>
-        ) : product.delivery_lead_days ? (
-          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
-            {product.delivery_lead_days} días
-          </span>
-        ) : (
-          <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
-            A Coordinar
-          </span>
-        )}
+        {/* ponytail: delivery badges hidden — all products available */}
+        {/* {product.immediatelyAvailable ? ( */}
+        {/*   <span className="bg-neon-green/20 text-neon-green border border-neon-green/30 text-[10px] font-bold px-2 py-1 uppercase tracking-widest"> */}
+        {/*     Entrega Inmediata */}
+        {/*   </span> */}
+        {/* ) : product.delivery_lead_days ? ( */}
+        {/*   <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest"> */}
+        {/*     {product.delivery_lead_days} días */}
+        {/*   </span> */}
+        {/* ) : ( */}
+        {/*   <span className="bg-yellow text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest"> */}
+        {/*     A Coordinar */}
+        {/*   </span> */}
+        {/* )} */}
         {product.discount && (
           <span className="bg-white text-brutal-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
             -{product.discount}%
@@ -48,19 +49,14 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-brutal-black">
-        {product.image ? (
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-white/20 text-xs uppercase tracking-widest p-4 text-center">
-            Sin imagen
-          </div>
-        )}
+        <SafeImage
+          src={product.image as string}
+          alt={product.name}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+          unoptimized
+          referrerPolicy="no-referrer"
+        />
         <div className="absolute inset-0 bg-brutal-black/20 group-hover:bg-transparent transition-colors" />
 
         {/* View Details Button */}

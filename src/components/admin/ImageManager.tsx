@@ -54,7 +54,7 @@ export default function ImageManager({ productId, productName, initialImages }: 
       const signRes = await fetch('/api/admin/images/sign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify({ productId, originalName: file.name }),
       });
 
       const signData = await signRes.json();
@@ -63,7 +63,7 @@ export default function ImageManager({ productId, productName, initialImages }: 
         throw new Error(signData.error || 'Error al obtener firma de upload');
       }
 
-      const { signature, timestamp, apiKey, cloudName, folder, publicId } = signData;
+      const { signature, timestamp, apiKey, cloudName, folder, publicId, imageId } = signData;
 
       // ── 2. Upload directly to Cloudinary ───────────────────────────
       const cloudFormData = new FormData();
@@ -90,9 +90,15 @@ export default function ImageManager({ productId, productName, initialImages }: 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          imageId,
           publicId: uploadData.public_id,
           secureUrl: uploadData.secure_url,
           productId,
+          format: uploadData.format,
+          width: uploadData.width,
+          height: uploadData.height,
+          bytes: uploadData.bytes,
+          originalFilename: uploadData.original_filename,
         }),
       });
 

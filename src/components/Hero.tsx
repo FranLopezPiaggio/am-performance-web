@@ -68,7 +68,7 @@ export default function Hero() {
               {slides[current].subtitle}
             </p>
             <div>
-              <Link href={slides[current].link} className="brutal-btn flex items-center space-x-2">
+              <Link href={slides[current].link} className="brutal-btn-strong flex items-center space-x-2">
                 <span>{slides[current].cta}</span>
                 <ArrowRight size={20} />
               </Link>

@@ -1,5 +1,6 @@
 import { ProductWithVariants } from '@/types/database';
 import { StaticImageData } from 'next/image';
+import { getProductImage } from '@/lib/utils/images';
 
 export interface ProductCardData {
   id: string;
@@ -37,7 +38,7 @@ export function mapProductToCard(product: ProductWithVariants): ProductCardData 
     slug: product.slug,
     name: product.name,
     price,
-    image: firstImage?.image_url ?? '',
+    image: getProductImage(product.name, firstImage?.image_url ?? null),
     category: product.category.name,
     rating: 0,
     reviews: 0,

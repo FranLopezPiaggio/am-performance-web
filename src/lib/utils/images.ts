@@ -1,7 +1,18 @@
 // src/lib/utils/images.ts
 
 /**
+ * Inserta f_auto,q_auto en una URL de Cloudinary para servir
+ * el formato óptimo (WebP/AVIF) con calidad automática.
+ * Si la URL no es de Cloudinary, la devuelve sin cambios.
+ */
+export function optimizeCloudinaryUrl(url: string): string {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  return url.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
+}
+
+/**
  * Genera una URL de imagen robusta para productos.
+ * Aplica optimización Cloudinary si corresponde.
  *
  * @param productName - El nombre del producto (usado para placeholders dinámicos en el futuro).
  * @param imageUrl - La URL de la imagen desde la base de datos. Puede ser nula o inválida.
@@ -11,24 +22,11 @@ export const getProductImage = (
     productName: string,
     imageUrl: string | null | undefined
 ): string => {
-    // 1. Validar que la URL exista, no esté vacía y sea un enlace HTTP/HTTPS.
-    //    Añadimos una comprobación para que no sea un string vacío " ".
     const hasValidImage = imageUrl && imageUrl.trim() !== '' && imageUrl.startsWith('http');
 
     if (hasValidImage) {
-        // Si la imagen de la BD es válida, la usamos.
-        return imageUrl;
+        return optimizeCloudinaryUrl(imageUrl);
     }
 
-    // 2. Si no hay imagen válida, usamos nuestro placeholder local.
-    //    Esta es la ruta absoluta desde la raíz del sitio, porque está en /public.
-    const PLACEHOLDER_PATH = '/img/download.jpg';
-
-    return PLACEHOLDER_PATH;
+    return '/img/download.jpg';
 };
-
-/**
- * NOTA: Renombré la función de `getImage` a `getProductImage`.
- * Es una buena práctica para evitar conflictos y hacer el código más explícito.
- * Si prefieres mantener `getImage`, simplemente cambia el nombre en la exportación.
- */

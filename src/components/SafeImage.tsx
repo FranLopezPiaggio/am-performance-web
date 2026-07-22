@@ -11,9 +11,10 @@ interface SafeImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     height?: number;
     priority?: boolean;
     unoptimized?: boolean;
+    fill?: boolean;
 }
 
-export default function SafeImage({ src, alt, width, height, priority, unoptimized, ...props }: SafeImageProps) {
+export default function SafeImage({ src, alt, width, height, priority, unoptimized, fill, ...props }: SafeImageProps) {
     const [useNextImage, setUseNextImage] = useState(true);
 
     // Si hay un error al cargar con next/image, cambiamos a una etiqueta img normal
@@ -37,6 +38,7 @@ export default function SafeImage({ src, alt, width, height, priority, unoptimiz
             height={height}
             priority={priority}
             unoptimized={unoptimized}
+            fill={fill}
             onError={handleError}
             {...props}
         />

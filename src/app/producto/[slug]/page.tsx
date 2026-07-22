@@ -3,14 +3,15 @@
 import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ShoppingCart, ChevronLeft, Package, Truck } from 'lucide-react';
+import { ShoppingCart, ChevronLeft, Package } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import SafeImage from '@/components/SafeImage';
 import ProductCard from '@/components/ProductCard';
 import { useProduct } from '@/hooks/useProduct';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/context/CartContext';
 import { mapProductToCard } from '@/lib/mappers/productMapper';
+import { getProductImage, optimizeCloudinaryUrl } from '@/lib/utils/images';
 import type { ProductVariant, ProductImage } from '@/types/database';
 
 // ─── Image Gallery ───────────────────────────────────────────────────────────
@@ -33,12 +34,13 @@ function ImageGallery({ images, productName }: { images: ProductImage[]; product
     <div className="space-y-4">
       {/* Main Image */}
       <div className="relative aspect-square bg-brutal-black border border-white/10 overflow-hidden">
-        <Image
-          src={current.image_url}
+        <SafeImage
+          src={optimizeCloudinaryUrl(current.image_url)}
           alt={current.alt_text ?? productName}
           fill
           className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
           priority
+          unoptimized
           referrerPolicy="no-referrer"
         />
       </div>
@@ -56,11 +58,12 @@ function ImageGallery({ images, productName }: { images: ProductImage[]; product
                   : 'border-white/10 hover:border-white/30'
               }`}
             >
-              <Image
-                src={img.image_url}
+              <SafeImage
+                src={optimizeCloudinaryUrl(img.image_url)}
                 alt={img.alt_text ?? `${productName} ${i + 1}`}
                 fill
                 className="object-cover"
+                unoptimized
                 referrerPolicy="no-referrer"
               />
             </button>
@@ -116,29 +119,29 @@ function VariantSelector({
   );
 }
 
+// ponytail: delivery badges hidden — all products available
 // ─── Delivery Badge ───────────────────────────────────────────────────────────
-
-function DeliveryBadge({ stock }: { stock: number }) {
-  if (stock > 0) {
-    return (
-      <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 px-4 py-2">
-        <Truck size={16} className="text-green-400" />
-        <span className="text-green-400 text-xs font-bold uppercase tracking-widest">
-          Entrega Inmediata
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-2 bg-yellow/10 border border-yellow/20 px-4 py-2">
-      <Package size={16} className="text-yellow" />
-      <span className="text-yellow text-xs font-bold uppercase tracking-widest">
-        A Coordinar
-      </span>
-    </div>
-  );
-}
+// function DeliveryBadge({ stock }: { stock: number }) {
+//   if (stock > 0) {
+//     return (
+//       <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 px-4 py-2">
+//         <Truck size={16} className="text-green-400" />
+//         <span className="text-green-400 text-xs font-bold uppercase tracking-widest">
+//           Entrega Inmediata
+//         </span>
+//       </div>
+//     );
+//   }
+//
+//   return (
+//     <div className="flex items-center gap-2 bg-yellow/10 border border-yellow/20 px-4 py-2">
+//       <Package size={16} className="text-yellow" />
+//       <span className="text-yellow text-xs font-bold uppercase tracking-widest">
+//         A Coordinar
+//       </span>
+//     </div>
+//   );
+// }
 
 // ─── Related Products ─────────────────────────────────────────────────────────
 
@@ -291,10 +294,12 @@ export default function ProductDetailPage() {
         id: product.id,
         name: product.name,
         price: selectedVariant?.price ?? 0,
-        image:
+        image: getProductImage(
+          product.name,
           product.images.find((i) => i.is_primary)?.image_url ??
-          product.images[0]?.image_url ??
-          '',
+            product.images[0]?.image_url ??
+            null,
+        ),
         category: product.category.name,
         immediatelyAvailable: (selectedVariant?.stock ?? 0) > 0,
         delivery_lead_days: null,
@@ -360,8 +365,8 @@ export default function ProductDetailPage() {
               </p>
             )}
 
-            {/* Delivery Badge */}
-            <DeliveryBadge stock={selectedVariant?.stock ?? 0} />
+            {/* ponytail: delivery badge hidden */}
+            {/* <DeliveryBadge stock={selectedVariant?.stock ?? 0} /> */}
 
             {/* Price */}
             <div>

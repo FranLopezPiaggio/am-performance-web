@@ -5,12 +5,13 @@ import Navbar from '@/components/Navbar';
 import { useCart } from '@/context/CartContext';
 import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+import SafeImage from '@/components/SafeImage';
 import { z } from 'zod';
 import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
 import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
 
-import CartDisclaimer from '@/components/CartDisclaimer';
+// ponytail: CartDisclaimer hidden
+// import CartDisclaimer from '@/components/CartDisclaimer';
 import { trackCheckoutStarted, trackWhatsappClicked } from '@/lib/analytics/events';
 
 // --- SOLUCIÓN 1: MOVER EL COMPONENTE FUERA ---
@@ -191,13 +192,13 @@ export default function CartPage() {
       <div className="max-w-7xl mx-auto px-4 pt-32 pb-24">
         <h1 className="text-6xl font-display uppercase tracking-tighter mb-12">Tu Carrito</h1>
 
-          {/* AMP-023.5: Delivery Disclaimer */}
-          <CartDisclaimer
-            hasOnlyDelayed={hasOnlyDelayedItems()}
-            hasDelayed={hasDelayedItems()}
-            hasMixed={hasMixedItems()}
-            maxLeadDays={maxLeadDays()}
-          />
+          {/* ponytail: delivery disclaimer hidden */}
+          {/* <CartDisclaimer */}
+          {/*   hasOnlyDelayed={hasOnlyDelayedItems()} */}
+          {/*   hasDelayed={hasDelayedItems()} */}
+          {/*   hasMixed={hasMixedItems()} */}
+          {/*   maxLeadDays={maxLeadDays()} */}
+          {/* /> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
           {/* Columna Izquierda: Lista de Items */}
@@ -205,28 +206,23 @@ export default function CartPage() {
             {cart.map((item) => (
               <div key={item.id} className="bg-white/5 border border-white/10 p-4 flex items-center gap-6">
                 <div className="relative w-24 h-24 bg-brutal-black flex-shrink-0">
-                  <Image
+                  <SafeImage
                     src={item.image}
                     alt={item.name}
                     fill
                     className="object-cover grayscale"
+                    unoptimized
                     referrerPolicy="no-referrer"
                   />
                 </div>
 
                 <div className="flex-grow">
-                  <div className="flex items-center gap-2 mb-1">
-                    {/* Delivery badge */}
-                    {item.immediatelyAvailable ? (
-                      <span className="bg-green-500/20 text-green-400 text-[8px] px-2 py-0.5 uppercase font-bold tracking-wider">
-                        Entrega Inmediata
-                      </span>
-                    ) : (
-                      <span className="bg-yellow-500/20 text-yellow-500 text-[8px] px-2 py-0.5 uppercase font-bold tracking-wider">
-                        {item.delivery_lead_days ? `${item.delivery_lead_days} días` : 'A Coordinar'}
-                      </span>
-                    )}
-                  </div>
+                  {/* ponytail: delivery badge hidden */}
+                  {/* <div className="flex items-center gap-2 mb-1"> */}
+                  {/*   <span className="bg-green-500/20 text-green-400 text-[8px] px-2 py-0.5 uppercase font-bold tracking-wider"> */}
+                  {/*     Entrega Inmediata */}
+                  {/*   </span> */}
+                  {/* </div> */}
                   <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">{item.category}</p>
                   <h3 className="font-display uppercase text-xl leading-tight">{item.name}</h3>
                   <p className="text-neon-green font-bold mt-1">${item.price.toLocaleString()}</p>
