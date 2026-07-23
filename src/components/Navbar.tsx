@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, Menu, X, ChevronDown, Search } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { useCategories } from '@/hooks/useCategories';
+import { useCategoriesContext } from '@/context/CategoriesContext';
 import { useAuth } from '@/context/AuthContext';
 import { getWhatsAppUrl } from '@/lib/whatsapp/service';
 import { useRouter } from 'next/navigation';
@@ -19,7 +19,7 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { totalItems } = useCart();
-  const { categories: allCategories } = useCategories();
+  const allCategories = useCategoriesContext();
   const categories = allCategories.filter(c => !c.parent_id);
   const router = useRouter();
   const { user, signOut } = useAuth();
