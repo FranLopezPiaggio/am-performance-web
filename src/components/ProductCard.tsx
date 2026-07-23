@@ -54,7 +54,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           alt={product.name}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
-          unoptimized
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-brutal-black/20 group-hover:bg-transparent transition-colors" />

@@ -50,7 +50,7 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center space-x-2 ml-[-30px]">
               <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300}
-                loading="eager" unoptimized />
+                loading="eager" />
             </Link>
 
 
@@ -146,7 +146,7 @@ export default function Navbar() {
                 aria-label="Contacto por WhatsApp"
                 onClick={() => trackWhatsappClicked('navbar')}
               >
-                <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} unoptimized />
+                <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} />
               </a>
               <button
                 className="md:hidden p-2 hover:text-neon-green transition-colors"

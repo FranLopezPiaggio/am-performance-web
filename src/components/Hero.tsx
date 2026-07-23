@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-// import bgHero from '@/assets/gym-black.jpg'
 const bgHero = 'img/gym-black.jpg'
 
 const slides = [
@@ -48,14 +48,16 @@ export default function Hero() {
 
   return (
     <section className="relative h-[80vh] w-full overflow-hidden bg-brutal-black">
-      <div
-          key={current}
-          className="absolute inset-0 animate-[fadeIn_0.7s_ease]"
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${slides[current].image})` }}
-          />
+      <div key={current} className="absolute inset-0 animate-[fadeIn_0.7s_ease]">
+        <Image
+          src={slides[current].image}
+          alt={slides[current].title}
+          fill
+          className="object-cover"
+          priority={current === 0}
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-black/60" />
 
           <div className="relative h-full max-w-7xl mx-auto px-4 flex flex-col justify-center items-start">
             <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">

@@ -57,7 +57,6 @@ export default function ProductModal() {
                           alt={firstImage.alt_text ?? product.name}
                           fill
                           className="object-cover"
-                          unoptimized
                         />
                       </div>
                     ) : (

@@ -40,7 +40,6 @@ function ImageGallery({ images, productName }: { images: ProductImage[]; product
           fill
           className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
           priority
-          unoptimized
           referrerPolicy="no-referrer"
         />
       </div>
@@ -63,7 +62,6 @@ function ImageGallery({ images, productName }: { images: ProductImage[]; product
                 alt={img.alt_text ?? `${productName} ${i + 1}`}
                 fill
                 className="object-cover"
-                unoptimized
                 referrerPolicy="no-referrer"
               />
             </button>

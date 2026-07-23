@@ -114,7 +114,7 @@ export default function AdminLayout({
           <div className="flex justify-between items-center">
             {/* Mobile Title */}
             <div className="md:hidden">
-              <Image src='/logo/AMPerformance_Favicon_verde.png' height={48} width={48} alt='logoAM' unoptimized />
+              <Image src='/logo/AMPerformance_Favicon_verde.png' height={48} width={48} alt='logoAM' />
             </div>
 
             {/* Spacer */}
