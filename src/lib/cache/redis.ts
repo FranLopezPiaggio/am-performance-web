@@ -7,14 +7,17 @@ import { Redis } from '@upstash/redis';
 // 1. Redis Client (singleton)
 // ==========================================
 
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+
 /**
  * Cliente de Upstash Redis.
  * Lee automáticamente de UPSTASH_REDIS_REST_URL y UPSTASH_REDIS_REST_TOKEN
+ * Si faltan las vars, usa un proxy noop para evitar ruido en browser (POST /pipeline 404).
  */
-export const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+export const redis: Redis = UPSTASH_URL && UPSTASH_TOKEN
+  ? new Redis({ url: UPSTASH_URL, token: UPSTASH_TOKEN })
+  : new Proxy({} as Redis, { get: () => () => Promise.resolve(null) });
 
 // ==========================================
 // 2. Tipos para Cache

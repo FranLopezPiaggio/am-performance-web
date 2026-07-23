@@ -4,6 +4,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  turbopack: {
+    root: process.cwd(),
+  },
 
   // ── Security Headers ──────────────────────────────────────────────
   async headers() {
