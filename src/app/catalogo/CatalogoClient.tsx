@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import { createClient } from '@/lib/supabase/client';
+import { useSupabase } from '@/context/SupabaseProvider';
 import { getProducts } from '@/lib/supabase/queries';
 import { mapProductToCard } from '@/lib/mappers/productMapper';
 import type { ProductFilters } from '@/lib/supabase/queries';
@@ -20,6 +20,7 @@ interface CatalogoClientProps {
 const PAGE_SIZE = 12;
 
 export default function CatalogoClient({ initialProducts, total, categories }: CatalogoClientProps) {
+  const supabase = useSupabase();
   const searchParams = useSearchParams();
   const categoria = searchParams.get('categoria');
   const ofertas = searchParams.get('ofertas') === 'true';
@@ -55,8 +56,7 @@ export default function CatalogoClient({ initialProducts, total, categories }: C
     setIsLoadingMore(true);
     setLoadError(null);
     try {
-      const supabase = createClient();
-      const newProducts = await getProducts(supabase, {
+      const newProducts = await getProducts(supabase!, {
         ...filters,
         limit: PAGE_SIZE,
         offset: products.length,
@@ -67,7 +67,7 @@ export default function CatalogoClient({ initialProducts, total, categories }: C
     } finally {
       setIsLoadingMore(false);
     }
-  }, [filters, products.length]);
+  }, [filters, products.length, supabase]);
 
   return (
     <>

@@ -3,6 +3,7 @@ import { Inter, Anton } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { SupabaseProvider } from '@/context/SupabaseProvider';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ModalProvider } from '@/components/providers/ModalProvider';
 import ProductModalWrapper from '@/components/providers/ProductModalWrapper';
@@ -52,7 +53,8 @@ export default async function RootLayout({
         <ErrorBoundary>
           <PostHogProvider>
             <AuthProvider>
-              <CategoriesProvider categories={categories}>
+              <SupabaseProvider>
+                <CategoriesProvider categories={categories}>
                 <CartProvider>
                   <ModalProvider>
                     {children}
@@ -60,6 +62,7 @@ export default async function RootLayout({
                   </ModalProvider>
                 </CartProvider>
               </CategoriesProvider>
+              </SupabaseProvider>
             </AuthProvider>
           </PostHogProvider>
         </ErrorBoundary>

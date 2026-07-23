@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useSupabase } from '@/context/SupabaseProvider';
 import { getProduct } from '@/lib/supabase/queries';
 import type { ProductWithVariants } from '@/types/database';
 
@@ -12,6 +12,7 @@ interface UseProductReturn {
 }
 
 export function useProduct(slug: string | undefined): UseProductReturn {
+  const supabase = useSupabase();
   const [product, setProduct] = useState<ProductWithVariants | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
@@ -20,10 +21,9 @@ export function useProduct(slug: string | undefined): UseProductReturn {
 
   useEffect(() => {
     // Don't fetch if no slug — state already starts as null
-    if (!slug) return;
+    if (!slug || !supabase) return;
 
     let cancelled = false;
-    const supabase = createClient();
 
     getProduct(supabase, slug)
       .then((data) => {
@@ -40,7 +40,7 @@ export function useProduct(slug: string | undefined): UseProductReturn {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, supabase]);
 
   return { product, loading, error };
 }

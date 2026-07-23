@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import { useSupabase } from '@/context/SupabaseProvider';
 import { ArrowLeft } from 'lucide-react';
 
 /**
@@ -23,9 +23,9 @@ export default function LoginFormContent() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const supabase = useSupabase()!;
     const router = useRouter();
     const searchParams = useSearchParams();
-    const supabase = createClient();
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useSupabase } from '@/context/SupabaseProvider';
 import { getProducts, getProductCount } from '@/lib/supabase/queries';
 import type { ProductFilters } from '@/lib/supabase/queries';
 import type { ProductWithVariants } from '@/types/database';
@@ -21,6 +21,7 @@ export function useProducts(
   filters: ProductFilters = {},
   pageSize: number = DEFAULT_PAGE_SIZE
 ): UseProductsReturn {
+  const supabase = useSupabase();
   const [products, setProducts] = useState<ProductWithVariants[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [total, setTotal] = useState(0);
@@ -35,9 +36,9 @@ export function useProducts(
 
   // Reset and fetch when filters change
   useEffect(() => {
+    if (!supabase) return;
     offsetRef.current = 0;
     let cancelled = false;
-    const supabase = createClient();
 
     Promise.all([
       getProducts(supabase, { ...filters, limit: pageSize, offset: 0 }),
@@ -66,14 +67,14 @@ export function useProducts(
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtersKey, pageSize]);
+  }, [filtersKey, pageSize, supabase]);
 
   const loadMore = useCallback(() => {
+    if (!supabase) return;
     setIsLoadingMore(true);
     const newOffset = offsetRef.current + pageSize;
     offsetRef.current = newOffset;
     let cancelled = false;
-    const supabase = createClient();
 
     Promise.all([
       getProducts(supabase, { ...filters, limit: pageSize, offset: newOffset }),
@@ -100,7 +101,7 @@ export function useProducts(
     return () => {
       cancelled = true;
     };
-  }, [filters, pageSize]);
+  }, [filters, pageSize, supabase]);
 
   return { products, loading, error, hasMore, loadMore, total };
 }

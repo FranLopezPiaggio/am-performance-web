@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Save, Eye, EyeOff, Package } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { useSupabase } from '@/context/SupabaseProvider';
 import ImageManager from '@/components/admin/ImageManager';
 import type { ProductWithVariants, Category, Line, ProductVariant } from '@/types/database';
 
@@ -134,7 +134,7 @@ interface EditProductModalProps {
 // ── Modal ──────────────────────────────────────────────────────────
 
 export default function EditProductModal({ slug, onClose, onSaved }: EditProductModalProps) {
-  const supabase = createClient();
+  const supabase = useSupabase()!;
   const [activeTab, setActiveTab] = useState<'info' | 'variants' | 'images'>('info');
   const [product, setProduct] = useState<ProductWithVariants | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
