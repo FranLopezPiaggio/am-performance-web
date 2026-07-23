@@ -4,10 +4,49 @@ import CategoryGrid from '@/components/CategoryGrid';
 import BestSellersSection from '@/components/BestSellersSection';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Suspense } from 'react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getCategories, getBestSellers } from '@/lib/supabase/queries';
+
+async function CategoryGridWrapper() {
+  const supabase = await createClient();
+  const categories = await getCategories(supabase);
+  return <CategoryGrid categories={categories} />;
+}
+
+async function BestSellersWrapper() {
+  const supabase = await createClient();
+  const bestSellers = await getBestSellers(supabase, 8);
+  return <BestSellersSection products={bestSellers} />;
+}
+
+function GridFallback() {
+  return (
+    <section className="py-24 max-w-7xl mx-auto px-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="aspect-square bg-white/5 animate-pulse brutal-shadow" />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function BestSellersFallback() {
+  return (
+    <section className="py-24 bg-white/5">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="aspect-[3/4] bg-white/5 animate-pulse brutal-shadow" />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 const trustItems = [
   { icon: Truck, title: 'Envíos a todo el país', desc: 'Llegamos a cada rincón de Argentina.' },
@@ -16,13 +55,7 @@ const trustItems = [
   { icon: Headphones, title: 'Soporte 24/7', desc: 'Asesoramiento técnico especializado.' }
 ];
 
-export default async function Home() {
-  const supabase = await createClient();
-  const [categories, bestSellers] = await Promise.all([
-    getCategories(supabase),
-    getBestSellers(supabase, 8),
-  ]);
-
+export default function Home() {
   return (
     <main className="min-h-screen pb-24">
       <Navbar />
@@ -43,9 +76,13 @@ export default async function Home() {
         </div>
       </section>
 
-      <CategoryGrid categories={categories} />
+      <Suspense fallback={<GridFallback />}>
+        <CategoryGridWrapper />
+      </Suspense>
 
-      <BestSellersSection products={bestSellers} />
+      <Suspense fallback={<BestSellersFallback />}>
+        <BestSellersWrapper />
+      </Suspense>
 
       {/* Newsletter / CTA */}
       <section className="py-24 max-w-7xl mx-auto px-4">
