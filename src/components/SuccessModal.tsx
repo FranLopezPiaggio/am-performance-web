@@ -4,21 +4,34 @@ import React from 'react';
 import { CheckCircle, MessageCircle, X } from 'lucide-react';
 import Link from 'next/link';
 
-interface OrderSuccessModalProps {
+interface SuccessModalProps {
   isOpen: boolean;
-  orderNumber: string;
-  customerName: string;
-  whatsappUrl: string;
   onClose: () => void;
+  title: string;
+  message: string;
+  /** Opcional: texto destacado (número de orden, ID de consulta, etc.) */
+  highlight?: string;
+  /** Label para el highlight */
+  highlightLabel?: string;
+  /** URL de WhatsApp a abrir en nueva pestaña */
+  whatsappUrl: string;
+  /** Label del botón secundario (navegación) */
+  secondaryLabel: string;
+  /** href del botón secundario */
+  secondaryHref: string;
 }
 
-export default function OrderSuccessModal({
+export default function SuccessModal({
   isOpen,
-  orderNumber,
-  customerName,
-  whatsappUrl,
   onClose,
-}: OrderSuccessModalProps) {
+  title,
+  message,
+  highlight,
+  highlightLabel,
+  whatsappUrl,
+  secondaryLabel,
+  secondaryHref,
+}: SuccessModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -47,23 +60,23 @@ export default function OrderSuccessModal({
 
         {/* Title */}
         <h2 className="text-3xl font-display uppercase tracking-tighter text-center mb-4">
-          ¡Pedido Recibido!
+          {title}
         </h2>
 
         {/* Message */}
         <p className="text-white/70 text-sm text-center mb-6 leading-relaxed">
-          Gracias por tu compra,{' '}
-          <span className="text-white font-bold">{customerName}</span>.
-          En breve nos comunicamos con vos para coordinar el costo de envío.
+          {message}
         </p>
 
-        {/* Order number */}
-        <div className="text-center mb-8">
-          <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">
-            Número de Orden
-          </p>
-          <p className="font-mono text-neon-green text-xl">{orderNumber}</p>
-        </div>
+        {/* Highlight (order number, consultation ID, etc.) */}
+        {highlight && highlightLabel && (
+          <div className="text-center mb-8">
+            <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">
+              {highlightLabel}
+            </p>
+            <p className="font-mono text-neon-green text-xl">{highlight}</p>
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="space-y-3">
@@ -76,10 +89,10 @@ export default function OrderSuccessModal({
           </button>
 
           <Link
-            href="/catalogo"
+            href={secondaryHref}
             className="w-full brutal-btn-outline flex items-center justify-center"
           >
-            Seguir Comprando
+            {secondaryLabel}
           </Link>
         </div>
       </div>

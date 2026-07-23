@@ -7,6 +7,7 @@ import { Send, Ruler, Users, Package, ArrowRight, Check, Settings } from 'lucide
 import { z } from 'zod';
 import { projectFormSchema, ProjectFormValues } from '@/lib/validations/projects';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
+import SuccessModal from '@/components/SuccessModal';
 const Machine = '/img/justin-fisher-cf_JUo9Ezdw-unsplash.jpg';
 const LogoAMP = '/logo/AMPerformance_Favicon_verde.png'
 
@@ -25,6 +26,10 @@ export default function ProyectosPage() {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ProjectFormValues, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [projectSuccessData, setProjectSuccessData] = useState<{
+    name: string;
+    whatsappUrl: string;
+  } | null>(null);
   const websiteRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -77,14 +82,22 @@ export default function ProyectosPage() {
           phone: formData.phone,
           submittedAt: new Date().toISOString(),
         }));
-        
-        window.location.href = getWhatsAppUrl('projects', { name: formData.name, recordId: result.recordId });
+
+        const whatsappUrl = getWhatsAppUrl('projects', { name: formData.name, recordId: result.recordId });
+        setProjectSuccessData({ name: formData.name, whatsappUrl });
+        setIsSubmitting(false);
+        return;
       }
     } catch {
       // Error de conexión silencioso para evitar mostrar nada al usuario
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleModalClose = () => {
+    setProjectSuccessData(null);
+    window.location.href = '/';
   };
 
   return (
@@ -511,6 +524,17 @@ export default function ProyectosPage() {
           </p>
         </div>
       </footer>
+      {projectSuccessData && (
+        <SuccessModal
+          isOpen={!!projectSuccessData}
+          title="¡Consulta Enviada!"
+          message={`Gracias por tu consulta, ${projectSuccessData.name}. Nuestro equipo se contactará con vos en breve.`}
+          whatsappUrl={projectSuccessData.whatsappUrl}
+          secondaryLabel="Volver al Inicio"
+          secondaryHref="/"
+          onClose={handleModalClose}
+        />
+      )}
     </main>
   );
 }

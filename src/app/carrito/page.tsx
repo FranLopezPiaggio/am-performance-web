@@ -9,7 +9,7 @@ import SafeImage from '@/components/SafeImage';
 import { z } from 'zod';
 import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
 import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
-import OrderSuccessModal from '@/components/OrderSuccessModal';
+import SuccessModal from '@/components/SuccessModal';
 
 // ponytail: CartDisclaimer hidden
 // import CartDisclaimer from '@/components/CartDisclaimer';
@@ -400,11 +400,15 @@ export default function CartPage() {
       </div>
 
       {orderSuccessData && (
-        <OrderSuccessModal
+        <SuccessModal
           isOpen={!!orderSuccessData}
-          orderNumber={orderSuccessData.orderNumber}
-          customerName={orderSuccessData.customerName}
+          title="¡Pedido Recibido!"
+          message={`Gracias por tu compra, ${orderSuccessData.customerName}. En breve nos comunicamos con vos para coordinar el costo de envío.`}
+          highlight={orderSuccessData.orderNumber}
+          highlightLabel="Número de Orden"
           whatsappUrl={orderSuccessData.whatsappUrl}
+          secondaryLabel="Seguir Comprando"
+          secondaryHref="/catalogo"
           onClose={handleModalClose}
         />
       )}
