@@ -19,7 +19,7 @@ export interface ProductFilters {
   lineSlug?: string;
   discipline?: string;
   search?: string;
-  isActive?: boolean;
+  isActive?: boolean | null;
   limit?: number;
   offset?: number;
 }
@@ -115,7 +115,10 @@ export async function getProducts(
     query = query.ilike('name', `%${filters.search}%`);
   }
   if (filters.isActive !== undefined) {
-    query = query.eq('is_active', filters.isActive);
+    if (filters.isActive !== null) {
+      query = query.eq('is_active', filters.isActive);
+    }
+    // null = mostrar activos e inactivos (admin)
   } else {
     query = query.eq('is_active', true);
   }
@@ -196,7 +199,9 @@ export async function getProductCount(
       if (ids.length > 0) query = query.in('category_id', ids);
     }
     if (filters.isActive !== undefined) {
-      query = query.eq('is_active', filters.isActive);
+      if (filters.isActive !== null) {
+        query = query.eq('is_active', filters.isActive);
+      }
     }
 
     const { count, error } = await query;

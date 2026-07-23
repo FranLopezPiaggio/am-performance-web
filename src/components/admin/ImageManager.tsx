@@ -8,9 +8,10 @@ interface ImageManagerProps {
   productId: string;
   productName: string;
   initialImages: ProductImage[];
+  compact?: boolean; // sin header (para usar dentro de un modal)
 }
 
-export default function ImageManager({ productId, productName, initialImages }: ImageManagerProps) {
+export default function ImageManager({ productId, productName, initialImages, compact }: ImageManagerProps) {
   const [images, setImages] = useState<ProductImage[]>(initialImages);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -218,41 +219,49 @@ export default function ImageManager({ productId, productName, initialImages }: 
   return (
     <div>
       {/* ── Header ─────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <a
-            href="/admin?view=products"
-            className="text-[10px] uppercase tracking-widest text-white/40 hover:text-neon-green transition-colors"
-          >
-            ← Volver a productos
-          </a>
-          <h1 className="text-2xl font-display uppercase tracking-tighter mt-1">
-            {productName}
-          </h1>
-          <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${compact ? 'mb-4' : 'mb-6'}`}>
+        {!compact && (
+          <div>
+            <a
+              href="/admin?view=products"
+              className="text-[10px] uppercase tracking-widest text-white/40 hover:text-neon-green transition-colors"
+            >
+              ← Volver a productos
+            </a>
+            <h1 className="text-2xl font-display uppercase tracking-tighter mt-1">
+              {productName}
+            </h1>
+            <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
+              {sortedImages.length} imagen{sortedImages.length !== 1 ? 'es' : ''}
+            </p>
+          </div>
+        )}
+        {compact && (
+          <p className="text-xs uppercase tracking-widest text-white/40 font-bold">
             {sortedImages.length} imagen{sortedImages.length !== 1 ? 'es' : ''}
           </p>
+        )}
+        <div className="flex items-center gap-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/webp,image/jpeg,image/png,image/avif"
+            className="hidden"
+            onChange={handleUpload}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="flex items-center gap-2 px-6 py-3 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {uploading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <ImageUp size={16} />
+            )}
+            {uploading ? 'Subiendo...' : 'Subir Imagen'}
+          </button>
         </div>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/webp,image/jpeg,image/png,image/avif"
-          className="hidden"
-          onChange={handleUpload}
-        />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="flex items-center gap-2 px-6 py-3 bg-neon-green text-brutal-black font-bold uppercase tracking-widest text-sm hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {uploading ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            <ImageUp size={16} />
-          )}
-          {uploading ? 'Subiendo...' : 'Subir Imagen'}
-        </button>
       </div>
 
       {/* ── Messages ────────────────────────────────────────────── */}

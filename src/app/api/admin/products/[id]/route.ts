@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 
 const patchProductSchema = z.object({
   name: z.string().min(1).optional(),
+  slug: z.string().min(1).optional(),
   description: z.string().optional(),
   short_description: z.string().nullable().optional(),
   is_active: z.boolean().optional(),
