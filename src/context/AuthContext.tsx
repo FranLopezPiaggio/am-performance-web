@@ -1,9 +1,8 @@
 // src/context/AuthContext.tsx
 'use client';
 
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
 import { User } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/client';
 
 // Extended User type with app_metadata
 interface UserWithMetadata extends User {
@@ -30,35 +29,47 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserWithMetadata | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabaseRef = useRef(createClient());
+  const supabaseRef = useRef<any>(null);
 
   // Check if user is admin based on app_metadata role
   const isAdmin = user?.app_metadata?.role === 'admin';
 
   useEffect(() => {
-    // 1. Get initial session
-    const getInitialSession = async () => {
+    let cancelled = false;
+
+    const init = async () => {
+      const { createClient } = await import('@/lib/supabase/client');
+      if (cancelled) return;
+      supabaseRef.current = createClient();
+
+      // 1. Get initial session
       const { data: { session } } = await supabaseRef.current.auth.getSession();
+      if (cancelled) return;
       setUser(session?.user as UserWithMetadata ?? null);
       setLoading(false);
+
+      // 2. Listen for auth changes (login/logout)
+      const { data: { subscription } } = supabaseRef.current.auth.onAuthStateChange((_event: any, s: any) => {
+        if (!cancelled) {
+          setUser(s?.user as UserWithMetadata ?? null);
+          setLoading(false);
+        }
+      });
+
+      return () => { subscription.unsubscribe(); };
     };
 
-    getInitialSession();
+    init();
+    return () => { cancelled = true; };
+  }, []);
 
-    // 2. Listen for auth changes (login/logout)
-    const { data: { subscription } } = supabaseRef.current.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user as UserWithMetadata ?? null);
-      setLoading(false);
-    });
-
-    // Cleanup on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
+  const getClient = useCallback(() => {
+    // ponytail: signIn/signOut only called from user interaction, ref is always set by then
+    return supabaseRef.current!;
   }, []);
 
   const signInWithGoogle = async () => {
-    await supabaseRef.current.auth.signInWithOAuth({
+    await getClient().auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: window.location.origin + '/auth/callback',
@@ -68,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabaseRef.current.auth.signInWithPassword({
+    const { error } = await getClient().auth.signInWithPassword({
       email,
       password,
     });
@@ -76,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabaseRef.current.auth.signOut();
+    await getClient().auth.signOut();
     setUser(null);
   };
 

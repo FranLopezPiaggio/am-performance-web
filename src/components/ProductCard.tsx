@@ -9,9 +9,10 @@ import type { ProductCardData } from '@/lib/mappers/productMapper';
 
 interface ProductCardProps {
   product: ProductCardData;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority }: ProductCardProps) {
   const { addToCart } = useCart();
   const { openModal } = useModal();
 
@@ -53,6 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={product.image as string}
           alt={product.name}
           fill
+          priority={priority}
           className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
           referrerPolicy="no-referrer"
         />
