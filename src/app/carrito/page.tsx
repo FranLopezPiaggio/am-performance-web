@@ -9,6 +9,7 @@ import SafeImage from '@/components/SafeImage';
 import { z } from 'zod';
 import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
 import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
+import OrderSuccessModal from '@/components/OrderSuccessModal';
 
 // ponytail: CartDisclaimer hidden
 // import CartDisclaimer from '@/components/CartDisclaimer';
@@ -81,6 +82,11 @@ export default function CartPage() {
   } = useCart();
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [orderSuccessData, setOrderSuccessData] = useState<{
+    orderNumber: string;
+    customerName: string;
+    whatsappUrl: string;
+  } | null>(null);
   const [form, setForm] = useState<CustomerFormValues>({
     nombre: '',
     email: '',
@@ -161,11 +167,22 @@ export default function CartPage() {
       const shortFallback = `Nuevo pedido: ${form.nombre} - Orden: ${data.orderNumber}`;
       trackWhatsappClicked('checkout');
       const url = getWhatsAppUrlSafe(message, shortFallback);
-      window.location.href = url;
+
+      setOrderSuccessData({
+        orderNumber: data.orderNumber,
+        customerName: form.nombre,
+        whatsappUrl: url,
+      });
+      setLoading(false);
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : 'Error al procesar el pedido');
       setLoading(false);
     }
+  };
+
+  const handleModalClose = () => {
+    setOrderSuccessData(null);
+    window.location.href = '/gracias';
   };
 
   if (cart.length === 0) {
@@ -381,6 +398,16 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {orderSuccessData && (
+        <OrderSuccessModal
+          isOpen={!!orderSuccessData}
+          orderNumber={orderSuccessData.orderNumber}
+          customerName={orderSuccessData.customerName}
+          whatsappUrl={orderSuccessData.whatsappUrl}
+          onClose={handleModalClose}
+        />
+      )}
     </main>
   );
 }
