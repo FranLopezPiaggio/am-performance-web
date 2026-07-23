@@ -7,10 +7,12 @@ import { SupabaseProvider } from '@/context/SupabaseProvider';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ModalProvider } from '@/components/providers/ModalProvider';
 import ProductModalWrapper from '@/components/providers/ProductModalWrapper';
-import { PostHogProvider } from '@/lib/analytics/posthog-provider';
+import dynamic from 'next/dynamic';
+
+const PostHogProvider = dynamic(
+  () => import('@/lib/analytics/posthog-provider').then(m => m.PostHogProvider)
+);
 import { CategoriesProvider } from '@/context/CategoriesContext';
-import { createClient } from '@/lib/supabase/server';
-import { getCategories } from '@/lib/supabase/queries';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,19 +30,11 @@ export const metadata: Metadata = {
   description: 'Equipamiento deportivo de alto rendimiento. Moderno, técnico y brutalista.',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let categories: Awaited<ReturnType<typeof getCategories>> = [];
-  try {
-    const supabase = await createClient();
-    categories = await getCategories(supabase);
-  } catch {
-    // ponytail: categorías vacías → Navbar sin dropdown
-  }
-
   return (
     <html lang="es" className={`${inter.variable} ${anton.variable}`}>
       <head>
@@ -54,7 +48,7 @@ export default async function RootLayout({
           <PostHogProvider>
             <AuthProvider>
               <SupabaseProvider>
-                <CategoriesProvider categories={categories}>
+                <CategoriesProvider>
                 <CartProvider>
                   <ModalProvider>
                     {children}
