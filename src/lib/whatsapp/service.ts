@@ -33,7 +33,7 @@ export const getWhatsAppUrlSafe = (
   shortFallback: string,
   phone?: string
 ): string => {
-  const p = (phone || process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '5492325511751').replace(/\D/g, '');
+  const p = (phone || process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '').replace(/\D/g, '');
   const encoded = encodeURIComponent(message);
 
   if (encoded.length <= MAX_ENCODED_TEXT) {

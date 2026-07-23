@@ -344,8 +344,7 @@ export default function CartPage() {
                   <span>${totalPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold uppercase tracking-widest">
-                  <span>Envío</span>
-                  <span className="text-xs text-white/60 uppercase">A calcular al enviar</span>
+                  <span>El Envío se calcula por WhatsApp</span>
                 </div>
                 <div className="pt-4 border-t border-brutal-black/10 flex justify-between text-2xl font-display uppercase tracking-tighter">
                   <span>Total</span>

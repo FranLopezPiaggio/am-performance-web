@@ -3,7 +3,7 @@ import { WhatsAppConfig } from "./types";
 export const whatsappConfig: WhatsAppConfig = {
     // Siempre usa variables de entorno para datos sensibles o configurables
     // ponytail: fallback hardcodeado reemplazado por NEXT_PUBLIC_ env var
-    phone: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || process.env.WHATSAPP_BUSINESS_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_FALLBACK || "5492325511751",
+    phone: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || process.env.WHATSAPP_BUSINESS_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_FALLBACK || "",
     messages: {
         info: "Hola quiero mas info de AMPerformance",
         showroom: "Hola, me gustaría agendar una visita al showroom.",
