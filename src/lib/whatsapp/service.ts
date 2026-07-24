@@ -3,7 +3,7 @@ import { WhatsAppMsgContext } from "./types";
 
 export const getWhatsAppUrl = (
   intent: WhatsAppMsgContext,
-  params?: Record<string, string>
+  params?: Record<string, string>,
 ): string => {
   let message = whatsappConfig.messages[intent] || "";
 
@@ -15,7 +15,7 @@ export const getWhatsAppUrl = (
 
   const encodedMessage = encodeURIComponent(message);
   // Limpiamos el número de cualquier caracter no numérico
-  const cleanPhone = whatsappConfig.phone.replace(/\D/g, '');
+  const cleanPhone = whatsappConfig.phone.replace(/\D/g, "");
 
   return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
 };
@@ -31,9 +31,9 @@ const MAX_ENCODED_TEXT = 4000;
 export const getWhatsAppUrlSafe = (
   message: string,
   shortFallback: string,
-  phone?: string
+  phone?: string,
 ): string => {
-  const p = (phone || process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '').replace(/\D/g, '');
+  const p = (phone || whatsappConfig.phone).replace(/\D/g, "");
   const encoded = encodeURIComponent(message);
 
   if (encoded.length <= MAX_ENCODED_TEXT) {
