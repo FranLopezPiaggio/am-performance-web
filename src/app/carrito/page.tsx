@@ -1,19 +1,25 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Navbar from '@/components/Navbar';
-import { useCart } from '@/context/CartContext';
-import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from 'lucide-react';
-import Link from 'next/link';
-import SafeImage from '@/components/SafeImage';
-import { z } from 'zod';
-import { customerFormSchema, CustomerFormValues } from '@/lib/validations/order';
-import { getWhatsAppUrlSafe } from '@/lib/whatsapp/service';
-import SuccessModal from '@/components/SuccessModal';
+import React, { useState } from "react";
+import Navbar from "@/components/Navbar";
+import { useCart } from "@/context/CartContext";
+import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from "lucide-react";
+import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
+import { z } from "zod";
+import {
+  customerFormSchema,
+  CustomerFormValues,
+} from "@/lib/validations/order";
+import { getWhatsAppUrlSafe } from "@/lib/whatsapp/service";
+import SuccessModal from "@/components/SuccessModal";
 
 // ponytail: CartDisclaimer hidden
 // import CartDisclaimer from '@/components/CartDisclaimer';
-import { trackCheckoutStarted, trackWhatsappClicked } from '@/lib/analytics/events';
+import {
+  trackCheckoutStarted,
+  trackWhatsappClicked,
+} from "@/lib/analytics/events";
 
 // --- SOLUCIÓN 1: MOVER EL COMPONENTE FUERA ---
 // Se mueve el componente InputField fuera de CartPage para evitar el bug de tipeo.
@@ -34,9 +40,9 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   error,
-  type = 'text',
+  type = "text",
   placeholder,
-  multiline = false
+  multiline = false,
 }) => (
   <div className="space-y-1">
     <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/50">
@@ -65,15 +71,14 @@ const InputField: React.FC<InputFieldProps> = ({
   </div>
 );
 
-
 // --- COMPONENTE PRINCIPAL ---
 
 export default function CartPage() {
-  const { 
-    cart, 
-    removeFromCart, 
-    updateQuantity, 
-    totalPrice, 
+  const {
+    cart,
+    removeFromCart,
+    updateQuantity,
+    totalPrice,
     clearCart,
     hasOnlyDelayedItems,
     hasDelayedItems,
@@ -88,13 +93,15 @@ export default function CartPage() {
     whatsappUrl: string;
   } | null>(null);
   const [form, setForm] = useState<CustomerFormValues>({
-    nombre: '',
-    email: '',
-    telefono: '',
-    direccion: '',
-    notas: '',
+    nombre: "",
+    email: "",
+    telefono: "",
+    direccion: "",
+    notas: "",
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof CustomerFormValues, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof CustomerFormValues, string>>
+  >({});
 
   const validateForm = (): boolean => {
     try {
@@ -115,10 +122,13 @@ export default function CartPage() {
     }
   };
 
-  const handleInputChange = (field: keyof CustomerFormValues, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (
+    field: keyof CustomerFormValues,
+    value: string,
+  ) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -135,37 +145,41 @@ export default function CartPage() {
     });
 
     try {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerInfo: form,
-          cartItems: cart.map(item => ({ product_id: item.id, quantity: item.quantity })),
+          cartItems: cart.map((item) => ({
+            product_id: item.id,
+            quantity: item.quantity,
+          })),
         }),
       });
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Error al procesar el pedido' }));
-        throw new Error(err.error || 'Error al procesar el pedido');
+        const err = await res
+          .json()
+          .catch(() => ({ error: "Error al procesar el pedido" }));
+        throw new Error(err.error || "Error al procesar el pedido");
       }
 
       const data = await res.json();
 
       // Guardar datos verificados por el servidor
-      localStorage.setItem('orderConfirmation', JSON.stringify({
-        customerInfo: form,
-        orderNumber: data.orderNumber,
-        items: data.items,
-        total: data.total,
-      }));
-
-      // ponytail: clearCart antes del redirect — el pedido ya fue creado,
-      // y pago-exitoso también limpia como safety net
-      clearCart();
+      localStorage.setItem(
+        "orderConfirmation",
+        JSON.stringify({
+          customerInfo: form,
+          orderNumber: data.orderNumber,
+          items: data.items,
+          total: data.total,
+        }),
+      );
 
       const message = `Hola, mi nombre es ${form.nombre}. Acabo de realizar una consulta/orden. Número de orden: ${data.orderNumber}. Por favor, revisar detalles en el sistema.`;
       const shortFallback = `Nuevo pedido: ${form.nombre} - Orden: ${data.orderNumber}`;
-      trackWhatsappClicked('checkout');
+      trackWhatsappClicked("checkout");
       const url = getWhatsAppUrlSafe(message, shortFallback);
 
       setOrderSuccessData({
@@ -175,14 +189,17 @@ export default function CartPage() {
       });
       setLoading(false);
     } catch (e) {
-      setSubmitError(e instanceof Error ? e.message : 'Error al procesar el pedido');
+      setSubmitError(
+        e instanceof Error ? e.message : "Error al procesar el pedido",
+      );
       setLoading(false);
     }
   };
 
   const handleModalClose = () => {
     setOrderSuccessData(null);
-    window.location.href = '/gracias';
+    clearCart();
+    window.location.href = "/gracias";
   };
 
   if (cart.length === 0) {
@@ -193,8 +210,12 @@ export default function CartPage() {
           <div className="inline-block p-8 bg-white/5 border border-white/10 mb-8">
             <ShoppingBag size={64} className="text-white/20 mx-auto" />
           </div>
-          <h1 className="text-6xl font-display uppercase tracking-tighter mb-4">Tu carrito está vacío</h1>
-          <p className="text-white/50 uppercase tracking-widest text-sm mb-12">Parece que aún no has agregado nada.</p>
+          <h1 className="text-6xl font-display uppercase tracking-tighter mb-4">
+            Tu carrito está vacío
+          </h1>
+          <p className="text-white/50 uppercase tracking-widest text-sm mb-12">
+            Parece que aún no has agregado nada.
+          </p>
           <Link href="/catalogo" className="brutal-btn inline-block">
             Ir al catálogo
           </Link>
@@ -207,21 +228,26 @@ export default function CartPage() {
     <main className="min-h-screen">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 pt-32 pb-24">
-        <h1 className="text-6xl font-display uppercase tracking-tighter mb-12">Tu Carrito</h1>
+        <h1 className="text-6xl font-display uppercase tracking-tighter mb-12">
+          Tu Carrito
+        </h1>
 
-          {/* ponytail: delivery disclaimer hidden */}
-          {/* <CartDisclaimer */}
-          {/*   hasOnlyDelayed={hasOnlyDelayedItems()} */}
-          {/*   hasDelayed={hasDelayedItems()} */}
-          {/*   hasMixed={hasMixedItems()} */}
-          {/*   maxLeadDays={maxLeadDays()} */}
-          {/* /> */}
+        {/* ponytail: delivery disclaimer hidden */}
+        {/* <CartDisclaimer */}
+        {/*   hasOnlyDelayed={hasOnlyDelayedItems()} */}
+        {/*   hasDelayed={hasDelayedItems()} */}
+        {/*   hasMixed={hasMixedItems()} */}
+        {/*   maxLeadDays={maxLeadDays()} */}
+        {/* /> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
           {/* Columna Izquierda: Lista de Items */}
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => (
-              <div key={item.id} className="bg-white/5 border border-white/10 p-4 flex items-center gap-6">
+              <div
+                key={item.id}
+                className="bg-white/5 border border-white/10 p-4 flex items-center gap-6"
+              >
                 <div className="relative w-24 h-24 bg-brutal-black flex-shrink-0">
                   <SafeImage
                     src={item.image}
@@ -239,9 +265,15 @@ export default function CartPage() {
                   {/*     Entrega Inmediata */}
                   {/*   </span> */}
                   {/* </div> */}
-                  <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">{item.category}</p>
-                  <h3 className="font-display uppercase text-xl leading-tight">{item.name}</h3>
-                  <p className="text-neon-green font-bold mt-1">${item.price.toLocaleString()}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">
+                    {item.category}
+                  </p>
+                  <h3 className="font-display uppercase text-xl leading-tight">
+                    {item.name}
+                  </h3>
+                  <p className="text-neon-green font-bold mt-1">
+                    ${item.price.toLocaleString()}
+                  </p>
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -252,7 +284,9 @@ export default function CartPage() {
                     >
                       <Minus size={16} />
                     </button>
-                    <span className="w-8 text-center font-bold text-sm">{item.quantity}</span>
+                    <span className="w-8 text-center font-bold text-sm">
+                      {item.quantity}
+                    </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="p-2 hover:bg-white/10 transition-colors"
@@ -279,20 +313,20 @@ export default function CartPage() {
             </button>
           </div>
 
-
-
           {/* Columna Derecha: Formulario y Resumen */}
           <div className="lg:col-span-2 space-y-8">
             {/* Formulario de Datos */}
             <div className="bg-white/5 border border-white/10 p-8">
-              <h2 className="text-2xl font-display uppercase tracking-tighter mb-6 text-neon-green">Tus Datos</h2>
+              <h2 className="text-2xl font-display uppercase tracking-tighter mb-6 text-neon-green">
+                Tus Datos
+              </h2>
 
               <div className="grid grid-cols-1 gap-4">
                 <InputField
                   label="Nombre Completo *"
                   name="nombre"
                   value={form.nombre}
-                  onChange={(v) => handleInputChange('nombre', v)}
+                  onChange={(v) => handleInputChange("nombre", v)}
                   error={errors.nombre}
                   placeholder="Juan Pérez"
                 />
@@ -300,7 +334,7 @@ export default function CartPage() {
                   label="Email *"
                   name="email"
                   value={form.email}
-                  onChange={(v) => handleInputChange('email', v)}
+                  onChange={(v) => handleInputChange("email", v)}
                   error={errors.email}
                   type="email"
                   placeholder="juan@email.com"
@@ -309,7 +343,7 @@ export default function CartPage() {
                   label="Teléfono / WhatsApp *"
                   name="telefono"
                   value={form.telefono}
-                  onChange={(v) => handleInputChange('telefono', v)}
+                  onChange={(v) => handleInputChange("telefono", v)}
                   error={errors.telefono}
                   placeholder="+54 11 1234-5678"
                 />
@@ -317,15 +351,15 @@ export default function CartPage() {
                   label="Dirección de Envío *"
                   name="direccion"
                   value={form.direccion}
-                  onChange={(v) => handleInputChange('direccion', v)}
+                  onChange={(v) => handleInputChange("direccion", v)}
                   error={errors.direccion}
                   placeholder="Calle 123, Ciudad, CP 1234"
                 />
                 <InputField
                   label="Notas Adicionales (opcional)"
                   name="notas"
-                  value={form.notas || ''}
-                  onChange={(v) => handleInputChange('notas', v)}
+                  value={form.notas || ""}
+                  onChange={(v) => handleInputChange("notas", v)}
                   placeholder="Indicaciones para el delivery, horario preferido, etc."
                   multiline
                 />
@@ -338,13 +372,19 @@ export default function CartPage() {
 
             {/* Método de Pago */}
             <div className="bg-white/5 border border-white/10 p-8">
-              <h2 className="text-2xl font-display uppercase tracking-tighter mb-6 text-neon-green">Método de Pago</h2>
-              
+              <h2 className="text-2xl font-display uppercase tracking-tighter mb-6 text-neon-green">
+                Método de Pago
+              </h2>
+
               <div className="flex items-center gap-4 p-4 border border-neon-green bg-neon-green/10">
                 <MessageCircle size={24} className="text-neon-green" />
                 <div className="flex-grow">
-                  <p className="font-bold uppercase text-sm">Orden por WhatsApp</p>
-                  <p className="text-[10px] text-white/50 uppercase tracking-widest">Te enviamos el pedido y coordinamos el pago</p>
+                  <p className="font-bold uppercase text-sm">
+                    Orden por WhatsApp
+                  </p>
+                  <p className="text-[10px] text-white/50 uppercase tracking-widest">
+                    Te enviamos el pedido y coordinamos el pago
+                  </p>
                 </div>
                 <span className="text-neon-green text-xs font-bold">✓</span>
               </div>
@@ -352,7 +392,9 @@ export default function CartPage() {
 
             {/* Resumen y Botón de Envío */}
             <div className="bg-white p-8 brutal-shadow text-brutal-black">
-              <h2 className="text-3xl font-display uppercase tracking-tighter mb-8">Resumen</h2>
+              <h2 className="text-3xl font-display uppercase tracking-tighter mb-8">
+                Resumen
+              </h2>
 
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-sm font-bold uppercase tracking-widest">
