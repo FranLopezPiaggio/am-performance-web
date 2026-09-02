@@ -1,6 +1,7 @@
 -- Migration: seed_catalog_data
 -- Description: Schema adjustments + seed catalog data from Excel
 -- Generated: 2026-07-09T22:12:06.281421
+-- STATUS: DISABLED FOR PROD PUSH - data adjusted locally; re-enable when data refresh needed.
 
 -- ==========================================
 -- 1. Schema adjustments
@@ -25,6 +26,10 @@ INSERT INTO lines (name, slug) VALUES ('Elite A Disco', 'elite-a-disco') ON CONF
 INSERT INTO lines (name, slug) VALUES ('Essential', 'essential') ON CONFLICT (slug) DO NOTHING;
 
 -- ==========================================
+-- 2. Lines
+-- ==========================================
+-- ponytail: seed disabled for prod push — re-add when data refresh needed.
+-- Ceiling: INSERT lines can be commented out individually; upgrade path: remove -- prefix to re-enable seeding.
 -- 3. Categories
 -- ==========================================
 

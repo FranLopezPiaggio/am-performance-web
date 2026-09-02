@@ -9,8 +9,8 @@ import Machine from '@/assets/machine-inside.jpg'
 const categoryConfig: Record<string, { image: StaticImageData; gridArea: string }> = {
   cardio: { image: Strengh, gridArea: 'md:col-span-2 md:row-span-2' },
   maquinas: { image: Machine, gridArea: 'md:col-span-1 md:row-span-1' },
-  'pesas-libres': { image: Strengh, gridArea: 'md:col-span-1 md:row-span-1' },
-  accesorios: { image: Machine, gridArea: 'md:col-span-2 md:row-span-1' },
+  "peso-libre": { image: Strengh, gridArea: 'md:col-span-1 md:row-span-1' },
+  "bancos y soportes": { image: Machine, gridArea: 'md:col-span-2 md:row-span-1' },
 };
 
 export default function CategoryGrid({ categories: dbCategories }: { categories: Category[] }) {

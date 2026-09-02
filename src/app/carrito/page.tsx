@@ -271,9 +271,9 @@ export default function CartPage() {
                   <h3 className="font-display uppercase text-xl leading-tight">
                     {item.name}
                   </h3>
-                  <p className="text-neon-green font-bold mt-1">
+                  {/* <p className="text-neon-green font-bold mt-1">
                     ${item.price.toLocaleString()}
-                  </p>
+                  </p> */}
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -397,17 +397,18 @@ export default function CartPage() {
               </h2>
 
               <div className="space-y-4 mb-8">
-                <div className="flex justify-between text-sm font-bold uppercase tracking-widest">
+                {/* <div className="flex justify-between text-sm font-bold uppercase tracking-widest">
                   <span>Subtotal</span>
                   <span>${totalPrice.toLocaleString()}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between text-sm font-bold uppercase tracking-widest">
-                  <span>El Envío se calcula por WhatsApp</span>
+                  {/* <span>El Envío se calcula por WhatsApp</span> */}
+                  <span>Nos comunicamos con vos en breve para pasarte presupuesto por tu orden</span>
                 </div>
-                <div className="pt-4 border-t border-brutal-black/10 flex justify-between text-2xl font-display uppercase tracking-tighter">
+                {/* <div className="pt-4 border-t border-brutal-black/10 flex justify-between text-2xl font-display uppercase tracking-tighter">
                   <span>Total</span>
                   <span>${totalPrice.toLocaleString()}</span>
-                </div>
+                </div> */}
               </div>
 
               {/* Botón de envío a WhatsApp */}

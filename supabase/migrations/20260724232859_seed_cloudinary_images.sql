@@ -1,6 +1,7 @@
 -- Migration generated at 2026-07-25T02:28:59.345Z
 -- Seeds product_images from Cloudinary root-level assets
 -- Maps provider_code to Cloudinary image for products lacking real images
+-- STATUS: DISABLED FOR PROD PUSH - data adjusted locally; re-enable when data refresh needed.
 
 BEGIN;
 
