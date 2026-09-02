@@ -71,7 +71,9 @@ export default function ProductModal() {
                     </p>
                     <div className="mt-auto">
                       <p className="text-2xl font-display text-white mb-4">
-                        ${(product.variants.find(v => v.is_active)?.price ?? product.variants[0]?.price ?? 0).toLocaleString()}
+                        {/* ponytail: price hidden for MVP — re-add when pricing resumes.
+                           Ceiling: product.variants[].price number type; upgrade path: remove comment and render price normally */}
+                        {/* ${(product.variants.find(v => v.is_active)?.price ?? product.variants[0]?.price ?? 0).toLocaleString()} */}
                       </p>
                       <button
                         onClick={() => addToCart(mapProductToCard(product), 1)}

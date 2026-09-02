@@ -103,13 +103,9 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
           <span className="text-[10px] text-white/40 ml-2">({product.reviews})</span>
         </div>
 
+        {/* ponytail: price display hidden for MVP — re-add when pricing resumes. Ceiling: product.price in ProductCardData; upgrade path: remove comments and render price normally. */}
         <div className="flex items-end space-x-3">
-          <span className="text-2xl font-display text-white">${product.price.toLocaleString()}</span>
-          {product.discount && (
-            <span className="text-sm text-white/30 line-through mb-1">
-              ${(product.price / (1 - product.discount / 100)).toLocaleString()}
-            </span>
-          )}
+          {/* price hidden for MVP — re-add when pricing resumes */}
         </div>
       </div>
     </div>

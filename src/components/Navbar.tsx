@@ -18,6 +18,16 @@ export default function Navbar() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [menuTimeout, setMenuTimeout] = useState<NodeJS.Timeout | null>(null);
+  const handleMouseEnterCategories = () => {
+    if (menuTimeout) clearTimeout(menuTimeout);
+    setIsCategoriesOpen(true);
+  };
+
+  const handleMouseLeaveCategories = () => {
+    const id = setTimeout(() => setIsCategoriesOpen(false), 150);
+    setMenuTimeout(id);
+  };
   const { totalItems } = useCart();
   const allCategories = useCategoriesContext();
   const categories = allCategories.filter(c => !c.parent_id);
@@ -55,11 +65,11 @@ export default function Navbar() {
 
 
             <div className="hidden md:flex items-center space-x-8">
-              <div
-                className="relative group"
-                onMouseEnter={() => setIsCategoriesOpen(true)}
-                onMouseLeave={() => setIsCategoriesOpen(false)}
-              >
+<div
+                  className="relative group"
+                  onMouseEnter={handleMouseEnterCategories}
+                  onMouseLeave={handleMouseLeaveCategories}
+                >
                 <div className="flex items-center space-x-1 text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
                   <Link href="/catalogo">Catalogo</Link>
                   <ChevronDown size={16} />
