@@ -92,8 +92,11 @@ export default function Navbar() {
                   )}
               </div>
 
-              <Link href="/catalogo?ofertas=true" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                Ofertas
+              <Link
+                href="/showroom"
+                className="px-4 py-2 text-sm font-medium uppercase tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-all duration-200"
+              >
+                Showroom
               </Link>
               <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
                 Proyectos
@@ -199,7 +202,7 @@ export default function Navbar() {
                   ))}
                 </div>
                 <div className="pt-4 border-t border-white/10 space-y-4">
-                  <Link href="/catalogo?ofertas=true" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Ofertas</Link>
+                  <Link href="/showroom" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Showroom</Link>
                   <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
                 </div>
               </div>
