@@ -4,14 +4,21 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-const bgHero = '/img/gym-black.jpg'
+export interface HeroSlide {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string;
+  cta: string;
+  link: string;
+}
 
-const slides = [
+const defaultSlides: HeroSlide[] = [
   {
     id: 1,
     title: 'Elite Performance',
     subtitle: 'Equipamiento profesional para atletas de alto rendimiento.',
-    image: bgHero,
+    image: '/img/gym-black.jpg',
     cta: 'Ver Catálogo',
     link: '/catalogo'
   },
@@ -19,7 +26,7 @@ const slides = [
     id: 2,
     title: 'Nuevos Ingresos',
     subtitle: 'Descubrí la línea AM Combat. Resistencia extrema.',
-    image: bgHero,
+    image: '/img/crossfit-equip.jpg',
     cta: 'Ver Novedades',
     link: '/catalogo?categoria=cardio'
   },
@@ -27,13 +34,17 @@ const slides = [
     id: 3,
     title: 'Ofertas de Temporada',
     subtitle: 'Hasta 30% OFF en racks y multiestaciones.',
-    image: bgHero,
+    image: '/img/racks.jpg',
     cta: 'Aprovechar',
     link: '/catalogo?ofertas=true'
   }
 ];
 
-export default function Hero() {
+interface HeroProps {
+  slides?: HeroSlide[];
+}
+
+export default function Hero({ slides = defaultSlides }: HeroProps) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -41,7 +52,7 @@ export default function Hero() {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const next = () => setCurrent((prev) => (prev + 1) % slides.length);
   const prev = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
