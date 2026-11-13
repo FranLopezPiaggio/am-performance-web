@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Ruler, Package, Settings, Users, ArrowRight } from 'lucide-react';
+import { Ruler, Package, Users, ArrowRight } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 const images = [
@@ -17,20 +17,6 @@ const images = [
   '/img/racks-outside.jpg',
   '/img/machine-inside.jpg',
 ];
-
-const getSizeClass = (index: number) => {
-  const sizes = [
-    'aspect-[4/3]',
-    'aspect-[3/4]',
-    'aspect-square',
-    'aspect-[16/9]',
-    'aspect-[9/16]',
-    'aspect-[3/2]',
-    'aspect-[2/3]',
-    'aspect-[5/4]',
-  ];
-  return sizes[index % sizes.length];
-};
 
 export default function ShowroomContent() {
   return (

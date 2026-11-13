@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
+import type { PostHog } from 'posthog-js';
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  const [client, setClient] = useState<any>(null);
+  const [client, setClient] = useState<PostHog | null>(null);
 
   useEffect(() => {
     import('posthog-js').then((posthog) => {

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-const bgHero = 'img/gym-black.jpg'
+const bgHero = '/img/gym-black.jpg'
 
 const slides = [
   {

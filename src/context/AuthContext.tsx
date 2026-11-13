@@ -2,7 +2,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
-import { User } from '@supabase/supabase-js';
+import { User, type SupabaseClient, type AuthChangeEvent, type Session } from '@supabase/supabase-js';
 
 // Extended User type with app_metadata
 interface UserWithMetadata extends User {
@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserWithMetadata | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabaseRef = useRef<any>(null);
+  const supabaseRef = useRef<SupabaseClient | null>(null);
 
   // Check if user is admin based on app_metadata role
   const isAdmin = user?.app_metadata?.role === 'admin';
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
 
       // 2. Listen for auth changes (login/logout)
-      const { data: { subscription } } = supabaseRef.current.auth.onAuthStateChange((_event: any, s: any) => {
+      const { data: { subscription } } = supabaseRef.current!.auth.onAuthStateChange((_event: AuthChangeEvent, s: Session | null) => {
         if (!cancelled) {
           setUser(s?.user as UserWithMetadata ?? null);
           setLoading(false);
