@@ -1,7 +1,8 @@
+// src/proxy.ts (Next 16: reemplaza el convenio deprecado middleware.ts)
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-// Paths to exclude from middleware processing
+// Paths to exclude from proxy processing
 const EXCLUDED_PATHS = [
   '/api/',           // API routes - handled separately
   '/_next/',         // Next.js internal paths
@@ -13,10 +14,10 @@ function isExcludedPath(pathname: string): boolean {
   return EXCLUDED_PATHS.some(path => pathname.startsWith(path));
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for excluded paths
+  // Skip proxy for excluded paths
   if (isExcludedPath(pathname)) {
     return NextResponse.next();
   }

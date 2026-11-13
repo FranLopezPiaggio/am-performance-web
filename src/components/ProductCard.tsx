@@ -54,6 +54,7 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
           src={product.image as string}
           alt={product.name}
           fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           priority={priority}
           className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
           referrerPolicy="no-referrer"

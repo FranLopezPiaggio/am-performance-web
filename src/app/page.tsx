@@ -2,13 +2,12 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import CategoryGrid from '@/components/CategoryGrid';
 import BestSellersSection from '@/components/BestSellersSection';
-import Link from 'next/link';
 import { Suspense } from 'react';
-import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getCategories, getBestSellers } from '@/lib/supabase/queries';
 import Footer from '@/components/Footer';
+import ShowroomBanner from '@/components/ShowroomBanner';
 
 async function CategoryGridWrapper() {
   const supabase = await createClient();
@@ -84,29 +83,8 @@ export default function Home() {
         <BestSellersWrapper />
       </Suspense>
 
-      {/* Newsletter / CTA */}
-      <section className="py-24 max-w-7xl mx-auto px-4">
-        <div className="bg-neon-green p-12 md:p-24 flex flex-col md:flex-row items-center justify-between brutal-shadow">
-          <div className="mb-8 md:mb-0">
-            <Link href="/showroom" className="block">
-              <h2 className="text-4xl md:text-6xl font-display uppercase tracking-tighter text-brutal-black leading-[1] hover:underline">
-                Veni a conocer nuestro <b>SHOWROOM</b>
-              </h2>
-            </Link>
-            <a href={getWhatsAppUrl('info')} target="_blank" rel="noopener noreferrer" className="text-brutal-black font-bold uppercase tracking-widest text-sm mt-6 inline-block hover:underline">Agenda una visita</a>
-          </div>
-          <div className="w-full md:w-auto flex flex-col space-y-4">
-            <a
-              href={getWhatsAppUrl('showroom')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-brutal-black text-neon-green p-4 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-brutal-black transition-colors flex items-center justify-center text-center w-full md:w-80"
-            >
-              Agendar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* Showroom Banner CTA */}
+      <ShowroomBanner />
 
       {/* Footer */}
       <Footer />

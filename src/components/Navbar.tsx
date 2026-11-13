@@ -59,7 +59,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center space-x-2 ml-[-30px]">
-              <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={300}
+              <Image src="/logo/AMPerformance_Version_original.png" alt="AMP-Logo" width={300} height={66}
                 loading="eager" />
             </Link>
 
@@ -92,14 +92,14 @@ export default function Navbar() {
                   )}
               </div>
 
+              <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
+                Proyectos
+              </Link>
               <Link
                 href="/showroom"
                 className="px-4 py-2 text-sm font-medium uppercase tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-all duration-200"
               >
                 Showroom
-              </Link>
-              <Link href="/proyectos" className="text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                Proyectos
               </Link>
             </div>
 
@@ -202,8 +202,8 @@ export default function Navbar() {
                   ))}
                 </div>
                 <div className="pt-4 border-t border-white/10 space-y-4">
-                  <Link href="/showroom" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Showroom</Link>
                   <Link href="/proyectos" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Proyectos</Link>
+                  <Link href="/showroom" className="block text-lg font-display uppercase tracking-tighter hover:text-neon-green">Showroom</Link>
                 </div>
               </div>
             </div>

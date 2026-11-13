@@ -4,36 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-const bgHero = 'img/gym-black.jpg'
+import { HERO_SLIDES, type HeroSlide } from '@/lib/constants/hero';
 
-const slides = [
-  {
-    id: 1,
-    title: 'Elite Performance',
-    subtitle: 'Equipamiento profesional para atletas de alto rendimiento.',
-    image: bgHero,
-    cta: 'Ver Catálogo',
-    link: '/catalogo'
-  },
-  {
-    id: 2,
-    title: 'Nuevos Ingresos',
-    subtitle: 'Descubrí la línea AM Combat. Resistencia extrema.',
-    image: bgHero,
-    cta: 'Ver Novedades',
-    link: '/catalogo?categoria=cardio'
-  },
-  {
-    id: 3,
-    title: 'Ofertas de Temporada',
-    subtitle: 'Hasta 30% OFF en racks y multiestaciones.',
-    image: bgHero,
-    cta: 'Aprovechar',
-    link: '/catalogo?ofertas=true'
-  }
-];
+interface HeroProps {
+  slides?: HeroSlide[];
+}
 
-export default function Hero() {
+export default function Hero({ slides = HERO_SLIDES }: HeroProps) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -41,7 +18,7 @@ export default function Hero() {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const next = () => setCurrent((prev) => (prev + 1) % slides.length);
   const prev = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);

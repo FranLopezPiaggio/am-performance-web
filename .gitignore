@@ -82,9 +82,11 @@ Makefile
 /playwright-report/
 /playwright/.cache/
 
-# AI AGENTICS
+
+# AGENTIC AI
+/.agents/
+.agents/
+agents/
 AGENTS.md
 CLAUDE.md
 GEMINI.md
-.agents/
-/.agents/

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
+import { CONTACT } from '@/lib/constants/contact';
 
 export default function Footer() {
   return (
@@ -8,7 +9,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
         <div className="md:col-span-2 flex flex-col md:flex-row items-center gap-6 text-center md:text-left -mt-4">
           <Link href="/" className="flex items-center shrink-0">
-            <Image src="/logo/AMPerformance_Version_vertical(Positiva).png" alt="AMP-Logo" width={50} height={50} />
+            <Image src="/logo/AMPerformance_Version_vertical(Positiva).png" alt="AMP-Logo" width={50} height={204} />
           </Link>
           <p className="text-white/50 max-w-md uppercase text-xs font-bold leading-loose tracking-widest">
             Somos líderes en equipamiento de gimnasios y centros de alto rendimiento en Argentina.
@@ -27,9 +28,9 @@ export default function Footer() {
         <div>
           <h5 className="font-bold uppercase tracking-widest text-xs mb-6 text-neon-green">Contacto</h5>
           <ul className="space-y-4 text-sm uppercase tracking-widest font-medium text-white/70">
-            <li>Av. Libertador 1234, CABA</li>
-            <li>info@amperformance.com</li>
-            <li>+54 11 4444-5555</li>
+            <li>{CONTACT.address}</li>
+            <li>{CONTACT.email}</li>
+            <li>{CONTACT.phone}</li>
           </ul>
         </div>
       </div>

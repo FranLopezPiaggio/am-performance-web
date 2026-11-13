@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Tooling / one-off operational scripts (not app code):
+    "scripts/**",
+    ".agents/**",
+    "backups/**",
+    "supabase/**",
   ]),
 ]);
 

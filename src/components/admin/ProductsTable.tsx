@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Package, ExternalLink, ImageUp, ChevronDown, ChevronRight, Save, ChevronLeft, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
@@ -85,20 +85,15 @@ export default function ProductsTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;
   const totalPages = Math.ceil(products.length / pageSize) || 1;
+  // Si la página actual quedó fuera de rango (ej: se eliminó el último producto de la página), se clampea en render
+  const activePage = Math.min(currentPage, totalPages);
   const paginatedProducts = products.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    (activePage - 1) * pageSize,
+    activePage * pageSize
   );
 
   // Modal
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
-
-  // Si la página actual ya no existe (ej: se eliminó el último producto de la página)
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
 
   const toggleExpand = (productId: string) => {
     setExpanded((prev) => {
@@ -285,23 +280,23 @@ export default function ProductsTable() {
         {/* ── Paginación ────────────────────────────────────────── */}
         <div className="flex items-center justify-between p-4 border-t border-white/10">
           <p className="text-[10px] uppercase tracking-widest text-white/30">
-            Mostrando {(currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, products.length)} de {products.length}
+            Mostrando {(activePage - 1) * pageSize + 1}–{Math.min(activePage * pageSize, products.length)} de {products.length}
           </p>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage <= 1}
+              disabled={activePage <= 1}
               className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
             >
               <ChevronLeft size={12} />
               Anterior
             </button>
             <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">
-              Página {currentPage} de {totalPages}
+              Página {activePage} de {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage >= totalPages}
+              disabled={activePage >= totalPages}
               className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
             >
               Siguiente

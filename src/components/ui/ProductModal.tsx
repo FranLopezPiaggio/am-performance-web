@@ -56,6 +56,7 @@ export default function ProductModal() {
                           src={firstImage.image_url}
                           alt={firstImage.alt_text ?? product.name}
                           fill
+                          sizes="192px"
                           className="object-cover"
                         />
                       </div>
