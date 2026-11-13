@@ -41,7 +41,7 @@ export default function ShowroomGallery() {
               />
               <div className="absolute top-3 left-3 right-3 flex space-x-2">
                 <span
-                  className="px-2 py-1 text-xs font-display uppercase tracking-widest text-white/90 bg-brutal-black/80 backdrop-blur-md rounded"
+                  className="px-2 py-1 text-xs font-display uppercase tracking-widest text-white/90 bg-brutal-black/80"
                 >
                   Zona {i + 1}
                 </span>

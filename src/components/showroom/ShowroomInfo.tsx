@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
+import { CONTACT } from '@/lib/constants/contact';
+import { SHOWROOM } from '@/lib/constants/showroom';
 import { showroomImages } from './images';
+import ShowroomMap from './ShowroomMap';
 
 export default function ShowroomInfo() {
   return (
@@ -29,13 +32,13 @@ export default function ShowroomInfo() {
                 Visitanos
               </p>
               <h2 className="text-3xl md:text-5xl font-display uppercase tracking-tighter mb-6">
-                Av. Libertador 1234, CABA
+                {CONTACT.address}
               </h2>
               <p className="text-white/60 text-lg mb-4">
-                Horario: Lunes a Viernes 9:00 - 19:00
+                Horario: {SHOWROOM.hours}
               </p>
               <a
-                href="https://maps.google.com/?q=Av.+Libertador+1234,+CABA"
+                href={CONTACT.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="brutal-btn flex items-center space-x-2"
@@ -43,6 +46,10 @@ export default function ShowroomInfo() {
                 <span>Ver en Google Maps</span>
                 <ArrowRight size={20} />
               </a>
+            </div>
+
+            <div className="mt-8">
+              <ShowroomMap />
             </div>
 
             <div>
