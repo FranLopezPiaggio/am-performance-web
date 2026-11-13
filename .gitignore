@@ -81,3 +81,10 @@ Makefile
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# AI AGENTICS
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+.agents/
+/.agents/
