@@ -1,10 +1,10 @@
 export const showroomImages = [
-  '/img/gym-black.jpg',
+  '/img/dumbells-rack.jpg',
   '/img/crossfit-equip.jpg',
-  '/img/racks.jpg',
+  '/img/ropes.jpg',
   '/img/rack-dumbells.jpg',
   '/img/dumbells.jpg',
   '/img/dumbell-cajon.jpg',
-  '/img/racks-outside.jpg',
-  '/img/machine-inside.jpg',
+  '/img/antes.jpeg',
+  '/img/despues.jpeg',
 ];

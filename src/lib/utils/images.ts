@@ -28,5 +28,5 @@ export const getProductImage = (
         return optimizeCloudinaryUrl(imageUrl);
     }
 
-    return '/img/download.jpg';
+    return '/img/crossfit-equip.jpg';
 };

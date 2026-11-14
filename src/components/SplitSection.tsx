@@ -1,21 +1,18 @@
 'use client';
 
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 interface SplitSectionProps {
-  image: string;
-  imageAlt: string;
+  media: ReactNode;
   eyebrow: string;
   title: string;
   reverse?: boolean;
   children: ReactNode;
 }
 
-export default function ShowroomSplitSection({
-  image,
-  imageAlt,
+export default function SplitSection({
+  media,
   eyebrow,
   title,
   reverse = false,
@@ -24,13 +21,7 @@ export default function ShowroomSplitSection({
   return (
     <section className="min-h-[70vh] md:min-h-[80vh] grid grid-cols-1 md:grid-cols-2 bg-brutal-black">
       <div className={`relative h-[40vh] md:h-auto overflow-hidden ${reverse ? 'md:order-2' : ''}`}>
-        <Image
-          src={image}
-          alt={imageAlt}
-          fill
-          className="object-cover grayscale"
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
+        {media}
         <div
           className={`absolute inset-0 ${
             reverse

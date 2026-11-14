@@ -1,6 +1,7 @@
 'use client';
 
-import ShowroomSplitSection from './ShowroomSplitSection';
+import Image from 'next/image';
+import SplitSection from '@/components/SplitSection';
 import { showroomImages } from './images';
 
 const benefits = [
@@ -13,9 +14,16 @@ const benefits = [
 export default function ShowroomStatement() {
   return (
     <>
-      <ShowroomSplitSection
-        image={showroomImages[2]}
-        imageAlt="Racks en el showroom de AM Performance"
+      <SplitSection
+        media={
+          <Image
+            src={showroomImages[2]}
+            alt="Ropes en el showroom de AM Performance"
+            fill
+            className="object-cover grayscale"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        }
         eyebrow="¿Qué esperás encontrar?"
         title="Un espacio diseñado para el alto rendimiento"
       >
@@ -32,7 +40,7 @@ export default function ShowroomStatement() {
             ))}
           </ul>
         </div>
-      </ShowroomSplitSection>
+      </SplitSection>
 
       {/* Marquee */}
       <section className="py-8 bg-brutal-black overflow-hidden">

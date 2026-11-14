@@ -94,3 +94,7 @@ GEMINI.md
 public/img/old/
 
 public/img/old
+# Raw media sources + frame bank (TASK-008) — only selected assets get promoted
+/videos/
+/public/img/frames/
+/frames-video4/

@@ -1,7 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { Ruler, Package, Users, ArrowRight } from 'lucide-react';
-import ShowroomSplitSection from './ShowroomSplitSection';
+import SplitSection from '@/components/SplitSection';
 import { showroomImages } from './images';
 
 const features = [
@@ -13,9 +14,16 @@ const features = [
 
 export default function ShowroomFeatures() {
   return (
-    <ShowroomSplitSection
-      image={showroomImages[3]}
-      imageAlt="Rack con dumbells del showroom"
+    <SplitSection
+      media={
+        <Image
+          src={showroomImages[3]}
+          alt="Rack con dumbells del showroom"
+          fill
+          className="object-cover grayscale"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+      }
       eyebrow="Características"
       title="Lo que podés experimentar"
       reverse
@@ -34,6 +42,6 @@ export default function ShowroomFeatures() {
           </div>
         ))}
       </div>
-    </ShowroomSplitSection>
+    </SplitSection>
   );
 }
