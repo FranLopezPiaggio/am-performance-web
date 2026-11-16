@@ -19,8 +19,8 @@ export interface HeroSlide {
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 1,
-    title: 'Elite Performance',
-    subtitle: 'Equipamiento profesional para atletas de alto rendimiento.',
+    title: 'Box de Hyrox',
+    subtitle: 'Equipamiento de Alto Rendimiento para Hyrox',
     image: '/vid/clips/hero/hero-poster.jpg',
     cta: 'Ver Catálogo',
     link: '/catalogo',
@@ -30,11 +30,11 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 2,
-    title: 'Conocé el Showroom',
-    subtitle: 'Probá las máquinas en persona antes de decidir.',
+    title: 'Armá tu Gimnasio',
+    subtitle: 'Diseñá y Equipá tu Gimnasio a Medida',
     image: '/vid/clips/video-1/poster-2.jpg',
-    cta: 'Ver Showroom',
-    link: '/showroom',
+    cta: 'Proyectos',
+    link: '/proyectos',
     video: '/vid/clips/video-1/clip-2.mp4',
     poster: '/vid/clips/video-1/poster-2.jpg',
     layout: 'split',
@@ -42,8 +42,8 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 3,
-    title: 'Equipamiento Premium',
-    subtitle: 'Materiales certificados y resistencia verificada.',
+    title: 'Conoce nuestro Showroom',
+    subtitle: 'Visita nuestro showroom y conoce nuestros productos en persona.',
     image: '/img/crossfit-equip.jpg',
     cta: 'Ver Catálogo',
     link: '/catalogo',
@@ -51,10 +51,10 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 4,
-    title: 'Calidad Industrial',
-    subtitle: 'Cada rack, diseñado y probado en nuestro taller.',
+    title: 'Maquinas Lingoteras y a Disco',
+    subtitle: 'Conoce nuestras maquinas para tu espacio.',
     image: '/img/dumbells-rack.jpg',
-    cta: 'Ver Catálogo',
+    cta: 'Ver',
     link: '/catalogo',
     layout: 'split'
   },

@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, User, Save, Ruler, DollarSign, Clock, FileText } from 'lucide-react';
 import { useProjectDetail } from '@/hooks/useProjectDetail';
-import { projectStatusColors as statusColors, projectStatusLabels as statusLabels } from '@/lib/constants/status';
+import { projectStatusColors as statusColors, projectStatusLabels as statusLabels } from '@/lib/config/status';
 
 const gymTypeLabels: Record<string, string> = {
   commercial: 'Comercial',

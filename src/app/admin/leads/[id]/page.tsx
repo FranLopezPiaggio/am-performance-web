@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, User, ShoppingCart, Mail, Phone, Globe } from 'lucide-react';
 import { useLeadDetail } from '@/hooks/useLeadDetail';
-import { orderStatusColors as statusColors, orderStatusLabels as statusLabels } from '@/lib/constants/status';
+import { orderStatusColors as statusColors, orderStatusLabels as statusLabels } from '@/lib/config/status';
 
 function LoadingSkeleton() {
   return (

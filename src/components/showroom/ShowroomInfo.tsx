@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
-import { CONTACT } from '@/lib/constants/contact';
-import { SHOWROOM } from '@/lib/constants/showroom';
+import { CONTACT } from '@/lib/config/contact';
+import { SHOWROOM } from '@/lib/config/showroom';
 import { showroomImages } from './images';
 import ShowroomMap from './ShowroomMap';
 

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
-import { CONTACT } from '@/lib/constants/contact';
+import { CONTACT } from '@/lib/config/contact';
 
 export default function Footer() {
   return (
@@ -28,9 +28,28 @@ export default function Footer() {
         <div>
           <h5 className="font-bold uppercase tracking-widest text-xs mb-6 text-neon-green">Contacto</h5>
           <ul className="space-y-4 text-sm uppercase tracking-widest font-medium text-white/70">
-            <li>{CONTACT.address}</li>
-            <li>{CONTACT.email}</li>
-            <li>{CONTACT.phone}</li>
+            <li>
+              <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" className="hover:text-neon-green transition-colors">
+                {CONTACT.address}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${CONTACT.email}`} className="hover:text-neon-green transition-colors">
+                {CONTACT.email}
+              </a>
+            </li>
+            <li>
+              <a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`} className="hover:text-neon-green transition-colors">
+                {CONTACT.phone}
+              </a>
+            </li>
+            {CONTACT.socials.instagram && (
+              <li>
+                <a href={CONTACT.socials.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-neon-green transition-colors">
+                  Instagram
+                </a>
+              </li>
+            )}
           </ul>
         </div>
       </div>

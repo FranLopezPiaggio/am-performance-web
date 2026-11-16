@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FolderKanban, Loader2 } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
-import { projectStatusColors as statusColors, projectStatusLabels as statusLabels, projectStatusOptions as statusOptions } from '@/lib/constants/status';
+import { projectStatusColors as statusColors, projectStatusLabels as statusLabels, projectStatusOptions as statusOptions } from '@/lib/config/status';
 
 const gymTypeLabels: Record<string, string> = {
   commercial: 'Comercial',

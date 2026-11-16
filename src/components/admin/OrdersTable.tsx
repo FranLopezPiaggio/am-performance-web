@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, Loader2 } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
 import type { OrderWithDetails } from '@/types/database';
-import { orderStatusColors as statusColors, orderStatusLabels as statusLabels, orderStatusOptions as statusOptions } from '@/lib/constants/status';
+import { orderStatusColors as statusColors, orderStatusLabels as statusLabels, orderStatusOptions as statusOptions } from '@/lib/config/status';
 
 function StatusCell({ order }: { order: OrderWithDetails }) {
   const [status, setStatus] = useState(order.status?.name ?? 'pending');

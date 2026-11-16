@@ -1,14 +1,20 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { HERO_SLIDES, type HeroSlide } from '@/lib/constants/hero';
+import { HERO_SLIDES, type HeroSlide } from '@/lib/config/hero';
 
 const HERO_VIDEO_RATE = 0.5;
 const DESKTOP_QUERY = '(min-width: 768px)';
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+
+const subscribeMedia = (query: string) => (onChange: () => void) => {
+  const mq = window.matchMedia(query);
+  mq.addEventListener('change', onChange);
+  return () => mq.removeEventListener('change', onChange);
+};
 
 interface HeroProps {
   slides?: HeroSlide[];
@@ -16,19 +22,25 @@ interface HeroProps {
 
 export default function Hero({ slides = HERO_SLIDES }: HeroProps) {
   const [current, setCurrent] = useState(0);
-  const [mounted, setMounted] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [inView, setInView] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   const slide = slides[current];
-  // mounted: el SSR siempre renderiza la imagen (el video jamás se descarga en mobile)
-  const useVideo = Boolean(slide.video) && mounted && isDesktop && !reducedMotion && !videoFailed;
+  // SSR snapshot = false: el HTML inicial nunca contiene <video> (mobile descarga 0 bytes)
+  const isDesktop = useSyncExternalStore(
+    subscribeMedia(DESKTOP_QUERY),
+    () => window.matchMedia(DESKTOP_QUERY).matches,
+    () => false
+  );
+  const reducedMotion = useSyncExternalStore(
+    subscribeMedia(REDUCED_MOTION_QUERY),
+    () => window.matchMedia(REDUCED_MOTION_QUERY).matches,
+    () => false
+  );
 
-  useEffect(() => setMounted(true), []);
+  const useVideo = Boolean(slide.video) && isDesktop && !reducedMotion && !videoFailed;
 
   useEffect(() => {
     if (videoRef.current) {
@@ -36,22 +48,6 @@ export default function Hero({ slides = HERO_SLIDES }: HeroProps) {
       videoRef.current.playbackRate = HERO_VIDEO_RATE;
     }
   }, [current, useVideo]);
-
-  useEffect(() => {
-    const desktopMq = window.matchMedia(DESKTOP_QUERY);
-    const motionMq = window.matchMedia(REDUCED_MOTION_QUERY);
-    const sync = () => {
-      setIsDesktop(desktopMq.matches);
-      setReducedMotion(motionMq.matches);
-    };
-    sync();
-    desktopMq.addEventListener('change', sync);
-    motionMq.addEventListener('change', sync);
-    return () => {
-      desktopMq.removeEventListener('change', sync);
-      motionMq.removeEventListener('change', sync);
-    };
-  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;

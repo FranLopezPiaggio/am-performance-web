@@ -1,4 +1,4 @@
-import { CONTACT } from '@/lib/constants/contact';
+import { CONTACT } from '@/lib/config/contact';
 
 export default function ShowroomMap() {
   return (

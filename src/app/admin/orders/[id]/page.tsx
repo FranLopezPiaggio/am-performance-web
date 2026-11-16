@@ -7,7 +7,7 @@ import {
   ArrowLeft, User, Package, MapPin, Save, CreditCard
 } from 'lucide-react';
 import { useOrderDetail } from '@/hooks/useOrderDetail';
-import { orderStatusColors as statusColors, orderStatusLabels as statusLabels, orderStatusOptions as statusOptions } from '@/lib/constants/status';
+import { orderStatusColors as statusColors, orderStatusLabels as statusLabels, orderStatusOptions as statusOptions } from '@/lib/config/status';
 
 function LoadingSkeleton() {
   return (

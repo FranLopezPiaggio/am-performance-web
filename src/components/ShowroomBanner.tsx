@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { SHOWROOM } from '@/lib/constants/showroom';
+import { SHOWROOM } from '@/lib/config/showroom';
 
 export default function ShowroomBanner() {
   return (
