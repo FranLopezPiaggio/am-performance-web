@@ -1,16 +1,14 @@
 import ShowroomHero from './ShowroomHero';
-import ShowroomStatement from './ShowroomStatement';
+import ShowroomSpace from './ShowroomSpace';
 import ShowroomGallery from './ShowroomGallery';
-import ShowroomFeatures from './ShowroomFeatures';
 import ShowroomInfo from './ShowroomInfo';
 
 export default function ShowroomContent() {
   return (
     <section className="min-h-screen bg-brutal-black">
       <ShowroomHero />
-      <ShowroomStatement />
+      <ShowroomSpace />
       <ShowroomGallery />
-      <ShowroomFeatures />
       <ShowroomInfo />
     </section>
   );

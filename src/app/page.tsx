@@ -3,11 +3,11 @@ import Hero from '@/components/Hero';
 import CategoryGrid from '@/components/CategoryGrid';
 import BestSellersSection from '@/components/BestSellersSection';
 import { Suspense } from 'react';
-import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getCategories, getBestSellers } from '@/lib/supabase/queries';
 import Footer from '@/components/Footer';
 import ShowroomBanner from '@/components/ShowroomBanner';
+import TrustBar from '@/components/TrustBar';
 
 async function CategoryGridWrapper() {
   const supabase = await createClient();
@@ -47,33 +47,15 @@ function BestSellersFallback() {
   );
 }
 
-const trustItems = [
-  { icon: Truck, title: 'Envíos a todo el país', desc: 'Llegamos a cada rincón de Argentina.' },
-  { icon: ShieldCheck, title: 'Garantía Oficial', desc: 'Todos nuestros productos tienen respaldo.' },
-  { icon: CreditCard, title: 'Pagos Seguros', desc: 'Mercado Pago y cuotas fijas.' },
-  { icon: Headphones, title: 'Soporte 24/7', desc: 'Asesoramiento técnico especializado.' }
-];
-
 export default function Home() {
   return (
     <main className="min-h-screen pb-24">
       <Navbar />
+      <TrustBar />
       <Hero />
 
-      {/* Trust Bar */}
-      <section className="bg-white text-brutal-black py-12">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          {trustItems.map((item, i) => (
-            <div key={i} className="flex items-center space-x-4">
-              <item.icon size={32} strokeWidth={2.5} />
-              <div>
-                <h4 className="font-bold uppercase tracking-widest text-xs">{item.title}</h4>
-                <p className="text-[10px] opacity-70 uppercase font-bold">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Showroom Banner CTA */}
+      <ShowroomBanner />
 
       <Suspense fallback={<GridFallback />}>
         <CategoryGridWrapper />
@@ -82,9 +64,6 @@ export default function Home() {
       <Suspense fallback={<BestSellersFallback />}>
         <BestSellersWrapper />
       </Suspense>
-
-      {/* Showroom Banner CTA */}
-      <ShowroomBanner />
 
       {/* Footer */}
       <Footer />

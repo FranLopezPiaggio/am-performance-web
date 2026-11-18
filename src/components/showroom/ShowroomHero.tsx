@@ -1,22 +1,45 @@
 'use client';
 
-import Image from 'next/image';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Ruler, Package, Users, ArrowRight } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { useShowroomImages } from './useShowroomImages';
 
-export default function ShowroomHero() {
-  const { hero } = useShowroomImages();
-  return (
-    <section className="relative pt-32 pb-24 overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center grayscale opacity-70"
-        style={{ backgroundImage: `url(${hero})` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-brutal-black via-brutal-black/90 to-brutal-black/70" />
+const PAUSE_BETWEEN_LOOPS_MS = 5000;
 
+export default function ShowroomHero() {
+  const { video } = useShowroomImages();
+  const prefersReducedMotion = useReducedMotion();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const pauseTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || prefersReducedMotion) return;
+    void v.play().catch(() => {});
+    return () => v.pause();
+  }, [prefersReducedMotion, video]);
+
+  useEffect(
+    () => () => {
+      if (pauseTimeoutRef.current) window.clearTimeout(pauseTimeoutRef.current);
+    },
+    []
+  );
+
+  const handleEnded = () => {
+    pauseTimeoutRef.current = window.setTimeout(() => {
+      const v = videoRef.current;
+      if (!v) return;
+      v.currentTime = 0;
+      void v.play().catch(() => {});
+    }, PAUSE_BETWEEN_LOOPS_MS);
+  };
+
+  return (
+    <section className="relative bg-brutal-black pt-32 pb-24 overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Hero Content */}
@@ -66,20 +89,21 @@ export default function ShowroomHero() {
             </div>
           </motion.div>
 
-          {/* Hero Image */}
+          {/* Hero Video — vertical 5s, pausa 5s, loop */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative bg-white/5 brutal-shadow"
+            className="relative mx-auto h-[55vh] md:h-[70vh] aspect-[9/16] overflow-hidden brutal-shadow bg-white/5"
           >
-            <Image
-              src={hero}
-              alt="Showroom equipamiento"
-              fill
-              priority
-              className="object-cover"
-              sizes="100vw"
+            <video
+              ref={videoRef}
+              src={video}
+              muted
+              playsInline
+              preload="metadata"
+              onEnded={handleEnded}
+              className="h-full w-full object-cover grayscale"
             />
           </motion.div>
         </div>

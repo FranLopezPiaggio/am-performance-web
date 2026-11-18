@@ -1,7 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { heroPool, video4Pool, galleryPool } from './images';
+import { video4Pool, galleryPool, verticalClips } from './images';
 
 function pickN<T>(pool: T[], n: number): T[] {
   const copy = [...pool];
@@ -14,22 +14,19 @@ function pickN<T>(pool: T[], n: number): T[] {
 
 // Snapshot de server / primer render: valores fijos, deterministas.
 const DEFAULTS = {
-  hero: heroPool[0],
-  statement: video4Pool[0],
+  space: video4Pool[0],
   info: video4Pool[1],
-  features: video4Pool[2],
-  gallery: video4Pool.slice(3, 11),
+  gallery: video4Pool.slice(2, 10),
+  video: verticalClips[0],
 };
 
 function makeSelection() {
-  const hero = pickN(heroPool, 1)[0] ?? DEFAULTS.hero;
-  const [statement, info, features] = pickN(video4Pool, 3);
+  const [space, info] = pickN(video4Pool, 2);
   return {
-    hero,
-    statement: statement ?? DEFAULTS.statement,
+    space: space ?? DEFAULTS.space,
     info: info ?? DEFAULTS.info,
-    features: features ?? DEFAULTS.features,
     gallery: pickN(galleryPool, 8),
+    video: pickN(verticalClips, 1)[0] ?? DEFAULTS.video,
   };
 }
 

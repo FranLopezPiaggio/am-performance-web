@@ -27,8 +27,8 @@ const anton = Anton({
 });
 
 export const metadata: Metadata = {
-  title: 'AM Performance | High Performance Equipment',
-  description: 'Equipamiento deportivo de alto rendimiento. Moderno, técnico y brutalista.',
+  title: 'AM Performance | Equipamiento deportivo',
+  description: 'Equipamiento deportivo de alto rendimiento.',
 };
 
 export default function RootLayout({

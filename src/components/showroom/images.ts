@@ -509,3 +509,16 @@ export const galleryPool = [
   '/img/frames/video-3/frame-095.jpg',
   '/img/frames/video-3/frame-096.jpg',
 ];
+
+// Clips verticales de 5s en public/vid/clips (video-1/2/3 son portrait).
+export const verticalClips = [
+  '/vid/clips/video-1/clip-1.mp4',
+  '/vid/clips/video-1/clip-2.mp4',
+  '/vid/clips/video-1/clip-3.mp4',
+  '/vid/clips/video-2/clip-1.mp4',
+  '/vid/clips/video-2/clip-2.mp4',
+  '/vid/clips/video-2/clip-3.mp4',
+  '/vid/clips/video-3/clip-1.mp4',
+  '/vid/clips/video-3/clip-2.mp4',
+  '/vid/clips/video-3/clip-3.mp4',
+];

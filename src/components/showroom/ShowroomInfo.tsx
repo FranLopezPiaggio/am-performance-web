@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MapPin } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { CONTACT } from '@/lib/config/contact';
 import { SHOWROOM } from '@/lib/config/showroom';
@@ -29,19 +29,20 @@ export default function ShowroomInfo() {
             className="pt-20"
           >
             <div className="inline-block bg-neon-green/10 border border-neon-green p-8 brutal-shadow mb-8">
-              <h2 className="text-3xl md:text-5xl font-display uppercase tracking-tighter mb-6">
+              <h2 className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-display uppercase tracking-tighter mb-4">
+                <MapPin className="text-neon-green shrink-0" size={28} />
                 {CONTACT.address}
               </h2>
-              <p className="text-white/60 text-lg mb-4">
+              <p className="text-white/60 text-lg mb-6">
                 Horario: {SHOWROOM.hours}
               </p>
               <a
-                href={CONTACT.mapsUrl}
+                href={getWhatsAppUrl('showroom')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="brutal-btn flex items-center space-x-2"
+                className="brutal-btn-strong w-full flex items-center justify-center space-x-2 py-4 px-8 uppercase tracking-widest text-sm"
               >
-                <span>Ver en Google Maps</span>
+                <span>Agendar visita</span>
                 <ArrowRight size={20} />
               </a>
             </div>
@@ -49,23 +50,11 @@ export default function ShowroomInfo() {
             <div className="mt-8">
               <ShowroomMap />
             </div>
-
-            <div>
-              <a
-                href={getWhatsAppUrl('showroom')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="brutal-btn-strong w-full brutal-shadow mt-8 py-4 px-8 uppercase tracking-widest text-sm"
-              >
-                <span>Agendar visita</span>
-                <ArrowRight size={20} />
-              </a>
-            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Final */}
+      {/* CTA Final
       <section className="py-24 bg-neon-green">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
@@ -100,7 +89,7 @@ export default function ShowroomInfo() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }
