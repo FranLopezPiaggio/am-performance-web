@@ -31,6 +31,7 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const allCategories = useCategoriesContext();
   const categories = allCategories.filter(c => !c.parent_id);
+  const categoriesRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user, signOut } = useAuth();
   const [isClient, setIsClient] = useState<boolean>(() => typeof window !== 'undefined');
@@ -66,12 +67,25 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center space-x-8">
 <div
+                  ref={categoriesRef}
                   className="relative group"
                   onMouseEnter={handleMouseEnterCategories}
                   onMouseLeave={handleMouseLeaveCategories}
+                  onFocus={handleMouseEnterCategories}
+                  onBlur={(e) => {
+                    if (!categoriesRef.current?.contains(e.relatedTarget as Node)) {
+                      setIsCategoriesOpen(false);
+                    }
+                  }}
                 >
                 <div className="flex items-center space-x-1 text-sm font-medium uppercase tracking-widest hover:text-neon-green transition-colors">
-                  <Link href="/catalogo">Catalogo</Link>
+                  <Link
+                    href="/catalogo"
+                    aria-haspopup="true"
+                    aria-expanded={isCategoriesOpen}
+                  >
+                    Catalogo
+                  </Link>
                   <ChevronDown size={16} />
                 </div>
 
@@ -97,7 +111,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/showroom"
-                className="px-4 py-2 text-sm font-medium uppercase tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-all duration-200"
+                className="px-4 py-2 text-sm font-medium uppercase tracking-widest border border-white/60 text-white hover:bg-neon-green hover:text-brutal-black hover:border-neon-green transition-colors duration-200"
               >
                 Showroom
               </Link>
@@ -107,8 +121,9 @@ export default function Navbar() {
               <div className="relative flex items-center">
                 <button
                   onClick={() => setShowSearch(!showSearch)}
-                  className="p-2 hover:text-neon-green transition-colors"
+                  className="p-3 hover:text-neon-green transition-colors"
                   aria-label="Buscar productos"
+                  aria-expanded={showSearch}
                 >
                   <Search size={20} />
                 </button>
@@ -122,7 +137,7 @@ export default function Navbar() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Buscar productos..."
-                        className="w-60 bg-white/5 border border-white/20 text-white text-sm px-4 py-2 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/30"
+                        className="w-52 max-w-[calc(100vw-2rem)] bg-white/5 border border-white/20 text-white text-sm px-4 py-2 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/50"
                         autoFocus
                       />
                     </form>
@@ -142,7 +157,7 @@ export default function Navbar() {
                   </Link>
                 </div>
               ) : null}
-              <Link href="/carrito" className="p-2 hover:text-neon-green transition-colors relative">
+              <Link href="/carrito" className="p-3 hover:text-neon-green transition-colors relative" aria-label="Ver carrito">
                 <ShoppingCart size={20} />
                 {isClient && totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 bg-neon-green text-brutal-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
@@ -155,15 +170,17 @@ export default function Navbar() {
                 href={getWhatsAppUrl('help')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 hover:text-neon-green transition-colors"
+                className="p-3 hover:text-neon-green transition-colors"
                 aria-label="Contacto por WhatsApp"
                 onClick={() => trackWhatsappClicked('navbar')}
               >
                 <Image src={WhatsAppSVG} alt="WhatsApp" width={30} height={30} />
               </a>
               <button
-                className="md:hidden p-2 hover:text-neon-green transition-colors"
+                className="md:hidden p-3 hover:text-neon-green transition-colors"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+                aria-expanded={isMenuOpen}
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -182,7 +199,7 @@ export default function Navbar() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Buscar productos..."
-                    className="w-full bg-white/5 border border-white/20 text-white text-sm px-4 py-3 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/30"
+                    className="w-full bg-white/5 border border-white/20 text-white text-sm px-4 py-3 focus:outline-none focus:border-neon-green uppercase tracking-widest placeholder:text-white/50"
                   />
                   <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-neon-green">
                     <Search size={18} />
