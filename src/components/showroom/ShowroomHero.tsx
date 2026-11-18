@@ -41,13 +41,12 @@ export default function ShowroomHero() {
   return (
     <section className="relative bg-brutal-black pt-32 pb-24 overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Hero Content */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex flex-col items-start"
+            className="flex flex-col items-start lg:max-w-[52%]"
           >
             <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">
               AM <span className='text-white'>Performance</span>
@@ -88,26 +87,26 @@ export default function ShowroomHero() {
               </a>
             </div>
           </motion.div>
-
-          {/* Hero Video — vertical 5s, pausa 5s, loop */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative mx-auto h-[55vh] md:h-[70vh] aspect-[9/16] overflow-hidden brutal-shadow bg-white/5"
-          >
-            <video
-              ref={videoRef}
-              src={video}
-              muted
-              playsInline
-              preload="metadata"
-              onEnded={handleEnded}
-              className="h-full w-full object-cover grayscale"
-            />
-          </motion.div>
-        </div>
       </div>
+
+      {/* Hero Video — alto completo del hero, ancho proporcional, fade al negro */}
+      <motion.div
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="relative mx-auto mt-16 h-[55vh] aspect-[9/16] max-w-[85vw] overflow-hidden bg-white/5 lg:absolute lg:inset-y-0 lg:right-0 lg:mx-0 lg:mt-0 lg:h-full lg:max-w-none"
+      >
+        <video
+          ref={videoRef}
+          src={video}
+          muted
+          playsInline
+          preload="metadata"
+          onEnded={handleEnded}
+          className="h-full w-full object-cover grayscale"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-brutal-black via-brutal-black/25 to-transparent" />
+      </motion.div>
     </section>
   );
 }
