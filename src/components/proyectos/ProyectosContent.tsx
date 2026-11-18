@@ -7,8 +7,8 @@ import { z } from 'zod';
 import { projectFormSchema, ProjectFormValues } from '@/lib/validations/projects';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import SuccessModal from '@/components/SuccessModal';
+import AntesDespuesBackground from '@/components/proyectos/AntesDespuesBackground';
 const Machine = '/img/justin-fisher-cf_JUo9Ezdw-unsplash.jpg';
-const LogoAMP = '/logo/AMPerformance_Favicon_verde.png'
 
 export default function ProyectosContent() {
   const [formData, setFormData] = useState<ProjectFormValues>({
@@ -102,8 +102,8 @@ export default function ProyectosContent() {
     <main className="min-h-screen bg-brutal-black">
       {/* A. HERO SECTION WITH FORM */}
       <section className="relative pt-32 pb-24 overflow-hidden">
-        <div style={{ backgroundImage: `url(${LogoAMP})` }} className="absolute inset-0 bg-cover bg-center grayscale opacity-70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brutal-black via-brutal-black/90 to-brutal-black/70" />
+        <AntesDespuesBackground />
+        <div className="absolute inset-0 bg-gradient-to-r from-brutal-black via-brutal-black/90 to-brutal-black/40" />
 
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">

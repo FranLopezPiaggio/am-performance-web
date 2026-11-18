@@ -34,7 +34,7 @@ const validBody = {
   customerInfo: {
     name: 'Juan Pérez',
     email: 'juan@example.com',
-    phone: '12345678',
+    phone: '+5491123456789',
     address: 'Av. Siempre Viva 123',
     city: 'Buenos Aires',
     gymStyle: 'crossfit',

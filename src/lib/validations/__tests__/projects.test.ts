@@ -4,7 +4,7 @@ import { projectFormSchema } from '../projects';
 const validData = {
   name: 'Juan Pérez',
   email: 'juan@example.com',
-  phone: '12345678',
+  phone: '+5491123456789',
   address: 'Av. Siempre Viva 123',
   city: 'Buenos Aires',
   gymStyle: 'crossfit',
@@ -28,6 +28,11 @@ describe('projectFormSchema', () => {
 
   it('rejects short phone', () => {
     const result = projectFormSchema.safeParse({ ...validData, phone: '123' });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects phone without international prefix (+)', () => {
+    const result = projectFormSchema.safeParse({ ...validData, phone: '12345678' });
     expect(result.success).toBe(false);
   });
 
