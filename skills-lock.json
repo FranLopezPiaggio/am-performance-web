@@ -1,15 +1,22 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
+    "no-ai-slop": {
+      "source": "petergyang/no-ai-slop",
+      "commit": "000650b156983f5159695b441477f4e63b25dc85",
+      "sourceType": "github",
+      "skillPath": "skills/no-ai-slop/SKILL.md",
+      "computedHash": "325408c3843e4a9d148a439fa665a0722d1248e23da8ef84646c9647ff4b3f88"
+    },
     "requesting-code-review": {
       "source": "obra/superpowers",
       "sourceType": "github",
-      "computedHash": "246e65cd72a7e360987d94e6c61564ce6d71c6361d1784d529d70e4cbbe8522d"
+      "computedHash": ""
     },
     "supabase-postgres-best-practices": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
-      "computedHash": "9c87c315aed143ee3b34bec8117100f5035e0df09e6b23e1ecc772cff434c9ad"
+      "computedHash": ""
     }
   }
 }

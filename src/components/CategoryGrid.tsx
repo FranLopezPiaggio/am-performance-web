@@ -38,7 +38,6 @@ export default function CategoryGrid({ categories: dbCategories }: { categories:
     <section className="py-24 max-w-7xl mx-auto px-4">
       <div className="flex justify-between items-end mb-12">
         <div>
-          <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Explorar</p>
           <h2 className="text-5xl font-display uppercase tracking-tighter">Categorías</h2>
         </div>
         <Link href="/catalogo" className="text-sm font-bold uppercase tracking-widest border-b-2 border-neon-green pb-1 hover:text-neon-green transition-colors">

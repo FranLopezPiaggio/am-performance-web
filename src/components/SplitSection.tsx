@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 
 interface SplitSectionProps {
   media: ReactNode;
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   reverse?: boolean;
   children: ReactNode;
@@ -38,9 +38,11 @@ export default function SplitSection({
           viewport={{ once: true }}
           className="w-full max-w-xl px-8 md:px-16 py-16"
         >
-          <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">
-            {eyebrow}
-          </p>
+          {eyebrow && (
+            <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">
+              {eyebrow}
+            </p>
+          )}
           <h2 className="text-4xl md:text-5xl font-display uppercase tracking-tighter mb-8">
             {title}
           </h2>

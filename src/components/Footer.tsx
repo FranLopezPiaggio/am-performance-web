@@ -55,7 +55,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-white/5 py-8 text-center">
         <p className="text-[10px] uppercase tracking-[0.5em] text-white/20">
-          © 2024 AM PERFORMANCE. BRUTALIST TECHNICAL EQUIPMENT.
+          © 2026 AM PERFORMANCE. BRUTALIST TECHNICAL EQUIPMENT.
         </p>
       </div>
     </footer>

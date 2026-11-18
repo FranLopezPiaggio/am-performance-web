@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Ruler, Package, Users, ArrowRight } from 'lucide-react';
 import SplitSection from '@/components/SplitSection';
-import { showroomImages } from './images';
+import { useShowroomImages } from './useShowroomImages';
 
 const features = [
   { icon: Ruler, title: 'Calidad certificada', desc: 'Materiales premium y resistencia verificada' },
@@ -13,18 +13,18 @@ const features = [
 ];
 
 export default function ShowroomFeatures() {
+  const { features: featuresImages } = useShowroomImages();
   return (
     <SplitSection
       media={
         <Image
-          src={showroomImages[3]}
-          alt="Rack con dumbells del showroom"
+          src={featuresImages}
+          alt="Equipamiento del showroom de AM Performance"
           fill
           className="object-cover grayscale"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
       }
-      eyebrow="Características"
       title="Lo que podés experimentar"
       reverse
     >

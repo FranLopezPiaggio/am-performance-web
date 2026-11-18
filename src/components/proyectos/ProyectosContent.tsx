@@ -332,15 +332,12 @@ export default function ProyectosContent() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">
-              ¿Qué incluye el servicio?
-            </p>
             <h2 className="text-4xl md:text-5xl font-display uppercase tracking-tighter">
               Todo lo que necesitás
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: Ruler,
@@ -350,7 +347,7 @@ export default function ProyectosContent() {
               {
                 icon: Users,
                 title: 'Asesoría Experta',
-                description: 'Ingenieros y especialistas en equipamiento te guidan en cada decisión para optimizar tu inversión.'
+                description: 'Ingenieros y especialistas en equipamiento te guían en cada decisión para optimizar tu inversión.'
               },
               {
                 icon: Package,
@@ -359,7 +356,7 @@ export default function ProyectosContent() {
               },
               {
                 icon: Settings,
-                title: 'Atencion Post-Venta',
+                title: 'Atención Post-Venta',
                 description: 'Asesoramiento y soporte técnico para que tu gimnasio funcione a la perfección.'
               }
             ].map((item, index) => (
@@ -370,7 +367,7 @@ export default function ProyectosContent() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
-                className="group bg-white/5 border border-white/10 p-8 hover:border-white/30 transition-all"
+                className={`group bg-white/5 border border-white/10 p-8 hover:border-white/30 transition-all ${index === 0 || index === 3 ? 'md:col-span-2' : ''}`}
               >
                 <div className="w-16 h-16 bg-neon-green/10 flex items-center justify-center mb-6 group-hover:bg-neon-green/20 transition-colors">
                   <item.icon className="text-neon-green" size={32} />
@@ -396,9 +393,6 @@ export default function ProyectosContent() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">
-              Nuestro Proceso
-            </p>
             <h2 className="text-4xl md:text-5xl font-display uppercase tracking-tighter">
               Cómo Trabajamos
             </h2>
@@ -410,7 +404,7 @@ export default function ProyectosContent() {
               { step: '02', title: 'Diseño', desc: 'Creamos planos 3D personalizados' },
               { step: '03', title: 'Cotización', desc: 'Te presentamos el presupuesto detallado' },
               { step: '04', title: 'Ejecución', desc: 'Instalación y puesta en marcha' },
-              { step: '05', title: 'Mantenimiento', desc: 'Atencion Post-Venta' }
+              { step: '05', title: 'Mantenimiento', desc: 'Atención Post-Venta' }
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -449,9 +443,6 @@ export default function ProyectosContent() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <p className="text-neon-green font-bold uppercase tracking-[0.3em] text-sm mb-4">
-              ¿Para quién es?
-            </p>
             <h2 className="text-4xl md:text-5xl font-display uppercase tracking-tighter">
               Dirigido a Emprendedores
             </h2>
@@ -505,7 +496,7 @@ export default function ProyectosContent() {
               href="#contacto"
               className="brutal-btn inline-flex items-center space-x-2"
             >
-              <span>Comenzar Mi Proyecto</span>
+              <span>Solicitar Cotización</span>
               <ArrowRight size={20} />
             </a>
           </motion.div>

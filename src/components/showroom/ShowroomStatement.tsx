@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import SplitSection from '@/components/SplitSection';
-import { showroomImages } from './images';
+import { useShowroomImages } from './useShowroomImages';
 
 const benefits = [
   'Probar las máquinas y equipamiento en persona',
@@ -12,19 +12,19 @@ const benefits = [
 ];
 
 export default function ShowroomStatement() {
+  const { statement } = useShowroomImages();
   return (
     <>
       <SplitSection
         media={
           <Image
-            src={showroomImages[2]}
-            alt="Ropes en el showroom de AM Performance"
+            src={statement}
+            alt="Equipamiento del showroom de AM Performance"
             fill
             className="object-cover grayscale"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
         }
-        eyebrow="¿Qué esperás encontrar?"
         title="Un espacio diseñado para el alto rendimiento"
       >
         <div className="space-y-6 text-white/60">

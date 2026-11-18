@@ -6,16 +6,17 @@ import { ArrowRight } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import { CONTACT } from '@/lib/config/contact';
 import { SHOWROOM } from '@/lib/config/showroom';
-import { showroomImages } from './images';
+import { useShowroomImages } from './useShowroomImages';
 import ShowroomMap from './ShowroomMap';
 
 export default function ShowroomInfo() {
+  const { info } = useShowroomImages();
   return (
     <>
       {/* Información del Local */}
       <section className="py-24 bg-brutal-black relative overflow-hidden">
         <div
-          style={{ backgroundImage: `url(${showroomImages[1]})` }}
+          style={{ backgroundImage: `url(${info})` }}
           className="absolute inset-0 bg-cover bg-center grayscale opacity-70"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brutal-black via-brutal-black/80 to-brutal-black/60" />
@@ -28,9 +29,6 @@ export default function ShowroomInfo() {
             className="pt-20"
           >
             <div className="inline-block bg-neon-green/10 border border-neon-green p-8 brutal-shadow mb-8">
-              <p className="text-neon-green font-bold uppercase tracking-widest text-sm mb-4">
-                Visitanos
-              </p>
               <h2 className="text-3xl md:text-5xl font-display uppercase tracking-tighter mb-6">
                 {CONTACT.address}
               </h2>
@@ -59,7 +57,7 @@ export default function ShowroomInfo() {
                 rel="noopener noreferrer"
                 className="brutal-btn-strong w-full brutal-shadow mt-8 py-4 px-8 uppercase tracking-widest text-sm"
               >
-                <span>Agendar visita por WhatsApp</span>
+                <span>Agendar visita</span>
                 <ArrowRight size={20} />
               </a>
             </div>
@@ -89,7 +87,7 @@ export default function ShowroomInfo() {
                 rel="noopener noreferrer"
                 className="brutal-btn flex items-center space-x-2"
               >
-                <span>Agendar tu visita</span>
+                <span>Agendar visita</span>
                 <ArrowRight size={20} />
               </a>
               <Link

@@ -5,14 +5,15 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Ruler, Package, Users, ArrowRight } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
-import { showroomImages } from './images';
+import { useShowroomImages } from './useShowroomImages';
 
 export default function ShowroomHero() {
+  const { hero } = useShowroomImages();
   return (
     <section className="relative pt-32 pb-24 overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center grayscale opacity-70"
-        style={{ backgroundImage: `url(${showroomImages[0]})` }}
+        style={{ backgroundImage: `url(${hero})` }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-brutal-black via-brutal-black/90 to-brutal-black/70" />
 
@@ -73,7 +74,7 @@ export default function ShowroomHero() {
             className="relative bg-white/5 brutal-shadow"
           >
             <Image
-              src={showroomImages[0]}
+              src={hero}
               alt="Showroom equipamiento"
               fill
               priority
