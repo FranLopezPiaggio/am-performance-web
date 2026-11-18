@@ -4,6 +4,7 @@ import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { SupabaseProvider } from '@/context/SupabaseProvider';
+import MotionProvider from '@/context/MotionProvider';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ModalProvider } from '@/components/providers/ModalProvider';
 import ProductModalWrapper from '@/components/providers/ProductModalWrapper';
@@ -47,7 +48,8 @@ export default function RootLayout({
         <ErrorBoundary>
           <PostHogProvider>
             <AuthProvider>
-              <SupabaseProvider>
+              <MotionProvider>
+                <SupabaseProvider>
                 <CategoriesProvider>
                 <CartProvider>
                   <ModalProvider>
@@ -57,6 +59,7 @@ export default function RootLayout({
                 </CartProvider>
               </CategoriesProvider>
               </SupabaseProvider>
+              </MotionProvider>
             </AuthProvider>
           </PostHogProvider>
         </ErrorBoundary>

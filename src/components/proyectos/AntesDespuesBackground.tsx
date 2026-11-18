@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 const ANTES = '/img/antes.jpeg';
 const DESPUES = '/img/despues.jpeg';
 
-const TRIGGER_SCROLL_PX = 100;
 const TRIGGER_TIMEOUT_MS = 10000;
 const CROSSFADE_S = 3;
 
 export default function AntesDespuesBackground() {
   const prefersReducedMotion = useReducedMotion();
   const [showAfter, setShowAfter] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const preAfter = new Image();
@@ -22,25 +22,34 @@ export default function AntesDespuesBackground() {
     const trigger = () => {
       if (settled) return;
       settled = true;
-      window.removeEventListener('scroll', onScroll);
+      observer?.disconnect();
       clearTimeout(timer);
       setShowAfter(true);
     };
 
-    const onScroll = () => {
-      if (window.scrollY > TRIGGER_SCROLL_PX) trigger();
-    };
+    // Sentinel a 100px del tope: sale del viewport cuando el usuario scrollea >100px.
+    let seenIntersecting = false;
+    let observer: IntersectionObserver | null = null;
+    if (sentinelRef.current) {
+      observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          seenIntersecting = true;
+          return;
+        }
+        if (seenIntersecting) trigger();
+      });
+      observer.observe(sentinelRef.current);
+    }
 
     const onFocusIn = (e: FocusEvent) => {
       if ((e.target as HTMLElement).closest('form')) trigger();
     };
 
     const timer = setTimeout(trigger, TRIGGER_TIMEOUT_MS);
-    window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('focusin', onFocusIn);
 
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      observer?.disconnect();
       document.removeEventListener('focusin', onFocusIn);
       clearTimeout(timer);
     };
@@ -48,6 +57,7 @@ export default function AntesDespuesBackground() {
 
   return (
     <div className="absolute inset-0" aria-hidden="true">
+      <div ref={sentinelRef} className="absolute top-[100px] left-0 h-px w-px pointer-events-none" />
       {/* ANTES */}
       <motion.div
         initial={{ opacity: 0 }}
